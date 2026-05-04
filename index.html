@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>R. Hartlage | Tool Hub</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+
+    :root {
+      --bg: #f2f5f9;
+      --panel: rgba(255, 255, 255, 0.9);
+      --panel-strong: #ffffff;
+      --text: #112132;
+      --muted: #536274;
+      --border: rgba(17, 33, 50, 0.14);
+      --accent: #117a76;
+      --accent-strong: #0d5d5a;
+      --accent-soft: rgba(17, 122, 118, 0.12);
+      --gold: #d7a94d;
+      --shadow: 0 24px 50px rgba(17, 33, 50, 0.12);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(17, 122, 118, 0.14), transparent 30%),
+        radial-gradient(circle at 85% 15%, rgba(215, 169, 77, 0.16), transparent 24%),
+        linear-gradient(180deg, #f7fafc 0%, #edf2f8 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(17, 122, 118, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(17, 122, 118, 0.045) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.65), transparent 88%);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 1.2rem 0 3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: 0.85rem 1rem;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 999px;
+      box-shadow: 0 18px 40px rgba(17, 33, 50, 0.08);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(135deg, rgba(17, 122, 118, 0.18), rgba(17, 122, 118, 0.04)),
+        #ffffff;
+      border: 1px solid rgba(17, 122, 118, 0.18);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      color: var(--accent-strong);
+      font-size: 1.1rem;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+    }
+
+    .nav a {
+      text-decoration: none;
+      padding: 0.55rem 0.9rem;
+      border-radius: 999px;
+      color: var(--muted);
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(17, 33, 50, 0.08);
+    }
+
+    .hero {
+      padding: 3.2rem;
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(135deg, rgba(17, 122, 118, 0.96), rgba(14, 85, 110, 0.92)),
+        #0f5f6d;
+      color: #f8fcff;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 1.8rem;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -8% -28% auto;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 62%);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin: 0 0 1rem;
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(248, 252, 255, 0.78);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 38px;
+      height: 1px;
+      background: rgba(248, 252, 255, 0.48);
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 11ch;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(2.4rem, 5vw, 4.4rem);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-copy {
+      max-width: 650px;
+      margin: 1.15rem 0 0;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: rgba(248, 252, 255, 0.88);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      margin-top: 1.6rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      text-decoration: none;
+      padding: 0.85rem 1.1rem;
+      border-radius: 999px;
+      font-weight: 700;
+      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: #f9fbff;
+      color: var(--accent-strong);
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.16);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.12);
+      color: #f9fbff;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+    }
+
+    .section {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      border-radius: var(--radius-xl);
+      background: rgba(255, 255, 255, 0.74);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.56);
+      box-shadow: 0 18px 40px rgba(17, 33, 50, 0.08);
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: -0.03em;
+    }
+
+    .section-copy {
+      margin: 0.35rem 0 0;
+      max-width: 680px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 240px;
+      padding: 1.2rem;
+      border-radius: var(--radius-lg);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 24px rgba(17, 33, 50, 0.06);
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      width: fit-content;
+      padding: 0.35rem 0.62rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .status-live {
+      color: var(--accent-strong);
+      background: var(--accent-soft);
+    }
+
+    .status-soon {
+      color: #8a5c0d;
+      background: rgba(215, 169, 77, 0.16);
+    }
+
+    .card h3 {
+      margin: 1rem 0 0.55rem;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+      flex: 1 1 auto;
+    }
+
+    .card .meta {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .card .card-link {
+      margin-top: 1.1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: fit-content;
+      text-decoration: none;
+      font-weight: 700;
+      color: var(--accent-strong);
+      padding: 0.7rem 0.9rem;
+      border-radius: 12px;
+      background: rgba(17, 122, 118, 0.08);
+    }
+
+    .guide {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+
+    .guide-step {
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(17, 33, 50, 0.08);
+    }
+
+    .step-number {
+      display: inline-grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-weight: 700;
+      margin-bottom: 0.7rem;
+    }
+
+    footer {
+      margin-top: 1.8rem;
+      padding: 0 0.35rem 1rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    code {
+      background: rgba(17, 122, 118, 0.08);
+      color: var(--accent-strong);
+      padding: 0.14rem 0.38rem;
+      border-radius: 8px;
+      font-size: 0.92em;
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        border-radius: 24px;
+      }
+
+      .hero {
+        padding: 2rem 1.4rem;
+      }
+
+      .section {
+        padding: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">NH</div>
+        <span>R. Hartlage Tool Hub</span>
+      </div>
+      <nav class="nav">
+        <a href="#network-tools">Network Tools</a>
+        <a href="#other-tools">Other Tools</a>
+        <a href="#publish-notes">Publish Notes</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">Interactive Apps</p>
+      <h1>One home for your network and analytics tools.</h1>
+      <p class="hero-copy">
+        Use this landing page as the front door for your GitHub Pages apps. Each tool can live in its own repository,
+        while this hub gives you one clean place to launch them from any browser.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#network-tools">Explore Network Tools</a>
+        <a class="btn btn-secondary" href="https://github.com/rhartlage" target="_blank" rel="noreferrer">View GitHub Profile</a>
+      </div>
+    </section>
+
+    <section class="section" id="network-tools">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Network Tools</h2>
+          <p class="section-copy">
+            This section is set up for your operations, routing, and planning apps. Keep each app in its own GitHub Pages repo
+            and link it here as your catalog grows.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <span class="status status-live">Live Tool</span>
+          <h3>Ad Hoc Network Workbench</h3>
+          <p>
+            Build and inspect ad hoc networks, define typed connections, and explore capacity-aware routing behavior
+            through an interactive visual workbench.
+          </p>
+          <div class="meta">Primary planning tool</div>
+          <a class="card-link" href="https://rhartlage.github.io/adhoc-network-workbench/">Launch Workbench</a>
+        </article>
+
+        <article class="card">
+          <span class="status status-soon">Future Slot</span>
+          <h3>Routing Analysis Tool</h3>
+          <p>
+            Reserve this card for a future path-analysis or route-comparison app. When you publish it, replace this text
+            and point the button at the new GitHub Pages URL.
+          </p>
+          <div class="meta">Suggested URL: <code>/routing-analysis/</code></div>
+        </article>
+
+        <article class="card">
+          <span class="status status-soon">Future Slot</span>
+          <h3>Capacity Planning Dashboard</h3>
+          <p>
+            Use another card for a future scenario dashboard, simulation view, or network backbone planner as your tool set expands.
+          </p>
+          <div class="meta">Suggested URL: <code>/capacity-planner/</code></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="other-tools">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Other Published Tools</h2>
+          <p class="section-copy">
+            You can also use the hub as a cross-project launcher for other public GitHub Pages apps you maintain.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <span class="status status-live">Live Tool</span>
+          <h3>BUS-2150 Course Tools</h3>
+          <p>
+            A collection of class modules and interactive learning tools for your course site, linked here so everything
+            you publish is reachable from one landing page.
+          </p>
+          <div class="meta">Teaching and course support</div>
+          <a class="card-link" href="https://rhartlage.github.io/bus-2150-live/">Open Course Tools</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="publish-notes">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Publish Notes</h2>
+          <p class="section-copy">
+            To make this page live at your root GitHub Pages address, publish this folder as a repository named
+            <code>rhartlage.github.io</code>.
+          </p>
+        </div>
+      </div>
+
+      <div class="guide">
+        <article class="guide-step">
+          <div class="step-number">1</div>
+          <strong>Create the repo</strong>
+          <p>Use the exact repository name <code>rhartlage.github.io</code> on GitHub.</p>
+        </article>
+
+        <article class="guide-step">
+          <div class="step-number">2</div>
+          <strong>Push this folder</strong>
+          <p>Publish the files in this folder so <code>index.html</code> sits at the repo root.</p>
+        </article>
+
+        <article class="guide-step">
+          <div class="step-number">3</div>
+          <strong>Enable Pages</strong>
+          <p>In GitHub, use <code>Settings -> Pages</code> and deploy from <code>main</code> and <code>/ (root)</code>.</p>
+        </article>
+
+        <article class="guide-step">
+          <div class="step-number">4</div>
+          <strong>Visit the hub</strong>
+          <p>Your landing page will live at <code>https://rhartlage.github.io/</code>.</p>
+        </article>
+      </div>
+    </section>
+
+    <footer>
+      Tip: every time you publish a new tool repo, add one new card here and link it to that repo’s GitHub Pages URL.
+      This keeps the root site stable while your individual tools evolve independently.
+    </footer>
+  </div>
+</body>
+</html>
