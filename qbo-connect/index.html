@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Semper Ibi Logistics QBO Connect</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --text: #132238;
+      --muted: #5a6a7f;
+      --accent: #0e6d68;
+      --border: rgba(19, 34, 56, 0.12);
+      --shadow: 0 18px 42px rgba(19, 34, 56, 0.10);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(14, 109, 104, 0.10), transparent 28%),
+        linear-gradient(180deg, #f7fafc 0%, var(--bg) 100%);
+    }
+    .wrap {
+      width: min(900px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 2rem;
+    }
+    h1, h2 { margin-top: 0; }
+    h1 {
+      font-size: clamp(2rem, 4vw, 2.6rem);
+      margin-bottom: 0.75rem;
+    }
+    h2 {
+      margin-top: 2rem;
+      font-size: 1.15rem;
+    }
+    p, li {
+      line-height: 1.65;
+      color: var(--muted);
+    }
+    a { color: var(--accent); }
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="eyebrow">Connect / Reconnect</div>
+      <h1>Reconnect the Internal QBO App</h1>
+      <p>
+        This QuickBooks Online integration is for internal-use only. If the connection needs to be
+        created again, an authorized operator should re-run the controlled internal connection
+        workflow.
+      </p>
+
+      <h2>Reconnect Guidance</h2>
+      <p>
+        Reconnection is handled through the internal Semper Ibi Logistics workflow rather than a
+        public self-service sign-up flow.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        For reconnect support, contact
+        <a href="mailto:SemperIbiLogistics@gmail.com">SemperIbiLogistics@gmail.com</a>.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
