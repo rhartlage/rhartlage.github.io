@@ -1,649 +1,243 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dr. Hartlage | Tool Hub</title>
-  <style>
-    @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stats &amp; Operations Analysis | Dr. Ben Hartlage</title>
+    <meta
+      name="description"
+      content="Interactive operations analysis and business statistics tools from Dr. Ben Hartlage."
+    />
+    <link rel="canonical" href="https://benhartlage.com/" />
+    <meta property="og:title" content="Stats &amp; Operations Analysis" />
+    <meta
+      property="og:description"
+      content="Explore optimization, probability, regression, and sampling through interactive classroom tools."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://benhartlage.com/" />
+    <meta name="theme-color" content="#132a35" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Instrument+Serif:ital@0;1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to tools</a>
 
-    :root {
-      --bg: #f2f5f9;
-      --panel: rgba(255, 255, 255, 0.9);
-      --panel-strong: #ffffff;
-      --text: #112132;
-      --muted: #536274;
-      --border: rgba(17, 33, 50, 0.14);
-      --accent: #117a76;
-      --accent-strong: #0d5d5a;
-      --accent-soft: rgba(17, 122, 118, 0.12);
-      --gold: #d7a94d;
-      --shadow: 0 24px 50px rgba(17, 33, 50, 0.12);
-      --radius-xl: 28px;
-      --radius-lg: 20px;
-      --radius-md: 14px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(17, 122, 118, 0.14), transparent 30%),
-        radial-gradient(circle at 85% 15%, rgba(215, 169, 77, 0.16), transparent 24%),
-        linear-gradient(180deg, #f7fafc 0%, #edf2f8 100%);
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(17, 122, 118, 0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(17, 122, 118, 0.045) 1px, transparent 1px);
-      background-size: 36px 36px;
-      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.65), transparent 88%);
-    }
-
-    a {
-      color: inherit;
-    }
-
-    .wrap {
-      width: min(1120px, calc(100% - 2rem));
-      margin: 0 auto;
-      padding: 1.2rem 0 3rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      padding: 0.85rem 1rem;
-      background: rgba(255, 255, 255, 0.72);
-      backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.55);
-      border-radius: 999px;
-      box-shadow: 0 18px 40px rgba(17, 33, 50, 0.08);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-family: "Space Grotesk", sans-serif;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-    }
-
-    .brand-mark {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      background:
-        linear-gradient(135deg, rgba(17, 122, 118, 0.18), rgba(17, 122, 118, 0.04)),
-        #ffffff;
-      border: 1px solid rgba(17, 122, 118, 0.18);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
-      color: var(--accent-strong);
-      font-size: 1.1rem;
-    }
-
-    .nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.7rem;
-    }
-
-    .nav a {
-      text-decoration: none;
-      padding: 0.55rem 0.9rem;
-      border-radius: 999px;
-      color: var(--muted);
-      font-weight: 600;
-      background: rgba(255, 255, 255, 0.72);
-      border: 1px solid rgba(17, 33, 50, 0.08);
-    }
-
-    .hero {
-      padding: 3.2rem;
-      border-radius: var(--radius-xl);
-      background:
-        linear-gradient(135deg, rgba(17, 122, 118, 0.96), rgba(14, 85, 110, 0.92)),
-        #0f5f6d;
-      color: #f8fcff;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      position: relative;
-      margin-bottom: 1.8rem;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: auto -8% -28% auto;
-      width: 380px;
-      height: 380px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 62%);
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
-      margin: 0 0 1rem;
-      font-size: 0.82rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(248, 252, 255, 0.78);
-    }
-
-    .eyebrow::before {
-      content: "";
-      width: 38px;
-      height: 1px;
-      background: rgba(248, 252, 255, 0.48);
-    }
-
-    h1 {
-      margin: 0;
-      font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(2.4rem, 4.2vw, 3.95rem);
-      line-height: 0.98;
-      letter-spacing: -0.04em;
-      white-space: nowrap;
-    }
-
-    .hero-copy {
-      max-width: 650px;
-      margin: 1.15rem 0 0;
-      font-size: 1.05rem;
-      line-height: 1.7;
-      color: rgba(248, 252, 255, 0.88);
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.9rem;
-      margin-top: 1.6rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.55rem;
-      text-decoration: none;
-      padding: 0.85rem 1.1rem;
-      border-radius: 999px;
-      font-weight: 700;
-      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn-primary {
-      background: #f9fbff;
-      color: var(--accent-strong);
-      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.16);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.12);
-      color: #f9fbff;
-      border: 1px solid rgba(255, 255, 255, 0.24);
-    }
-
-    .section {
-      margin-top: 1.5rem;
-      padding: 1.5rem;
-      border-radius: var(--radius-xl);
-      background: rgba(255, 255, 255, 0.74);
-      backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.56);
-      box-shadow: 0 18px 40px rgba(17, 33, 50, 0.08);
-      scroll-margin-top: 1rem;
-    }
-
-    .section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .section-title {
-      margin: 0;
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 1.5rem;
-      letter-spacing: -0.03em;
-    }
-
-    .section-copy {
-      margin: 0.35rem 0 0;
-      max-width: 680px;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-    }
-
-    .card {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      min-height: 240px;
-      padding: 1.2rem;
-      border-radius: var(--radius-lg);
-      background: var(--panel);
-      border: 1px solid var(--border);
-      box-shadow: 0 10px 24px rgba(17, 33, 50, 0.06);
-    }
-
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      width: fit-content;
-      padding: 0.35rem 0.62rem;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .status-live {
-      color: var(--accent-strong);
-      background: var(--accent-soft);
-    }
-
-    .status-soon {
-      color: #8a5c0d;
-      background: rgba(215, 169, 77, 0.16);
-    }
-
-    .card h3 {
-      margin: 1rem 0 0.55rem;
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 1.35rem;
-      letter-spacing: -0.03em;
-    }
-
-    .card p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.65;
-      flex: 1 1 auto;
-    }
-
-    .card .meta {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .card .card-link {
-      margin-top: 1.1rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      width: fit-content;
-      text-decoration: none;
-      font-weight: 700;
-      color: var(--accent-strong);
-      padding: 0.7rem 0.9rem;
-      border-radius: 12px;
-      background: rgba(17, 122, 118, 0.08);
-    }
-
-    .card .card-link-disabled {
-      color: #8a5c0d;
-      background: rgba(215, 169, 77, 0.16);
-      cursor: default;
-    }
-
-    .guide {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 0.85rem;
-      margin-top: 1rem;
-    }
-
-    .guide-step {
-      padding: 1rem;
-      border-radius: var(--radius-md);
-      background: rgba(255, 255, 255, 0.82);
-      border: 1px solid rgba(17, 33, 50, 0.08);
-    }
-
-    .step-number {
-      display: inline-grid;
-      place-items: center;
-      width: 32px;
-      height: 32px;
-      border-radius: 10px;
-      background: var(--accent-soft);
-      color: var(--accent-strong);
-      font-weight: 700;
-      margin-bottom: 0.7rem;
-    }
-
-    footer {
-      margin-top: 1.8rem;
-      padding: 0 0.35rem 1rem;
-      color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.7;
-    }
-
-    code {
-      background: rgba(17, 122, 118, 0.08);
-      color: var(--accent-strong);
-      padding: 0.14rem 0.38rem;
-      border-radius: 8px;
-      font-size: 0.92em;
-    }
-
-    @media (max-width: 720px) {
-      h1 {
-        max-width: 11ch;
-        white-space: normal;
-      }
-
-      .topbar {
-        border-radius: 24px;
-      }
-
-      .hero {
-        padding: 2rem 1.4rem;
-      }
-
-      .section {
-        padding: 1.2rem;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark">NH</div>
-        <span>R. Hartlage Tool Hub</span>
-      </div>
-      <nav class="nav">
-        <a href="#bus-3150-tools">BUS-3150 Tools</a>
-        <a href="#bus-2150-tools">BUS-2150 Tools</a>
-        <a href="#network-tools">Network Tools</a>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Stats and Operations Analysis home">
+        <span class="brand-mark" aria-hidden="true">BH</span>
+        <span>
+          <strong>Dr. Ben Hartlage</strong>
+          <small>Stats &amp; Operations Analysis</small>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="#operations-analysis">Operations</a>
+        <a href="#business-statistics">Statistics</a>
+        <a class="nav-directory" href="/tools/">All tools</a>
       </nav>
     </header>
 
-    <section class="hero">
-      <p class="eyebrow">Interactive Apps</p>
-      <h1>Welcome to Dr. Hartlage's GitHub.</h1>
-      <p class="hero-copy">
-        Here you find a variety of apps to help you with learning Operations Analysis & Business Statistics, as well other tools you might find interesting or useful
-      </p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="#bus-3150-tools">Explore Ops Analysis Tools</a>
-         <a class="btn btn-primary" href="#bus-2150-tools">Explore Business Statistics Tools</a>
-         <a class="btn btn-primary" href="#network-tools">Explore Network Tools</a>
-         <a class="btn btn-primary" href="#metaheuristics-explorers">Explore Other Tools</a>
-      </div>
-    </section>
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-<!-- COMMENTS SECTION -->
- <section class="section" id="bus-3150-tools">
-      <div class="section-head">
-        <div>
-          <h2 class="section-title">Operations Analysis (BUS-3150) Course Tools</h2>
-          <p class="section-copy">
-            Student-facing operations analysis tools for BUS-3150. These links are set up as direct launch points so students can go straight to the module they need.
+    <main id="main-content">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="kicker">Interactive course tools</p>
+          <h1 id="hero-title">Make the abstract <em>visible.</em></h1>
+          <p class="hero-intro">
+            Explore optimization, probability, regression, and sampling with purpose-built
+            tools that turn formulas into experiments you can see, change, and discuss.
           </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#tool-catalog">Explore the tools</a>
+            <a class="button button-secondary" href="#how-to-use">How to use this site</a>
+          </div>
         </div>
-      </div>
 
-      <div class="grid">
-
-        <article class="card">
-          <span class="status status-live">Live Tool</span>
-          <h3>Linear Programming Studio</h3>
-          <p>
-            Add linear constraints in slope-intercept form, view the feasible polygon, and drag the objective function
-            parallel to itself to discover the optimum visually.
-          </p>
-          <div class="meta">Optimization module</div>
-          <a class="card-link" href="https://rhartlage.github.io/linear-programming-studio/">Open Studio</a>
-        </article>
-
-        <article class="card">
-          <span class="status status-soon">Coming Soon</span>
-          <h3>Simplex Algorithm Explorer</h3>
-          <p>
-            Walk through the steps of the Simplex algorithm for a 3x3 or 4x4 linear program, including entering variables,
-            ratio tests, and tableau pivot updates.
-          </p>
-          <div class="meta">Optimization module</div>
-          <span class="card-link card-link-disabled">Coming Soon</span>
-        </article>
-
-        <article class="card">
-          <span class="status status-soon">Coming Soon</span>
-          <h3>Network Shortest Path Explorer</h3>
-          <p>
-            Walk through shortest-path problems step by step and compare how Dijkstra, Bellman-Ford, Floyd-Warshall,
-            A* search, BFS, and Johnson's algorithm build or refine the route.
-          </p>
-          <div class="meta">Network optimization module</div>
-          <span class="card-link card-link-disabled">Coming Soon</span>
-        </article>
-      </div>
-    </section>
-
-
-
-
-
-
-
-
-
-    <!-- COMMENTS SECTION -->
-    <section class="section" id="bus-2150-tools">
-      <div class="section-head">
-        <div>
-          <h2 class="section-title">Business Statistics (BUS-2150) Course Tools</h2>
-          <p class="section-copy">
-            Student-facing statistics tools for BUS-2150. These links are set up as direct launch points so students can go straight to the module they need.
-          </p>
+        <div class="hero-visual" aria-label="Four connected quantitative ideas">
+          <div class="axis axis-y"></div>
+          <div class="axis axis-x"></div>
+          <svg viewBox="0 0 520 360" role="img" aria-label="Optimization and statistics sketch">
+            <defs>
+              <linearGradient id="area-fill" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#e85d38" stop-opacity="0.42" />
+                <stop offset="1" stop-color="#e85d38" stop-opacity="0.08" />
+              </linearGradient>
+            </defs>
+            <path class="feasible" d="M95 292 L95 224 L180 146 L312 214 L345 292 Z" />
+            <path class="curve" d="M72 280 C142 276 158 94 262 90 C366 94 382 276 450 280" />
+            <path class="area" d="M262 90 C366 94 382 276 450 280 L450 292 L262 292 Z" />
+            <line class="objective" x1="122" y1="260" x2="370" y2="112" />
+            <circle class="point point-one" cx="180" cy="146" r="7" />
+            <circle class="point point-two" cx="312" cy="214" r="7" />
+          </svg>
+          <div class="visual-note note-one"><span>01</span> Model</div>
+          <div class="visual-note note-two"><span>02</span> Explore</div>
+          <div class="visual-note note-three"><span>03</span> Explain</div>
         </div>
-      </div>
+      </section>
 
-      <div class="grid">
-
-        <article class="card">
-          <span class="status status-live">Live Tool</span>
-          <h3>Normal Area Explorer</h3>
-          <p>
-            Work with z-scores and areas under the Normal distribution using an interactive visual explorer.
-          </p>
-          <div class="meta">Statistics module</div>
-          <a class="card-link" href="https://rhartlage.github.io/normal-area-explorer/">Open Explorer</a>
-        </article>
-
-        <article class="card">
-          <span class="status status-live">Live Tool</span>
-          <h3>Linear Regression Studio</h3>
-          <p>
-            Build datasets, drag the regression line, inspect residual plots and ANOVA output, and test for non-constant variance.
-          </p>
-          <div class="meta">Statistics module</div>
-          <a class="card-link" href="https://rhartlage.github.io/linear-regression-studio/">Open Studio</a>
-        </article>
-
-        <article class="card">
-          <span class="status status-live">Live Tool</span>
-          <h3>Sampling Distribution Explorer</h3>
-          <p>
-            Draw unusual populations, watch each sample, and see the sampling distribution converge through simulation.
-          </p>
-          <div class="meta">Statistics module</div>
-          <a class="card-link" href="https://rhartlage.github.io/stats-tools/modules/sampling-distribution/">Open Explorer</a>
-        </article>
-
-        <article class="card">
-          <span class="status status-soon">Coming Soon</span>
-          <h3>Inverse Transform Sampling Studio</h3>
-          <p>
-            See how a uniform random draw is mapped through the CDF to generate samples from Normal, Uniform, and Poisson distributions.
-          </p>
-          <div class="meta">Statistics module</div>
-          <span class="card-link card-link-disabled">Coming Soon</span>
-        </article>
-
-        <article class="card">
-          <span class="status status-soon">Coming Soon</span>
-          <h3>Hypothesis Testing, Confidence Intervals, and One-Sided Confidence Bounds</h3>
-          <p>
-            Walk through Triola's 8-step hypothesis testing procedure, compare one-tailed tests to one-sided confidence bounds and two-tailed tests to confidence intervals, and use sliders with guided inputs to compute z-test or t-test statistics.
-          </p>
-          <div class="meta">Statistics module</div>
-          <span class="card-link card-link-disabled">Coming Soon</span>
-        </article>
-
-      </div>
-    </section>
-
-
-
-
-
-
-
-    <!-- COMMENTS SECTION -->
-    <section class="section" id="network-tools">
-      <div class="section-head">
+      <section class="catalog-intro" id="tool-catalog" aria-labelledby="catalog-title">
         <div>
-          <h2 class="section-title">Network Tools</h2>
-          <p class="section-copy">
-            This section is set up for your operations, routing, and planning apps. Keep each app in its own GitHub Pages repo
-            and link it here as your catalog grows.
-          </p>
+          <p class="kicker">Live catalog</p>
+          <h2 id="catalog-title">Four tools. Two disciplines. One place to experiment.</h2>
         </div>
-      </div>
+        <p>
+          Every tool opens directly in your browser. Nothing to install, no account required,
+          and each module includes a ready-to-use starting example.
+        </p>
+      </section>
 
-      <div class="grid">
-        <article class="card">
-          <span class="status status-soon">Coming Soon</span>
-          <h3>Ad Hoc Network Workbench</h3>
-          <p>
-            Build and inspect ad hoc networks, define typed connections, and explore capacity-aware routing behavior
-            through an interactive visual workbench.
-          </p>
-          <div class="meta">Primary planning tool</div>
-          <span class="card-link card-link-disabled">Coming Soon</span>
-        </article>
+      <section class="discipline" id="operations-analysis" aria-labelledby="operations-title">
+        <header class="discipline-header">
+          <div class="discipline-number" aria-hidden="true">A</div>
+          <div>
+            <p class="kicker">Operations Analysis</p>
+            <h2 id="operations-title">Decisions under constraints</h2>
+          </div>
+          <p>Build a model, see its geometry, and test how the best decision changes.</p>
+        </header>
 
-        <article class="card">
-          <span class="status status-soon">Coming Soon</span>
-          <h3>Network Shortest Path Explorer</h3>
-          <p>
-            Explore shortest-path logic, route comparisons, and visual network traversal through a future interactive explorer.
-          </p>
-          <div class="meta">Network optimization module</div>
-          <span class="card-link card-link-disabled">Coming Soon</span>
-        </article>
+        <div class="tool-grid tool-grid-single">
+          <article class="tool-card tool-card-featured">
+            <div class="tool-card-topline">
+              <span class="status"><span aria-hidden="true"></span> Live tool</span>
+              <span class="course">BUS-3150</span>
+            </div>
+            <div class="tool-card-body">
+              <div>
+                <p class="tool-number">01 / Optimization</p>
+                <h3>Linear Programming Studio</h3>
+                <p>
+                  Add constraints, reveal the feasible polygon, and drag the objective function
+                  to discover the optimum rather than merely calculate it.
+                </p>
+              </div>
+              <div class="mini-visual mini-lp" aria-hidden="true">
+                <span class="mini-region"></span>
+                <span class="mini-line mini-line-one"></span>
+                <span class="mini-line mini-line-two"></span>
+                <span class="mini-dot"></span>
+              </div>
+            </div>
+            <div class="tool-card-footer">
+              <ul aria-label="Topics">
+                <li>Feasible regions</li>
+                <li>Objective functions</li>
+                <li>Model import</li>
+              </ul>
+              <a class="launch-link" href="/tools/linear-programming/">
+                Launch studio <span aria-hidden="true">&#8599;</span>
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
 
-        <article class="card">
-          <span class="status status-soon">Future Slot</span>
-          <h3>Capacity Planning Dashboard</h3>
-          <p>
-            Use another card for a future scenario dashboard, simulation view, or network backbone planner as your tool set expands.
-          </p>
-          <span class="card-link card-link-disabled">Coming Soon</span>
-        </article>
-      </div>
-    </section>
+      <section class="discipline" id="business-statistics" aria-labelledby="statistics-title">
+        <header class="discipline-header">
+          <div class="discipline-number" aria-hidden="true">B</div>
+          <div>
+            <p class="kicker">Business Statistics</p>
+            <h2 id="statistics-title">Patterns inside variation</h2>
+          </div>
+          <p>Move from a single observation to probability, relationships, and repeated samples.</p>
+        </header>
 
-    <section class="section" id="metaheuristics-explorers">
-      <div class="section-head">
+        <div class="tool-grid">
+          <article class="tool-card">
+            <div class="tool-card-topline">
+              <span class="status"><span aria-hidden="true"></span> Live tool</span>
+              <span class="course">BUS-2150</span>
+            </div>
+            <p class="tool-number">02 / Probability</p>
+            <h3>Normal Area Explorer</h3>
+            <p>
+              Drag z-score cutoffs and watch shaded probability regions respond across left,
+              right, between, and two-tail questions.
+            </p>
+            <div class="tool-card-footer">
+              <ul aria-label="Topics">
+                <li>Z-scores</li>
+                <li>Tail areas</li>
+              </ul>
+              <a class="launch-link" href="/tools/normal-area/">
+                Launch explorer <span aria-hidden="true">&#8599;</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-card-topline">
+              <span class="status"><span aria-hidden="true"></span> Live tool</span>
+              <span class="course">BUS-2150</span>
+            </div>
+            <p class="tool-number">03 / Relationships</p>
+            <h3>Linear Regression Studio</h3>
+            <p>
+              Build datasets, compare your line with least squares, and inspect residual,
+              ANOVA, extrapolation, and variance diagnostics.
+            </p>
+            <div class="tool-card-footer">
+              <ul aria-label="Topics">
+                <li>Least squares</li>
+                <li>Residuals</li>
+              </ul>
+              <a class="launch-link" href="/tools/linear-regression/">
+                Launch studio <span aria-hidden="true">&#8599;</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-card-topline">
+              <span class="status"><span aria-hidden="true"></span> Live tool</span>
+              <span class="course">BUS-2150</span>
+            </div>
+            <p class="tool-number">04 / Simulation</p>
+            <h3>Sampling Distribution Explorer</h3>
+            <p>
+              Draw unusual populations, follow individual samples, and watch the distribution
+              of sample means take shape through repeated simulation.
+            </p>
+            <div class="tool-card-footer">
+              <ul aria-label="Topics">
+                <li>Sample means</li>
+                <li>Central limit effect</li>
+              </ul>
+              <a class="launch-link" href="/tools/sampling-distribution/">
+                Launch explorer <span aria-hidden="true">&#8599;</span>
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="use-guide" id="how-to-use" aria-labelledby="guide-title">
         <div>
-          <h2 class="section-title">Metaheuristics Explorers</h2>
-          <p class="section-copy">
-            A separate home for future heuristic and search-based optimization tools as this collection expands.
-          </p>
+          <p class="kicker">A simple rhythm</p>
+          <h2 id="guide-title">Try it before you formalize it.</h2>
         </div>
+        <ol>
+          <li><span>01</span><strong>Start</strong> Load the built-in example.</li>
+          <li><span>02</span><strong>Change</strong> Move one input and predict the result.</li>
+          <li><span>03</span><strong>Observe</strong> Compare the visual and numerical evidence.</li>
+          <li><span>04</span><strong>Explain</strong> Put the pattern into your own words.</li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <strong>Stats &amp; Operations Analysis</strong>
+        <p>Interactive learning tools by Dr. Ben Hartlage.</p>
       </div>
-
-      <div class="grid">
-        <article class="card">
-          <span class="status status-soon">Coming Soon</span>
-          <h3>Tabu Search &amp; Evolutionary Algorithms</h3>
-          <p>
-            Compare memory-based search and population-based optimization ideas through a future interactive explorer.
-          </p>
-          <div class="meta">Metaheuristics module</div>
-          <span class="card-link card-link-disabled">Coming Soon</span>
-        </article>
-
-        <article class="card">
-          <span class="status status-soon">Coming Soon</span>
-          <h3>Simulated Annealing</h3>
-          <p>
-            Explore temperature schedules, probabilistic acceptance, and local-search tradeoffs in a future visual tool.
-          </p>
-          <div class="meta">Metaheuristics module</div>
-          <span class="card-link card-link-disabled">Coming Soon</span>
-        </article>
-
-        <article class="card">
-          <span class="status status-soon">Coming Soon</span>
-          <h3>Ant Colony Optimization</h3>
-          <p>
-            Study pheromone updates, path construction, and emergent routing behavior in a future optimization explorer.
-          </p>
-          <div class="meta">Metaheuristics module</div>
-          <span class="card-link card-link-disabled">Coming Soon</span>
-        </article>
-      </div>
-    </section>
+      <p>Students: use the contact channel provided by your instructor for questions or feedback.</p>
+      <a href="#main-content">Back to tools <span aria-hidden="true">&#8593;</span></a>
+    </footer>
+  </body>
+</html>

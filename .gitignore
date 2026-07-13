@@ -1,0 +1,4 @@
+dist/
+.tool-cache/
+.wrangler/
+*.log

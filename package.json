@@ -1,0 +1,12 @@
+{
+  "name": "benhartlage-stats-operations-hub",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/compose-tools.mjs",
+    "validate": "node scripts/validate-site.mjs",
+    "validate:secrets": "node scripts/validate-secrets.mjs",
+    "preview": "node scripts/static-server.mjs"
+  }
+}

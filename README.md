@@ -1,17 +1,28 @@
-# rhartlage.github.io
+# Stats & Operations Analysis public hub
 
-This repository is the root GitHub Pages landing page for published tools.
+This repository owns the public landing page and deterministic deployment shell for Dr. Ben Hartlage's interactive teaching tools.
 
-## Purpose
+Primary site:
 
-Use this site as a hub that links out to individual tools:
+- `https://benhartlage.com/`
+- `https://benhartlage.com/tools/`
 
-## Publish
+The previous `https://rhartlage.github.io/` site remains a compatibility surface until Ben accepts the replacement and separately retires GitHub Pages publication.
 
-The site is available at:
+## Deterministic composition
 
-- `https://rhartlage.github.io/`
+`tool-sources.json` pins every hosted tool to an exact public source repository commit. `npm run build` copies only the allowlisted static files from those commits into `dist/`; it does not copy unrelated repository files, local state, credentials, or provider configuration.
 
-## Update
+```powershell
+npm run build
+npm run validate
+npm run preview
+```
 
-Each time you publish a new tool, add another card to `index.html` with the tool name, description, and GitHub Pages link.
+See `docs/public-hosting.md` for deployment, provenance, rollback, and GitHub Pages transition details.
+
+## Boundaries
+
+- This is a public, static educational site.
+- No secrets, analytics identifiers, private tools, provider calls, or protected application routes belong here.
+- Existing QBO compatibility pages are not part of the `benhartlage.com` deployment bundle.
