@@ -4,8 +4,8 @@ This repository owns the public landing page and deterministic deployment shell 
 
 Primary site:
 
-- `https://benhartlage.com/`
-- `https://benhartlage.com/tools/`
+- `https://tools.benhartlage.com/`
+- `https://tools.benhartlage.com/tools/` (directory alias)
 
 The previous `https://rhartlage.github.io/` site remains a compatibility surface until Ben accepts the replacement and separately retires GitHub Pages publication.
 
@@ -25,4 +25,4 @@ See `docs/public-hosting.md` for deployment, provenance, rollback, and GitHub Pa
 
 - This is a public, static educational site.
 - No secrets, analytics identifiers, private tools, provider calls, or protected application routes belong here.
-- Existing QBO compatibility pages are not part of the `benhartlage.com` deployment bundle.
+- Existing QBO compatibility pages are not part of the `tools.benhartlage.com` deployment bundle.

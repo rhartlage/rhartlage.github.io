@@ -4,33 +4,33 @@
     {
       "id": "linear-programming",
       "repository": "rhartlage/linear-programming-studio",
-      "commit": "17ee2bb112e7f062271c4d0105150c22fe69a4e1",
+      "commit": "793e5128deff0e4ea02cc3a7b47c46c50b61f5d8",
       "sourcePath": ".",
-      "targetPath": "tools/linear-programming",
+      "targetPath": "linear-programming",
       "files": ["index.html", "styles.css", "app.js"]
     },
     {
       "id": "normal-area",
       "repository": "rhartlage/normal-area-explorer",
-      "commit": "dda99639b98e683a8a26501aec85d5a8cd835837",
+      "commit": "b66894ed6923392a2a13d7de8062dade33d251ba",
       "sourcePath": ".",
-      "targetPath": "tools/normal-area",
+      "targetPath": "normal-area",
       "files": ["index.html", "styles.css", "app.js"]
     },
     {
       "id": "linear-regression",
       "repository": "rhartlage/linear-regression-studio",
-      "commit": "aac68719094bfeac07e0da88f308cdfd9cbc797f",
+      "commit": "d306c4204a1e7a1e207bc16ced6ee514fd7af669",
       "sourcePath": ".",
-      "targetPath": "tools/linear-regression",
+      "targetPath": "linear-regression",
       "files": ["index.html"]
     },
     {
       "id": "sampling-distribution",
       "repository": "rhartlage/stats-tools",
-      "commit": "ea79fa8bcbd5884b219bb6336b8ed3cc7112870e",
+      "commit": "8ff56b36bd8f425ad53d5cdcaf2147edbb11ba37",
       "sourcePath": "modules/sampling-distribution",
-      "targetPath": "tools/sampling-distribution",
+      "targetPath": "sampling-distribution",
       "files": ["index.html"]
     }
   ]

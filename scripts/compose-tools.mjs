@@ -67,9 +67,7 @@ for (const file of ["index.html", "styles.css", "robots.txt", "sitemap.xml", "_h
   await copyFile(path.join(repoRoot, file), path.join(distRoot, file));
 }
 
-const directoryHtml = (await readFile(path.join(repoRoot, "index.html"), "utf8"))
-  .replace('rel="canonical" href="https://benhartlage.com/"', 'rel="canonical" href="https://benhartlage.com/tools/"')
-  .replace('property="og:url" content="https://benhartlage.com/"', 'property="og:url" content="https://benhartlage.com/tools/"');
+const directoryHtml = await readFile(path.join(repoRoot, "index.html"), "utf8");
 await writeFile(path.join(distRoot, "tools", "index.html"), directoryHtml);
 
 for (const tool of manifest.tools) {

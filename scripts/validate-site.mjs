@@ -33,10 +33,10 @@ function fail(message) {
 const requiredRoutes = [
   "index.html",
   "tools/index.html",
-  "tools/linear-programming/index.html",
-  "tools/normal-area/index.html",
-  "tools/linear-regression/index.html",
-  "tools/sampling-distribution/index.html",
+  "linear-programming/index.html",
+  "normal-area/index.html",
+  "linear-regression/index.html",
+  "sampling-distribution/index.html",
   "robots.txt",
   "sitemap.xml",
   "404.html",
@@ -49,11 +49,11 @@ for (const route of requiredRoutes) {
 for (const tool of manifest.tools) {
   const htmlPath = path.join(distRoot, tool.targetPath, "index.html");
   const html = await readFile(htmlPath, "utf8");
-  const expectedCanonical = `https://benhartlage.com/${tool.targetPath}/`;
+  const expectedCanonical = `https://tools.benhartlage.com/${tool.targetPath}/`;
   if (!html.includes(`rel="canonical" href="${expectedCanonical}"`)) {
     fail(`${tool.id}: canonical URL does not match ${expectedCanonical}`);
   }
-  if (!html.includes('href="https://benhartlage.com/tools/"')) {
+  if (!html.includes('href="https://tools.benhartlage.com/"')) {
     fail(`${tool.id}: return link does not point to the public hub`);
   }
   if (html.includes("Main GitHub Tools Page")) {
@@ -87,8 +87,8 @@ for (const htmlFile of htmlFiles) {
 
 const rootHtml = await readFile(path.join(distRoot, "index.html"), "utf8");
 const toolsHtml = await readFile(path.join(distRoot, "tools", "index.html"), "utf8");
-if (!rootHtml.includes('rel="canonical" href="https://benhartlage.com/"')) fail("Root canonical URL is missing");
-if (!toolsHtml.includes('rel="canonical" href="https://benhartlage.com/tools/"')) fail("Tools canonical URL is missing");
+if (!rootHtml.includes('rel="canonical" href="https://tools.benhartlage.com/"')) fail("Root canonical URL is missing");
+if (!toolsHtml.includes('rel="canonical" href="https://tools.benhartlage.com/"')) fail("Tools canonical URL is missing");
 if (!rootHtml.includes("Operations Analysis") || !rootHtml.includes("Business Statistics")) {
   fail("Root hub does not expose both required disciplines");
 }
