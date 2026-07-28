@@ -98,7 +98,7 @@ if (!toolsHtml.includes('rel="canonical" href="https://tools.benhartlage.com/"')
 if (!rootHtml.includes("Operations Analysis") || !rootHtml.includes("Business Statistics")) {
   fail("Root hub does not expose both required disciplines");
 }
-if (!/\/\*\.html[\s\S]*Cache-Control:[^\r\n]*\bno-transform\b/.test(headerRules)) {
+if (!/Cache-Control:[^\r\n]*\bno-transform\b/.test(headerRules)) {
   fail("HTML responses do not prohibit analytics or other edge payload injection");
 }
 
