@@ -92,10 +92,14 @@ for (const htmlFile of htmlFiles) {
 
 const rootHtml = await readFile(path.join(distRoot, "index.html"), "utf8");
 const toolsHtml = await readFile(path.join(distRoot, "tools", "index.html"), "utf8");
+const headerRules = await readFile(path.join(distRoot, "_headers"), "utf8");
 if (!rootHtml.includes('rel="canonical" href="https://tools.benhartlage.com/"')) fail("Root canonical URL is missing");
 if (!toolsHtml.includes('rel="canonical" href="https://tools.benhartlage.com/"')) fail("Tools canonical URL is missing");
 if (!rootHtml.includes("Operations Analysis") || !rootHtml.includes("Business Statistics")) {
   fail("Root hub does not expose both required disciplines");
+}
+if (!/\/\*\.html[\s\S]*Cache-Control:[^\r\n]*\bno-transform\b/.test(headerRules)) {
+  fail("HTML responses do not prohibit analytics or other edge payload injection");
 }
 
 const expectedToolIds = [

@@ -30,6 +30,7 @@ The bundle intentionally excludes:
 - `https://tools.benhartlage.com/tools/` is a compatibility directory alias for the hub.
 
 The BUS-2150 tools use local static assets only: no accounts, analytics, external fonts, browser storage, or transmitted student data.
+HTML responses include `Cache-Control: no-transform`, which prevents edge payload injection, including Cloudflare's automatic Web Analytics beacon.
 
 ## Build and validation
 
