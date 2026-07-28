@@ -29,7 +29,7 @@ body {
     linear-gradient(90deg, rgba(19, 42, 53, 0.035) 1px, transparent 1px),
     var(--paper);
   background-size: 32px 32px;
-  font-family: "DM Sans", "Segoe UI", sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 
 a {
@@ -81,7 +81,7 @@ main,
   height: 44px;
   border: 1px solid var(--ink);
   border-radius: 50%;
-  font-family: "Instrument Serif", Georgia, serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 1.2rem;
   font-style: italic;
 }
@@ -182,7 +182,7 @@ h3 {
 h1 {
   max-width: 9ch;
   margin-bottom: 1.4rem;
-  font-family: "Instrument Serif", Georgia, serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(4rem, 7.8vw, 7.3rem);
   font-weight: 400;
   letter-spacing: -0.055em;
@@ -337,7 +337,7 @@ h1 em {
 .discipline h2,
 .use-guide h2 {
   margin-bottom: 0;
-  font-family: "Instrument Serif", Georgia, serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(2.8rem, 5vw, 5.2rem);
   font-weight: 400;
   letter-spacing: -0.045em;
@@ -372,7 +372,7 @@ h1 em {
   height: 54px;
   border: 1px solid var(--ink);
   border-radius: 50%;
-  font-family: "Instrument Serif", Georgia, serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 1.5rem;
   font-style: italic;
 }
@@ -453,7 +453,7 @@ h1 em {
 
 .tool-card h3 {
   margin-bottom: 0.85rem;
-  font-family: "Instrument Serif", Georgia, serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(2rem, 3vw, 3.15rem);
   font-weight: 400;
   letter-spacing: -0.035em;
@@ -607,7 +607,7 @@ h1 em {
 .use-guide li span {
   grid-row: 1 / 3;
   color: var(--aqua);
-  font-family: "Instrument Serif", Georgia, serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 1.4rem;
   font-style: italic;
 }

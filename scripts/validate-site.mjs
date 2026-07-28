@@ -34,9 +34,14 @@ const requiredRoutes = [
   "index.html",
   "tools/index.html",
   "linear-programming/index.html",
+  "study-design-bias/index.html",
   "normal-area/index.html",
-  "linear-regression/index.html",
   "sampling-distribution/index.html",
+  "inference-decision/index.html",
+  "comparing-groups/index.html",
+  "linear-regression/index.html",
+  "categorical-risk/index.html",
+  "statistical-investigation/index.html",
   "robots.txt",
   "sitemap.xml",
   "404.html",
@@ -91,6 +96,49 @@ if (!rootHtml.includes('rel="canonical" href="https://tools.benhartlage.com/"'))
 if (!toolsHtml.includes('rel="canonical" href="https://tools.benhartlage.com/"')) fail("Tools canonical URL is missing");
 if (!rootHtml.includes("Operations Analysis") || !rootHtml.includes("Business Statistics")) {
   fail("Root hub does not expose both required disciplines");
+}
+
+const expectedToolIds = [
+  "linear-programming",
+  "study-design-bias",
+  "normal-area",
+  "sampling-distribution",
+  "inference-decision",
+  "comparing-groups",
+  "linear-regression",
+  "categorical-risk",
+  "statistical-investigation",
+];
+if (JSON.stringify(manifest.tools.map((tool) => tool.id)) !== JSON.stringify(expectedToolIds)) {
+  fail("Pinned tool manifest does not match the approved nine-tool catalog");
+}
+
+for (const toolId of expectedToolIds.slice(1)) {
+  const targetPath = manifest.tools.find((tool) => tool.id === toolId)?.targetPath;
+  if (!targetPath || !rootHtml.includes(`href="/${targetPath}/"`)) {
+    fail(`Root hub does not expose ${toolId}`);
+  }
+}
+
+const bus2150Tools = manifest.tools.filter((tool) => tool.id !== "linear-programming");
+const forbiddenRuntimePatterns = [
+  ["external Google font", /fonts\.(?:googleapis|gstatic)\.com/],
+  ["network request", /\b(?:fetch|XMLHttpRequest)\s*\(/],
+  ["local storage", /\b(?:localStorage|sessionStorage)\b/],
+  ["cookie access", /\bdocument\.cookie\b/],
+];
+for (const tool of bus2150Tools) {
+  for (const file of tool.files) {
+    const contents = await readFile(path.join(distRoot, tool.targetPath, file), "utf8");
+    for (const [label, pattern] of forbiddenRuntimePatterns) {
+      if (pattern.test(contents)) fail(`${tool.id}: forbidden ${label} dependency in ${file}`);
+    }
+  }
+}
+
+const anovaApp = await readFile(path.join(distRoot, "comparing-groups", "app.js"), "utf8");
+if (!anovaApp.includes('q.get("lab")==="anova"')) {
+  fail("Comparing Groups Lab does not expose the approved ?lab=anova entry mode");
 }
 
 if (errors.length) {

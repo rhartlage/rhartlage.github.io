@@ -10,28 +10,68 @@
       "files": ["index.html", "styles.css", "app.js"]
     },
     {
+      "id": "study-design-bias",
+      "repository": "rhartlage/stats-tools",
+      "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
+      "sourcePath": "modules/study-design-bias",
+      "targetPath": "study-design-bias",
+      "files": ["index.html", "styles.css", "app.js"]
+    },
+    {
       "id": "normal-area",
       "repository": "rhartlage/normal-area-explorer",
-      "commit": "b66894ed6923392a2a13d7de8062dade33d251ba",
+      "commit": "565631af9341df8a9ce1afcedd303b4b254d5a08",
       "sourcePath": ".",
       "targetPath": "normal-area",
       "files": ["index.html", "styles.css", "app.js"]
     },
     {
+      "id": "sampling-distribution",
+      "repository": "rhartlage/stats-tools",
+      "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
+      "sourcePath": "modules/sampling-distribution",
+      "targetPath": "sampling-distribution",
+      "files": ["index.html"]
+    },
+    {
+      "id": "inference-decision",
+      "repository": "rhartlage/stats-tools",
+      "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
+      "sourcePath": "modules/inference-decision",
+      "targetPath": "inference-decision",
+      "files": ["index.html", "styles.css", "app.js"]
+    },
+    {
+      "id": "comparing-groups",
+      "repository": "rhartlage/stats-tools",
+      "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
+      "sourcePath": "modules/comparing-groups",
+      "targetPath": "comparing-groups",
+      "files": ["index.html", "styles.css", "app.js"]
+    },
+    {
       "id": "linear-regression",
       "repository": "rhartlage/linear-regression-studio",
-      "commit": "d306c4204a1e7a1e207bc16ced6ee514fd7af669",
+      "commit": "08439bb5fe3086b5980ca25aa9ead48675f8da09",
       "sourcePath": ".",
       "targetPath": "linear-regression",
       "files": ["index.html"]
     },
     {
-      "id": "sampling-distribution",
+      "id": "categorical-risk",
       "repository": "rhartlage/stats-tools",
-      "commit": "8ff56b36bd8f425ad53d5cdcaf2147edbb11ba37",
-      "sourcePath": "modules/sampling-distribution",
-      "targetPath": "sampling-distribution",
-      "files": ["index.html"]
+      "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
+      "sourcePath": "modules/categorical-risk",
+      "targetPath": "categorical-risk",
+      "files": ["index.html", "styles.css", "app.js"]
+    },
+    {
+      "id": "statistical-investigation",
+      "repository": "rhartlage/stats-tools",
+      "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
+      "sourcePath": "modules/statistical-investigation",
+      "targetPath": "statistical-investigation",
+      "files": ["index.html", "styles.css", "app.js"]
     }
   ]
 }

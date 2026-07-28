@@ -2,7 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://tools.benhartlage.com/</loc></url>
   <url><loc>https://tools.benhartlage.com/linear-programming/</loc></url>
+  <url><loc>https://tools.benhartlage.com/study-design-bias/</loc></url>
   <url><loc>https://tools.benhartlage.com/normal-area/</loc></url>
-  <url><loc>https://tools.benhartlage.com/linear-regression/</loc></url>
   <url><loc>https://tools.benhartlage.com/sampling-distribution/</loc></url>
+  <url><loc>https://tools.benhartlage.com/inference-decision/</loc></url>
+  <url><loc>https://tools.benhartlage.com/comparing-groups/</loc></url>
+  <url><loc>https://tools.benhartlage.com/linear-regression/</loc></url>
+  <url><loc>https://tools.benhartlage.com/categorical-risk/</loc></url>
+  <url><loc>https://tools.benhartlage.com/statistical-investigation/</loc></url>
 </urlset>
