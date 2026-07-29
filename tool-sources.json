@@ -16,7 +16,7 @@
       "course": "statistics",
       "family": "module",
       "repository": "rhartlage/stats-tools",
-      "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
+      "commit": "b4d5f77c89f09614fa926fb31e41bd5c0a749475",
       "sourcePath": "modules/study-design-bias",
       "targetPath": "study-design-bias",
       "files": ["index.html", "styles.css", "app.js"]
@@ -26,7 +26,7 @@
       "course": "statistics",
       "family": "studio",
       "repository": "rhartlage/normal-area-explorer",
-      "commit": "565631af9341df8a9ce1afcedd303b4b254d5a08",
+      "commit": "3f4e98f1c3fcd6b2e21238b0949f1c9f0d8f53bb",
       "sourcePath": ".",
       "targetPath": "normal-area",
       "files": ["index.html", "styles.css", "app.js"]
@@ -36,7 +36,7 @@
       "course": "statistics",
       "family": "studio",
       "repository": "rhartlage/stats-tools",
-      "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
+      "commit": "b4d5f77c89f09614fa926fb31e41bd5c0a749475",
       "sourcePath": "modules/sampling-distribution",
       "targetPath": "sampling-distribution",
       "files": ["index.html"]
@@ -46,7 +46,7 @@
       "course": "statistics",
       "family": "module",
       "repository": "rhartlage/stats-tools",
-      "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
+      "commit": "b4d5f77c89f09614fa926fb31e41bd5c0a749475",
       "sourcePath": "modules/inference-decision",
       "targetPath": "inference-decision",
       "files": ["index.html", "styles.css", "app.js"]
@@ -56,7 +56,7 @@
       "course": "statistics",
       "family": "module",
       "repository": "rhartlage/stats-tools",
-      "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
+      "commit": "b4d5f77c89f09614fa926fb31e41bd5c0a749475",
       "sourcePath": "modules/comparing-groups",
       "targetPath": "comparing-groups",
       "files": ["index.html", "styles.css", "app.js"]
@@ -66,7 +66,7 @@
       "course": "statistics",
       "family": "studio",
       "repository": "rhartlage/linear-regression-studio",
-      "commit": "08439bb5fe3086b5980ca25aa9ead48675f8da09",
+      "commit": "b0ba9023c0ee236f4f1609fbe7b2abb7a09f96f0",
       "sourcePath": ".",
       "targetPath": "linear-regression",
       "files": ["index.html"]
@@ -76,7 +76,7 @@
       "course": "statistics",
       "family": "module",
       "repository": "rhartlage/stats-tools",
-      "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
+      "commit": "b4d5f77c89f09614fa926fb31e41bd5c0a749475",
       "sourcePath": "modules/categorical-risk",
       "targetPath": "categorical-risk",
       "files": ["index.html", "styles.css", "app.js"]
@@ -86,7 +86,7 @@
       "course": "statistics",
       "family": "module",
       "repository": "rhartlage/stats-tools",
-      "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
+      "commit": "b4d5f77c89f09614fa926fb31e41bd5c0a749475",
       "sourcePath": "modules/statistical-investigation",
       "targetPath": "statistical-investigation",
       "files": ["index.html", "styles.css", "app.js"]
