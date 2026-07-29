@@ -42,6 +42,11 @@ const requiredRoutes = [
   "linear-regression/index.html",
   "categorical-risk/index.html",
   "statistical-investigation/index.html",
+  "bus-3150/index.html",
+  "bus-3150/lp-formulation-sensitivity/index.html",
+  "bus-3150/network-integer-decisions/index.html",
+  "bus-3150/simulation-operating-risk/index.html",
+  "bus-3150/forecast-to-decision/index.html",
   "robots.txt",
   "sitemap.xml",
   "404.html",
@@ -112,6 +117,7 @@ const expectedToolIds = [
   "linear-regression",
   "categorical-risk",
   "statistical-investigation",
+  "bus-3150",
 ];
 if (JSON.stringify(manifest.tools.map((tool) => tool.id)) !== JSON.stringify(expectedToolIds)) {
   fail("Pinned tool manifest does not match the approved nine-tool catalog");
@@ -137,6 +143,19 @@ for (const tool of bus2150Tools) {
     for (const [label, pattern] of forbiddenRuntimePatterns) {
       if (pattern.test(contents)) fail(`${tool.id}: forbidden ${label} dependency in ${file}`);
     }
+  }
+}
+
+for (const route of [
+  "lp-formulation-sensitivity",
+  "network-integer-decisions",
+  "simulation-operating-risk",
+  "forecast-to-decision",
+]) {
+  const html = await readFile(path.join(distRoot, "bus-3150", route, "index.html"), "utf8");
+  const canonical = `https://tools.benhartlage.com/bus-3150/${route}/`;
+  if (!html.includes(`rel="canonical" href="${canonical}"`)) {
+    fail(`bus-3150/${route}: canonical URL does not match ${canonical}`);
   }
 }
 
