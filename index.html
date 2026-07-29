@@ -17,6 +17,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://tools.benhartlage.com/" />
     <meta name="theme-color" content="#191d4c" />
+    <link rel="stylesheet" href="/theme.css" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
@@ -111,19 +112,19 @@
         </div>
 
         <nav class="course-controls" aria-label="Browse tools by course">
-          <a href="#operations-analysis">
-            <span class="course-code">BUS-3150</span>
-            <span>
-              <strong>Operations Analysis</strong>
-              <small>Optimization and decision models</small>
-            </span>
-            <span class="course-arrow" aria-hidden="true">&darr;</span>
-          </a>
           <a href="#business-statistics">
             <span class="course-code">BUS-2150</span>
             <span>
               <strong>Business Statistics</strong>
               <small>Evidence, inference, and relationships</small>
+            </span>
+            <span class="course-arrow" aria-hidden="true">&darr;</span>
+          </a>
+          <a href="#operations-analysis">
+            <span class="course-code">BUS-3150</span>
+            <span>
+              <strong>Operations Analysis</strong>
+              <small>Optimization and decision models</small>
             </span>
             <span class="course-arrow" aria-hidden="true">&darr;</span>
           </a>
@@ -140,6 +141,147 @@
             Every tool runs directly in your browser with a ready-to-use starting example.
             Nothing to install and no account required.
           </p>
+        </div>
+      </section>
+
+      <section class="discipline" id="business-statistics" aria-labelledby="statistics-title">
+        <header class="discipline-header">
+          <div>
+            <p class="kicker">BUS-2150 &middot; Business Statistics</p>
+            <h2 id="statistics-title">BUS-2150: Find patterns inside variation.</h2>
+            <p>
+              Use focused chapter labs for complete evidence workflows, or open a
+              general-purpose explorer to investigate a model directly.
+            </p>
+          </div>
+        </header>
+
+        <div class="tool-grid">
+          <article class="tool-card">
+            <div class="tool-card-topline">
+              <span class="status"><span aria-hidden="true"></span> Live tool</span>
+              <span class="tool-number">01 / Chapter labs</span>
+            </div>
+            <h3>Business Statistics Labs</h3>
+            <p>
+              Practice study design, inference, group comparisons, and categorical risk
+              through four chapter-specific, browser-local evidence labs.
+            </p>
+            <div class="tool-card-footer">
+              <ul aria-label="Topics">
+                <li>Four chapter labs</li>
+                <li>Evidence workflow</li>
+                <li>No retained data</li>
+              </ul>
+              <a
+                class="launch-link"
+                href="/bus-2150/"
+                aria-label="Open Business Statistics Labs"
+              >
+                Open lab suite <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-card-topline">
+              <span class="status"><span aria-hidden="true"></span> Live tool</span>
+              <span class="tool-number">02 / Probability</span>
+            </div>
+            <h3>Normal Area Explorer</h3>
+            <p>
+              Drag z-score cutoffs and watch shaded probability regions respond across
+              left, right, between, and two-tail questions.
+            </p>
+            <div class="tool-card-footer">
+              <ul aria-label="Topics">
+                <li>Z-scores</li>
+                <li>Tail areas</li>
+              </ul>
+              <a
+                class="launch-link"
+                href="/normal-area/"
+                aria-label="Launch Normal Area Explorer"
+              >
+                Launch explorer <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-card-topline">
+              <span class="status"><span aria-hidden="true"></span> Live tool</span>
+              <span class="tool-number">03 / Simulation</span>
+            </div>
+            <h3>Sampling Distribution Explorer</h3>
+            <p>
+              Draw unusual populations, follow individual samples, and watch the
+              distribution of sample means take shape through repeated simulation.
+            </p>
+            <div class="tool-card-footer">
+              <ul aria-label="Topics">
+                <li>Sample means</li>
+                <li>Standard error</li>
+              </ul>
+              <a
+                class="launch-link"
+                href="/sampling-distribution/"
+                aria-label="Launch Sampling Distribution Explorer"
+              >
+                Launch explorer <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-card-topline">
+              <span class="status"><span aria-hidden="true"></span> Live tool</span>
+              <span class="tool-number">04 / Relationships</span>
+            </div>
+            <h3>Linear Regression Studio</h3>
+            <p>
+              Build datasets, compare your line with least squares, and inspect residual,
+              ANOVA, extrapolation, and variance diagnostics.
+            </p>
+            <div class="tool-card-footer">
+              <ul aria-label="Topics">
+                <li>Least squares</li>
+                <li>Residuals</li>
+              </ul>
+              <a
+                class="launch-link"
+                href="/linear-regression/"
+                aria-label="Launch Linear Regression Studio"
+              >
+                Launch studio <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-card-topline">
+              <span class="status"><span aria-hidden="true"></span> Live tool</span>
+              <span class="tool-number">05 / Investigation</span>
+            </div>
+            <h3>Statistical Investigation Studio</h3>
+            <p>
+              Practice the complete evidence workflow and diagnose hidden data-quality,
+              model, and interpretation challenges across the course.
+            </p>
+            <div class="tool-card-footer">
+              <ul aria-label="Topics">
+                <li>Reproducibility</li>
+                <li>Diagnostics</li>
+              </ul>
+              <a
+                class="launch-link"
+                href="/statistical-investigation/"
+                aria-label="Launch Statistical Investigation Studio"
+              >
+                Launch studio <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -202,221 +344,6 @@
                 aria-label="Open Operations Decision Labs"
               >
                 Open lab suite <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="discipline" id="business-statistics" aria-labelledby="statistics-title">
-        <header class="discipline-header">
-          <div>
-            <p class="kicker">BUS-2150 &middot; Business Statistics</p>
-            <h2 id="statistics-title">BUS-2150: Find patterns inside variation.</h2>
-            <p>
-              Move from trustworthy study design through inference, relationships, and
-              integrated investigation.
-            </p>
-          </div>
-        </header>
-
-        <div class="tool-grid">
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">02 / Study design</span>
-            </div>
-            <h3>Study Design &amp; Bias Lab</h3>
-            <p>
-              Diagnose selection, measurement, confounding, processing, and time-related
-              threats before trusting a study's numerical results.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Bias</li>
-                <li>Study repair</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/study-design-bias/"
-                aria-label="Launch Study Design and Bias Lab"
-              >
-                Launch lab <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">03 / Probability</span>
-            </div>
-            <h3>Normal Area Explorer</h3>
-            <p>
-              Drag z-score cutoffs and watch shaded probability regions respond across left,
-              right, between, and two-tail questions.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Z-scores</li>
-                <li>Tail areas</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/normal-area/"
-                aria-label="Launch Normal Area Explorer"
-              >
-                Launch explorer <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">04 / Simulation</span>
-            </div>
-            <h3>Sampling Distribution Explorer</h3>
-            <p>
-              Draw unusual populations, follow individual samples, and watch the distribution
-              of sample means take shape through repeated simulation.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Sample means</li>
-                <li>Standard error</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/sampling-distribution/"
-                aria-label="Launch Sampling Distribution Explorer"
-              >
-                Launch explorer <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">05 / Inference</span>
-            </div>
-            <h3>Inference &amp; Business Decision Lab</h3>
-            <p>
-              Connect confidence intervals and tests to practical thresholds, assumptions,
-              and responsible one-population business decisions.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Intervals</li>
-                <li>Hypothesis tests</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/inference-decision/"
-                aria-label="Launch Inference and Business Decision Lab"
-              >
-                Launch lab <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">06 / Group comparisons</span>
-            </div>
-            <h3>Comparing Groups Lab</h3>
-            <p>
-              Compare proportions, means, paired results, and variances, then extend the
-              workflow to one-way ANOVA and follow-up comparisons.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Two samples</li>
-                <li>ANOVA</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/comparing-groups/"
-                aria-label="Launch Comparing Groups Lab"
-              >
-                Launch lab <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">07 / Relationships</span>
-            </div>
-            <h3>Linear Regression Studio</h3>
-            <p>
-              Build datasets, compare your line with least squares, and inspect residual,
-              ANOVA, extrapolation, and variance diagnostics.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Least squares</li>
-                <li>Residuals</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/linear-regression/"
-                aria-label="Launch Linear Regression Studio"
-              >
-                Launch studio <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">08 / Categorical evidence</span>
-            </div>
-            <h3>Categorical Risk Lab</h3>
-            <p>
-              Analyze a two-way table with chi-square, expected counts, cell contributions,
-              observed risks, and relative risk.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Chi-square</li>
-                <li>Relative risk</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/categorical-risk/"
-                aria-label="Launch Categorical Risk Lab"
-              >
-                Launch lab <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">09 / Investigation</span>
-            </div>
-            <h3>Statistical Investigation Studio</h3>
-            <p>
-              Practice the complete evidence workflow and diagnose hidden data-quality,
-              model, and interpretation challenges.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Reproducibility</li>
-                <li>Diagnostics</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/statistical-investigation/"
-                aria-label="Launch Statistical Investigation Studio"
-              >
-                Launch studio <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </article>
