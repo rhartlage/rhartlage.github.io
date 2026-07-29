@@ -3,6 +3,8 @@
   "tools": [
     {
       "id": "linear-programming",
+      "course": "operations",
+      "family": "studio",
       "repository": "rhartlage/linear-programming-studio",
       "commit": "793e5128deff0e4ea02cc3a7b47c46c50b61f5d8",
       "sourcePath": ".",
@@ -11,6 +13,8 @@
     },
     {
       "id": "study-design-bias",
+      "course": "statistics",
+      "family": "module",
       "repository": "rhartlage/stats-tools",
       "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
       "sourcePath": "modules/study-design-bias",
@@ -19,6 +23,8 @@
     },
     {
       "id": "normal-area",
+      "course": "statistics",
+      "family": "studio",
       "repository": "rhartlage/normal-area-explorer",
       "commit": "565631af9341df8a9ce1afcedd303b4b254d5a08",
       "sourcePath": ".",
@@ -27,6 +33,8 @@
     },
     {
       "id": "sampling-distribution",
+      "course": "statistics",
+      "family": "studio",
       "repository": "rhartlage/stats-tools",
       "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
       "sourcePath": "modules/sampling-distribution",
@@ -35,6 +43,8 @@
     },
     {
       "id": "inference-decision",
+      "course": "statistics",
+      "family": "module",
       "repository": "rhartlage/stats-tools",
       "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
       "sourcePath": "modules/inference-decision",
@@ -43,6 +53,8 @@
     },
     {
       "id": "comparing-groups",
+      "course": "statistics",
+      "family": "module",
       "repository": "rhartlage/stats-tools",
       "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
       "sourcePath": "modules/comparing-groups",
@@ -51,6 +63,8 @@
     },
     {
       "id": "linear-regression",
+      "course": "statistics",
+      "family": "studio",
       "repository": "rhartlage/linear-regression-studio",
       "commit": "08439bb5fe3086b5980ca25aa9ead48675f8da09",
       "sourcePath": ".",
@@ -59,6 +73,8 @@
     },
     {
       "id": "categorical-risk",
+      "course": "statistics",
+      "family": "module",
       "repository": "rhartlage/stats-tools",
       "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
       "sourcePath": "modules/categorical-risk",
@@ -67,6 +83,8 @@
     },
     {
       "id": "statistical-investigation",
+      "course": "statistics",
+      "family": "module",
       "repository": "rhartlage/stats-tools",
       "commit": "6c1b3ff9080b471880dd7f715de705bc906e46e5",
       "sourcePath": "modules/statistical-investigation",
@@ -75,6 +93,8 @@
     },
     {
       "id": "bus-3150",
+      "course": "operations",
+      "family": "decision-labs",
       "repository": "rhartlage/bus-3150-tools",
       "commit": "4c9e9cc8909cdf32365a83b35ebd9497e6c96c11",
       "sourcePath": "public/bus-3150",

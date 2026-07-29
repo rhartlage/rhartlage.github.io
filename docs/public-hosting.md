@@ -17,6 +17,7 @@ The bundle intentionally excludes:
 ## Public URL contract
 
 - `https://tools.benhartlage.com/`
+- `https://tools.benhartlage.com/bus-2150/`
 - `https://tools.benhartlage.com/linear-programming/`
 - `https://tools.benhartlage.com/study-design-bias/`
 - `https://tools.benhartlage.com/normal-area/`

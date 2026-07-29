@@ -1,0 +1,50 @@
+:root {
+  color-scheme: light;
+  --bh-canvas: #f3f1ff;
+  --bh-paper: #fffdf8;
+  --bh-paper-shadow: #d8d4e8;
+  --bh-ink: #18213d;
+  --bh-ink-deep: #10162b;
+  --bh-ink-soft: #55607a;
+  --bh-line: #8b84a4;
+  --bh-line-soft: rgba(139, 132, 164, 0.34);
+  --bh-hero: #191d4c;
+  --bh-hero-copy: #fffdf8;
+  --bh-hero-muted: #c9cdee;
+  --bh-signal: #b8f33d;
+  --bh-ops: #a93a1a;
+  --bh-ops-hot: #ff6b3d;
+  --bh-ops-wash: #fce4da;
+  --bh-stats: #354ab9;
+  --bh-stats-hot: #869aff;
+  --bh-stats-wash: #e4e8ff;
+  --bh-success: #08745e;
+  --bh-success-wash: #dcf7ec;
+  --bh-warning: #8b3c17;
+  --bh-warning-wash: #fff0d5;
+  --bh-error: #9a2845;
+  --bh-error-wash: #fde5ec;
+  --bh-focus: #f5b940;
+  --bh-radius-panel: 8px 46px 8px 8px;
+  --bh-radius-card: 28px 6px 28px 6px;
+  --bh-radius-control: 18px 5px 18px 5px;
+  --bh-font-body: "Aptos", "Segoe UI Variable Text", "Segoe UI", Arial, sans-serif;
+  --bh-font-display:
+    "Aptos Display", "Segoe UI Variable Display", "Segoe UI", Arial, sans-serif;
+  --bh-font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 3px solid CanvasText !important;
+  }
+}
