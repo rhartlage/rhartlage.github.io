@@ -42,6 +42,12 @@ const requiredRoutes = [
   "linear-regression/index.html",
   "categorical-risk/index.html",
   "statistical-investigation/index.html",
+  "bus-3150/index.html",
+  "bus-3150/lp-formulation-sensitivity/index.html",
+  "bus-3150/network-integer-decisions/index.html",
+  "bus-3150/simulation-operating-risk/index.html",
+  "bus-3150/forecast-to-decision/index.html",
+  "hub-return.css",
   "robots.txt",
   "sitemap.xml",
   "404.html",
@@ -58,8 +64,24 @@ for (const tool of manifest.tools) {
   if (!html.includes(`rel="canonical" href="${expectedCanonical}"`)) {
     fail(`${tool.id}: canonical URL does not match ${expectedCanonical}`);
   }
-  if (!html.includes('href="https://tools.benhartlage.com/"')) {
-    fail(`${tool.id}: return link does not point to the public hub`);
+  if (!html.includes('href="/hub-return.css"')) {
+    fail(`${tool.id}: shared return-link stylesheet is missing`);
+  }
+
+  const returnAnchors = html.match(
+    /<a\b[^>]*\bhref\s*=\s*["']https:\/\/tools\.benhartlage\.com\/["'][^>]*>[\s\S]*?<\/a>/gi,
+  ) ?? [];
+  if (returnAnchors.length !== 1) {
+    fail(`${tool.id}: expected exactly one return link to the public hub, found ${returnAnchors.length}`);
+  } else {
+    const returnAnchor = returnAnchors[0];
+    const openingTag = returnAnchor.slice(0, returnAnchor.indexOf(">") + 1);
+    if (!/\bclass\s*=\s*["'][^"']*\bhub-return-link\b[^"']*["']/i.test(openingTag)) {
+      fail(`${tool.id}: shared return-link class is missing from the public-hub anchor`);
+    }
+    if (!/<span aria-hidden="true">\u2190<\/span>\s+Return to all tools<\/a>$/i.test(returnAnchor)) {
+      fail(`${tool.id}: return-link label is not standardized`);
+    }
   }
   if (html.includes("Main GitHub Tools Page")) {
     fail(`${tool.id}: stale GitHub-branded return link remains`);
@@ -112,12 +134,13 @@ const expectedToolIds = [
   "linear-regression",
   "categorical-risk",
   "statistical-investigation",
+  "bus-3150",
 ];
 if (JSON.stringify(manifest.tools.map((tool) => tool.id)) !== JSON.stringify(expectedToolIds)) {
-  fail("Pinned tool manifest does not match the approved nine-tool catalog");
+  fail("Pinned tool manifest does not match the approved ten-tool catalog");
 }
 
-for (const toolId of expectedToolIds.slice(1)) {
+for (const toolId of expectedToolIds) {
   const targetPath = manifest.tools.find((tool) => tool.id === toolId)?.targetPath;
   if (!targetPath || !rootHtml.includes(`href="/${targetPath}/"`)) {
     fail(`Root hub does not expose ${toolId}`);
@@ -137,6 +160,19 @@ for (const tool of bus2150Tools) {
     for (const [label, pattern] of forbiddenRuntimePatterns) {
       if (pattern.test(contents)) fail(`${tool.id}: forbidden ${label} dependency in ${file}`);
     }
+  }
+}
+
+for (const route of [
+  "lp-formulation-sensitivity",
+  "network-integer-decisions",
+  "simulation-operating-risk",
+  "forecast-to-decision",
+]) {
+  const html = await readFile(path.join(distRoot, "bus-3150", route, "index.html"), "utf8");
+  const canonical = `https://tools.benhartlage.com/bus-3150/${route}/`;
+  if (!html.includes(`rel="canonical" href="${canonical}"`)) {
+    fail(`bus-3150/${route}: canonical URL does not match ${canonical}`);
   }
 }
 

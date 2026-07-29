@@ -4,7 +4,7 @@
 
 `rhartlage/rhartlage.github.io` is the public deployment-shell owner for `tools.benhartlage.com`. The site is a Cloudflare Workers static-assets deployment named `benhartlage-public-tools` with one custom domain: `tools.benhartlage.com`. The apex `benhartlage.com` is outside this deployment and must remain unchanged.
 
-The nine teaching tools remain canonical in their public source repositories. `tool-sources.json` pins an exact commit and allowlisted file set for each tool. `scripts/compose-tools.mjs` reads those committed files with `git show`, then builds a disposable `dist/` bundle. This keeps hosted output reproducible without maintaining independent application forks.
+The ten teaching-tool suites remain canonical in their public source repositories. `tool-sources.json` pins an exact commit and allowlisted file set for each suite. `scripts/compose-tools.mjs` reads those committed files with `git show`, then builds a disposable `dist/` bundle. This keeps hosted output reproducible without maintaining independent application forks.
 
 The bundle intentionally excludes:
 
@@ -27,6 +27,11 @@ The bundle intentionally excludes:
 - `https://tools.benhartlage.com/linear-regression/`
 - `https://tools.benhartlage.com/categorical-risk/`
 - `https://tools.benhartlage.com/statistical-investigation/`
+- `https://tools.benhartlage.com/bus-3150/`
+- `https://tools.benhartlage.com/bus-3150/lp-formulation-sensitivity/`
+- `https://tools.benhartlage.com/bus-3150/network-integer-decisions/`
+- `https://tools.benhartlage.com/bus-3150/simulation-operating-risk/`
+- `https://tools.benhartlage.com/bus-3150/forecast-to-decision/`
 - `https://tools.benhartlage.com/tools/` is a compatibility directory alias for the hub.
 
 The BUS-2150 tools use local static assets only: no accounts, analytics, external fonts, browser storage, or transmitted student data.

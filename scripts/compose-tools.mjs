@@ -60,10 +60,54 @@ async function writeGitFile(sourceRepo, commit, gitPath, destination) {
   await writeFile(destination, contents);
 }
 
+function addHubReturnClass(anchor) {
+  const openingEnd = anchor.indexOf(">");
+  const opening = anchor.slice(0, openingEnd);
+  const withClass = /\bclass\s*=/i.test(opening)
+    ? opening.replace(/\bclass\s*=\s*(["'])(.*?)\1/i, (_match, quote, classes) => {
+        const classList = classes.split(/\s+/).filter(Boolean);
+        if (!classList.includes("hub-return-link")) classList.push("hub-return-link");
+        return `class=${quote}${classList.join(" ")}${quote}`;
+      })
+    : `${opening} class="hub-return-link"`;
+  return `${withClass}><span aria-hidden="true">←</span> Return to all tools</a>`;
+}
+
+async function normalizeHubReturnLink(tool) {
+  const htmlPath = path.join(distRoot, tool.targetPath, "index.html");
+  const source = await readFile(htmlPath, "utf8");
+  let matchCount = 0;
+  const normalized = source.replace(
+    /<a\b(?=[^>]*\bhref\s*=\s*(["'])https:\/\/tools\.benhartlage\.com\/\1)[^>]*>[\s\S]*?<\/a>/gi,
+    (anchor) => {
+      matchCount += 1;
+      return addHubReturnClass(anchor);
+    },
+  );
+  if (matchCount !== 1) {
+    throw new Error(`${tool.id}: expected one public-hub return link, found ${matchCount}`);
+  }
+  await writeFile(
+    htmlPath,
+    normalized.replace(
+      "</head>",
+      '  <link rel="stylesheet" href="/hub-return.css" />\n</head>',
+    ),
+  );
+}
+
 await rm(distRoot, { recursive: true, force: true });
 await mkdir(path.join(distRoot, "tools"), { recursive: true });
 
-for (const file of ["index.html", "styles.css", "robots.txt", "sitemap.xml", "_headers", "404.html"]) {
+for (const file of [
+  "index.html",
+  "styles.css",
+  "hub-return.css",
+  "robots.txt",
+  "sitemap.xml",
+  "_headers",
+  "404.html",
+]) {
   await copyFile(path.join(repoRoot, file), path.join(distRoot, file));
 }
 
@@ -77,6 +121,7 @@ for (const tool of manifest.tools) {
     const destination = path.join(distRoot, tool.targetPath, file);
     await writeGitFile(sourceRepo, tool.commit, sourcePath, destination);
   }
+  await normalizeHubReturnLink(tool);
   process.stdout.write(`Composed ${tool.id} from ${tool.repository}@${tool.commit.slice(0, 12)}\n`);
 }
 

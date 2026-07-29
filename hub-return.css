@@ -1,0 +1,41 @@
+.hub-return-link,
+.hub-return-link:visited,
+.hub-return-link:hover,
+.hub-return-link:active {
+  display: inline-flex !important;
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  align-items: center !important;
+  gap: 0.38rem !important;
+  margin: 0 !important;
+  padding: 0.1rem 0 0.16rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: #18213d !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-family: "Aptos", "Segoe UI Variable Text", "Segoe UI", Arial, sans-serif !important;
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
+  line-height: 1.35 !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 0.22rem !important;
+  transform: none !important;
+}
+
+.hub-return-link:hover {
+  color: #354ab9 !important;
+}
+
+.hub-return-link:focus-visible {
+  outline: 3px solid #354ab9 !important;
+  outline-offset: 4px !important;
+}
+
+@media print {
+  .hub-return-link {
+    display: none !important;
+  }
+}

@@ -16,116 +16,192 @@
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://tools.benhartlage.com/" />
-    <meta name="theme-color" content="#132a35" />
+    <meta name="theme-color" content="#191d4c" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <a class="skip-link" href="#main-content">Skip to tools</a>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
 
     <header class="site-header">
       <a class="brand" href="/" aria-label="Stats and Operations Analysis home">
         <span class="brand-mark" aria-hidden="true">BH</span>
-        <span>
+        <span class="brand-copy">
           <strong>Dr. Ben Hartlage</strong>
           <small>Stats &amp; Operations Analysis</small>
         </span>
       </a>
-      <nav class="site-nav" aria-label="Primary navigation">
-        <a href="#operations-analysis">Operations</a>
-        <a href="#business-statistics">Statistics</a>
-        <a class="nav-directory" href="/tools/">All tools</a>
-      </nav>
     </header>
 
     <main id="main-content">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
           <p class="kicker">Interactive course tools</p>
-          <h1 id="hero-title">Make the abstract <em>visible.</em></h1>
+          <h1 id="hero-title">Quantitative ideas, made <em>visible.</em></h1>
           <p class="hero-intro">
-            Explore optimization, probability, regression, and sampling with purpose-built
-            tools that turn formulas into experiments you can see, change, and discuss.
+            Explore optimization, probability, regression, and sampling with focused tools
+            that turn formulas into experiments you can see, change, and discuss.
           </p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="#tool-catalog">Explore the tools</a>
-            <a class="button button-secondary" href="#how-to-use">How to use this site</a>
-          </div>
         </div>
 
-        <div class="hero-visual" aria-label="Four connected quantitative ideas">
-          <div class="axis axis-y"></div>
-          <div class="axis axis-x"></div>
-          <svg viewBox="0 0 520 360" role="img" aria-label="Optimization and statistics sketch">
+        <div class="hero-visual">
+          <div class="visual-heading">
+            <span>Optimize</span>
+            <span>Measure</span>
+            <span>Decide</span>
+          </div>
+          <svg
+            viewBox="0 0 560 260"
+            role="img"
+            aria-label="An optimization network connected to a statistical signal"
+          >
             <defs>
-              <linearGradient id="area-fill" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#e85d38" stop-opacity="0.42" />
-                <stop offset="1" stop-color="#e85d38" stop-opacity="0.08" />
+              <linearGradient id="signal-fill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#869aff" stop-opacity="0.46" />
+                <stop offset="1" stop-color="#869aff" stop-opacity="0.05" />
               </linearGradient>
+              <marker
+                id="decision-arrow"
+                viewBox="0 0 10 10"
+                refX="8"
+                refY="5"
+                markerWidth="7"
+                markerHeight="7"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#a93a1a" />
+              </marker>
             </defs>
-            <path class="feasible" d="M95 292 L95 224 L180 146 L312 214 L345 292 Z" />
-            <path class="curve" d="M72 280 C142 276 158 94 262 90 C366 94 382 276 450 280" />
-            <path class="area" d="M262 90 C366 94 382 276 450 280 L450 292 L262 292 Z" />
-            <line class="objective" x1="122" y1="260" x2="370" y2="112" />
-            <circle class="point point-one" cx="180" cy="146" r="7" />
-            <circle class="point point-two" cx="312" cy="214" r="7" />
+            <g class="network-map">
+              <path class="network-link" d="M45 194 L106 116 L174 166 L238 76" />
+              <path class="network-link" d="M45 194 L128 206 L174 166 L244 194" />
+              <path class="network-link" d="M106 116 L196 105 L238 76" />
+              <path
+                class="network-route"
+                d="M45 194 L106 116 L174 166 L238 76"
+                marker-end="url(#decision-arrow)"
+              />
+              <circle class="network-node network-node-start" cx="45" cy="194" r="8" />
+              <circle class="network-node" cx="106" cy="116" r="7" />
+              <circle class="network-node" cx="174" cy="166" r="7" />
+              <circle class="network-node" cx="196" cy="105" r="6" />
+              <circle class="network-node network-node-end" cx="238" cy="76" r="9" />
+            </g>
+            <path class="decision-bridge" d="M252 85 C282 72 294 89 313 111" />
+            <g class="signal-chart">
+              <line class="signal-axis" x1="310" y1="206" x2="526" y2="206" />
+              <rect class="signal-bar" x="326" y="162" width="25" height="44" />
+              <rect class="signal-bar" x="360" y="126" width="25" height="80" />
+              <rect class="signal-bar" x="394" y="92" width="25" height="114" />
+              <rect class="signal-bar" x="428" y="119" width="25" height="87" />
+              <rect class="signal-bar" x="462" y="154" width="25" height="52" />
+              <path
+                class="signal-area"
+                d="M310 204 C346 202 359 104 407 92 C456 81 469 196 518 202 L518 206 L310 206 Z"
+              />
+              <path
+                class="signal-curve"
+                d="M310 204 C346 202 359 104 407 92 C456 81 469 196 518 202"
+              />
+              <circle class="signal-point" cx="360" cy="126" r="5" />
+              <circle class="signal-point" cx="407" cy="92" r="6" />
+              <circle class="signal-point" cx="462" cy="154" r="5" />
+            </g>
           </svg>
-          <div class="visual-note note-one"><span>01</span> Model</div>
-          <div class="visual-note note-two"><span>02</span> Explore</div>
-          <div class="visual-note note-three"><span>03</span> Explain</div>
+          <p>From model structure to evidence-backed decisions.</p>
         </div>
+
+        <nav class="course-controls" aria-label="Browse tools by course">
+          <a href="#operations-analysis">
+            <span class="course-code">BUS-3150</span>
+            <span>
+              <strong>Operations Analysis</strong>
+              <small>Optimization and decision models</small>
+            </span>
+            <span class="course-arrow" aria-hidden="true">&darr;</span>
+          </a>
+          <a href="#business-statistics">
+            <span class="course-code">BUS-2150</span>
+            <span>
+              <strong>Business Statistics</strong>
+              <small>Evidence, inference, and relationships</small>
+            </span>
+            <span class="course-arrow" aria-hidden="true">&darr;</span>
+          </a>
+        </nav>
       </section>
 
       <section class="catalog-intro" id="tool-catalog" aria-labelledby="catalog-title">
+        <div class="section-heading">
           <div>
-            <p class="kicker">Live catalog</p>
-            <h2 id="catalog-title">Nine tools. Two disciplines. One place to experiment.</h2>
+            <p class="kicker">Tool directory</p>
+            <h2 id="catalog-title">Explore the tool directory.</h2>
           </div>
-        <p>
-          Every tool opens directly in your browser. Nothing to install, no account required,
-          and each module includes a ready-to-use starting example.
-        </p>
+          <p>
+            Every tool runs directly in your browser with a ready-to-use starting example.
+            Nothing to install and no account required.
+          </p>
+        </div>
       </section>
 
       <section class="discipline" id="operations-analysis" aria-labelledby="operations-title">
         <header class="discipline-header">
-          <div class="discipline-number" aria-hidden="true">A</div>
           <div>
-            <p class="kicker">Operations Analysis</p>
-            <h2 id="operations-title">Decisions under constraints</h2>
+            <p class="kicker">BUS-3150 &middot; Operations Analysis</p>
+            <h2 id="operations-title">BUS-3150: Model decisions under constraints.</h2>
+            <p>Build a model, see its geometry, and test how the best decision changes.</p>
           </div>
-          <p>Build a model, see its geometry, and test how the best decision changes.</p>
         </header>
 
-        <div class="tool-grid tool-grid-single">
-          <article class="tool-card tool-card-featured">
+        <div class="tool-grid">
+          <article class="tool-card">
             <div class="tool-card-topline">
               <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="course">BUS-3150</span>
+              <span class="tool-number">01 / Optimization</span>
             </div>
-            <div class="tool-card-body">
-              <div>
-                <p class="tool-number">01 / Optimization</p>
-                <h3>Linear Programming Studio</h3>
-                <p>
-                  Add constraints, reveal the feasible polygon, and drag the objective function
-                  to discover the optimum rather than merely calculate it.
-                </p>
-              </div>
-              <div class="mini-visual mini-lp" aria-hidden="true">
-                <span class="mini-region"></span>
-                <span class="mini-line mini-line-one"></span>
-                <span class="mini-line mini-line-two"></span>
-                <span class="mini-dot"></span>
-              </div>
-            </div>
+            <h3>Linear Programming Studio</h3>
+            <p>
+              Add constraints, reveal the feasible polygon, and drag the objective function
+              to discover the optimum rather than merely calculate it.
+            </p>
             <div class="tool-card-footer">
               <ul aria-label="Topics">
                 <li>Feasible regions</li>
                 <li>Objective functions</li>
                 <li>Model import</li>
               </ul>
-              <a class="launch-link" href="/linear-programming/">
-                Launch studio <span aria-hidden="true">&#8599;</span>
+              <a
+                class="launch-link"
+                href="/linear-programming/"
+                aria-label="Launch Linear Programming Studio"
+              >
+                Launch studio <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <div class="tool-card-topline">
+              <span class="status"><span aria-hidden="true"></span> Live tool</span>
+              <span class="tool-number">02 / Decision labs</span>
+            </div>
+            <h3>Operations Decision Labs</h3>
+            <p>
+              Move from prediction to model to recommendation in four browser-local labs:
+              LP sensitivity, network and integer choices, simulation risk, and forecasting
+              carried into inventory.
+            </p>
+            <div class="tool-card-footer">
+              <ul aria-label="Topics">
+                <li>Deterministic first run</li>
+                <li>Excel handoff</li>
+                <li>No retained data</li>
+              </ul>
+              <a
+                class="launch-link"
+                href="/bus-3150/"
+                aria-label="Open Operations Decision Labs"
+              >
+                Open lab suite <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </article>
@@ -134,21 +210,22 @@
 
       <section class="discipline" id="business-statistics" aria-labelledby="statistics-title">
         <header class="discipline-header">
-          <div class="discipline-number" aria-hidden="true">B</div>
           <div>
-            <p class="kicker">Business Statistics</p>
-            <h2 id="statistics-title">Patterns inside variation</h2>
+            <p class="kicker">BUS-2150 &middot; Business Statistics</p>
+            <h2 id="statistics-title">BUS-2150: Find patterns inside variation.</h2>
+            <p>
+              Move from trustworthy study design through inference, relationships, and
+              integrated investigation.
+            </p>
           </div>
-          <p>Move linearly from trustworthy study design through inference, relationships, and integrated investigation.</p>
         </header>
 
         <div class="tool-grid">
           <article class="tool-card">
             <div class="tool-card-topline">
               <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="course">BUS-2150</span>
+              <span class="tool-number">02 / Study design</span>
             </div>
-            <p class="tool-number">02 / Study design</p>
             <h3>Study Design &amp; Bias Lab</h3>
             <p>
               Diagnose selection, measurement, confounding, processing, and time-related
@@ -159,8 +236,12 @@
                 <li>Bias</li>
                 <li>Study repair</li>
               </ul>
-              <a class="launch-link" href="/study-design-bias/">
-                Launch lab <span aria-hidden="true">&#8599;</span>
+              <a
+                class="launch-link"
+                href="/study-design-bias/"
+                aria-label="Launch Study Design and Bias Lab"
+              >
+                Launch lab <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </article>
@@ -168,9 +249,8 @@
           <article class="tool-card">
             <div class="tool-card-topline">
               <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="course">BUS-2150</span>
+              <span class="tool-number">03 / Probability</span>
             </div>
-            <p class="tool-number">03 / Probability</p>
             <h3>Normal Area Explorer</h3>
             <p>
               Drag z-score cutoffs and watch shaded probability regions respond across left,
@@ -181,8 +261,12 @@
                 <li>Z-scores</li>
                 <li>Tail areas</li>
               </ul>
-              <a class="launch-link" href="/normal-area/">
-                Launch explorer <span aria-hidden="true">&#8599;</span>
+              <a
+                class="launch-link"
+                href="/normal-area/"
+                aria-label="Launch Normal Area Explorer"
+              >
+                Launch explorer <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </article>
@@ -190,9 +274,8 @@
           <article class="tool-card">
             <div class="tool-card-topline">
               <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="course">BUS-2150</span>
+              <span class="tool-number">04 / Simulation</span>
             </div>
-            <p class="tool-number">04 / Simulation</p>
             <h3>Sampling Distribution Explorer</h3>
             <p>
               Draw unusual populations, follow individual samples, and watch the distribution
@@ -203,8 +286,12 @@
                 <li>Sample means</li>
                 <li>Standard error</li>
               </ul>
-              <a class="launch-link" href="/sampling-distribution/">
-                Launch explorer <span aria-hidden="true">&#8599;</span>
+              <a
+                class="launch-link"
+                href="/sampling-distribution/"
+                aria-label="Launch Sampling Distribution Explorer"
+              >
+                Launch explorer <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </article>
@@ -212,9 +299,8 @@
           <article class="tool-card">
             <div class="tool-card-topline">
               <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="course">BUS-2150</span>
+              <span class="tool-number">05 / Inference</span>
             </div>
-            <p class="tool-number">05 / Inference</p>
             <h3>Inference &amp; Business Decision Lab</h3>
             <p>
               Connect confidence intervals and tests to practical thresholds, assumptions,
@@ -225,8 +311,12 @@
                 <li>Intervals</li>
                 <li>Hypothesis tests</li>
               </ul>
-              <a class="launch-link" href="/inference-decision/">
-                Launch lab <span aria-hidden="true">&#8599;</span>
+              <a
+                class="launch-link"
+                href="/inference-decision/"
+                aria-label="Launch Inference and Business Decision Lab"
+              >
+                Launch lab <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </article>
@@ -234,9 +324,8 @@
           <article class="tool-card">
             <div class="tool-card-topline">
               <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="course">BUS-2150</span>
+              <span class="tool-number">06 / Group comparisons</span>
             </div>
-            <p class="tool-number">06 / Group comparisons</p>
             <h3>Comparing Groups Lab</h3>
             <p>
               Compare proportions, means, paired results, and variances, then extend the
@@ -247,8 +336,12 @@
                 <li>Two samples</li>
                 <li>ANOVA</li>
               </ul>
-              <a class="launch-link" href="/comparing-groups/">
-                Launch lab <span aria-hidden="true">&#8599;</span>
+              <a
+                class="launch-link"
+                href="/comparing-groups/"
+                aria-label="Launch Comparing Groups Lab"
+              >
+                Launch lab <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </article>
@@ -256,9 +349,8 @@
           <article class="tool-card">
             <div class="tool-card-topline">
               <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="course">BUS-2150</span>
+              <span class="tool-number">07 / Relationships</span>
             </div>
-            <p class="tool-number">07 / Relationships</p>
             <h3>Linear Regression Studio</h3>
             <p>
               Build datasets, compare your line with least squares, and inspect residual,
@@ -269,8 +361,12 @@
                 <li>Least squares</li>
                 <li>Residuals</li>
               </ul>
-              <a class="launch-link" href="/linear-regression/">
-                Launch studio <span aria-hidden="true">&#8599;</span>
+              <a
+                class="launch-link"
+                href="/linear-regression/"
+                aria-label="Launch Linear Regression Studio"
+              >
+                Launch studio <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </article>
@@ -278,9 +374,8 @@
           <article class="tool-card">
             <div class="tool-card-topline">
               <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="course">BUS-2150</span>
+              <span class="tool-number">08 / Categorical evidence</span>
             </div>
-            <p class="tool-number">08 / Categorical evidence</p>
             <h3>Categorical Risk Lab</h3>
             <p>
               Analyze a two-way table with chi-square, expected counts, cell contributions,
@@ -291,8 +386,12 @@
                 <li>Chi-square</li>
                 <li>Relative risk</li>
               </ul>
-              <a class="launch-link" href="/categorical-risk/">
-                Launch lab <span aria-hidden="true">&#8599;</span>
+              <a
+                class="launch-link"
+                href="/categorical-risk/"
+                aria-label="Launch Categorical Risk Lab"
+              >
+                Launch lab <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </article>
@@ -300,9 +399,8 @@
           <article class="tool-card">
             <div class="tool-card-topline">
               <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="course">BUS-2150</span>
+              <span class="tool-number">09 / Investigation</span>
             </div>
-            <p class="tool-number">09 / Investigation</p>
             <h3>Statistical Investigation Studio</h3>
             <p>
               Practice the complete evidence workflow and diagnose hidden data-quality,
@@ -313,26 +411,18 @@
                 <li>Reproducibility</li>
                 <li>Diagnostics</li>
               </ul>
-              <a class="launch-link" href="/statistical-investigation/">
-                Launch studio <span aria-hidden="true">&#8599;</span>
+              <a
+                class="launch-link"
+                href="/statistical-investigation/"
+                aria-label="Launch Statistical Investigation Studio"
+              >
+                Launch studio <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
           </article>
         </div>
       </section>
 
-      <section class="use-guide" id="how-to-use" aria-labelledby="guide-title">
-        <div>
-          <p class="kicker">A simple rhythm</p>
-          <h2 id="guide-title">Try it before you formalize it.</h2>
-        </div>
-        <ol>
-          <li><span>01</span><strong>Start</strong> Load the built-in example.</li>
-          <li><span>02</span><strong>Change</strong> Move one input and predict the result.</li>
-          <li><span>03</span><strong>Observe</strong> Compare the visual and numerical evidence.</li>
-          <li><span>04</span><strong>Explain</strong> Put the pattern into your own words.</li>
-        </ol>
-      </section>
     </main>
 
     <footer class="site-footer">
@@ -341,7 +431,7 @@
         <p>Interactive learning tools by Dr. Ben Hartlage.</p>
       </div>
       <p>Students: use the contact channel provided by your instructor for questions or feedback.</p>
-      <a href="#main-content">Back to tools <span aria-hidden="true">&#8593;</span></a>
+      <a href="#main-content">Back to tools <span aria-hidden="true">&uarr;</span></a>
     </footer>
   </body>
 </html>
