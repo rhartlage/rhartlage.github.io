@@ -16,7 +16,7 @@
       "course": "statistics",
       "family": "module",
       "repository": "rhartlage/stats-tools",
-      "commit": "b4d5f77c89f09614fa926fb31e41bd5c0a749475",
+      "commit": "54ebc276ec37c679784314d252d471d44174c928",
       "sourcePath": "modules/study-design-bias",
       "targetPath": "study-design-bias",
       "files": ["index.html", "styles.css", "app.js"]
