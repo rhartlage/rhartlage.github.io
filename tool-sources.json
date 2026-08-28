@@ -12,6 +12,28 @@
       "files": ["index.html", "styles.css", "app.js"]
     },
     {
+      "id": "linear-programming-3d",
+      "course": "operations",
+      "family": "studio",
+      "repository": "rhartlage/linear-programming-studio",
+      "commit": "dd15c81e506d1f8e3e7f0bc52eef63220c92d152",
+      "sourcePath": "3d",
+      "targetPath": "linear-programming-3d",
+      "files": [
+        "index.html",
+        "styles.css",
+        "app.js",
+        "renderer.js",
+        "solver.js",
+        "vendor/javascript-lp-solver.mjs",
+        "vendor/OrbitControls.js",
+        "vendor/three.core.min.js",
+        "vendor/three.module.min.js",
+        "vendor/JS-LP-SOLVER-LICENSE.txt",
+        "vendor/THREE-LICENSE.txt"
+      ]
+    },
+    {
       "id": "study-design-bias",
       "course": "statistics",
       "family": "module",

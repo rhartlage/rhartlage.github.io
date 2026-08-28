@@ -4,7 +4,7 @@
 
 `rhartlage/rhartlage.github.io` is the public deployment-shell owner for `tools.benhartlage.com`. The site is a Cloudflare Workers static-assets deployment named `benhartlage-public-tools` with one custom domain: `tools.benhartlage.com`. The apex `benhartlage.com` is outside this deployment and must remain unchanged.
 
-The ten teaching-tool suites remain canonical in their public source repositories. `tool-sources.json` pins an exact commit and allowlisted file set for each suite. `scripts/compose-tools.mjs` reads those committed files with `git show`, then builds a disposable `dist/` bundle. This keeps hosted output reproducible without maintaining independent application forks.
+The eleven teaching-tool suites remain canonical in their public source repositories. `tool-sources.json` pins an exact commit and allowlisted file set for each suite. `scripts/compose-tools.mjs` reads those committed files with `git show`, then builds a disposable `dist/` bundle. This keeps hosted output reproducible without maintaining independent application forks.
 
 The bundle intentionally excludes:
 
@@ -19,6 +19,7 @@ The bundle intentionally excludes:
 - `https://tools.benhartlage.com/`
 - `https://tools.benhartlage.com/bus-2150/`
 - `https://tools.benhartlage.com/linear-programming/`
+- `https://tools.benhartlage.com/linear-programming-3d/`
 - `https://tools.benhartlage.com/study-design-bias/`
 - `https://tools.benhartlage.com/normal-area/`
 - `https://tools.benhartlage.com/sampling-distribution/`

@@ -77,6 +77,7 @@ const requiredRoutes = [
   "tools/index.html",
   "bus-2150/index.html",
   "linear-programming/index.html",
+  "linear-programming-3d/index.html",
   "study-design-bias/index.html",
   "normal-area/index.html",
   "sampling-distribution/index.html",
@@ -265,6 +266,7 @@ if (!/Cache-Control:[^\r\n]*\bno-transform\b/.test(headerRules)) {
 
 const expectedToolIds = [
   "linear-programming",
+  "linear-programming-3d",
   "study-design-bias",
   "normal-area",
   "sampling-distribution",
@@ -276,11 +278,12 @@ const expectedToolIds = [
   "bus-3150",
 ];
 if (JSON.stringify(manifest.tools.map((tool) => tool.id)) !== JSON.stringify(expectedToolIds)) {
-  fail("Pinned tool manifest does not match the approved ten-tool catalog");
+  fail("Pinned tool manifest does not match the approved eleven-tool catalog");
 }
 
 const expectedToolMetadata = {
   "linear-programming": { course: "operations", family: "studio" },
+  "linear-programming-3d": { course: "operations", family: "studio" },
   "study-design-bias": { course: "statistics", family: "module" },
   "normal-area": { course: "statistics", family: "studio" },
   "sampling-distribution": { course: "statistics", family: "studio" },
@@ -340,6 +343,7 @@ const directHomeRoutes = [
   "/linear-regression/",
   "/statistical-investigation/",
   "/linear-programming/",
+  "/linear-programming-3d/",
   "/bus-3150/",
 ];
 const homeHrefCounts = anchorHrefCounts(rootHtml);
