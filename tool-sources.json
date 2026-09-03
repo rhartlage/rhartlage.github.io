@@ -6,7 +6,7 @@
       "course": "operations",
       "family": "studio",
       "repository": "rhartlage/linear-programming-studio",
-      "commit": "97e543dbc706293784379b0af5f275149a1c71b6",
+      "commit": "1895892fca7ea677140f77e96095f8f585505bcc",
       "sourcePath": ".",
       "targetPath": "linear-programming",
       "files": ["index.html", "styles.css", "app.js"]
