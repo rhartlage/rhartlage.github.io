@@ -6,10 +6,16 @@
       "course": "operations",
       "family": "studio",
       "repository": "rhartlage/linear-programming-studio",
-      "commit": "963ce15bdde5a1772a0765c63e19ed49fba9583a",
+      "commit": "5ea75a665a03593afdaa5b66f02d0d2120a3ab69",
       "sourcePath": ".",
       "targetPath": "linear-programming",
-      "files": ["index.html", "styles.css", "app.js"]
+      "files": [
+        "index.html",
+        "styles.css",
+        "app.js",
+        "styles.celebration-reliable-20260904-v1.css",
+        "app.celebration-reliable-20260904-v1.js"
+      ]
     },
     {
       "id": "linear-programming-3d",
