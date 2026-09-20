@@ -6,7 +6,7 @@
       "course": "operations",
       "family": "studio",
       "repository": "rhartlage/linear-programming-studio",
-      "commit": "4c47ca8ad7bcdd6bc3b35b1eea45b5cbd7ba8d33",
+      "commit": "ff3de9960c11d23b05c86b603c74db559a5f99a1",
       "sourcePath": ".",
       "targetPath": "linear-programming",
       "files": [
@@ -14,6 +14,7 @@
         "styles.css",
         "app.js",
         "app.extreme-points-20260920-v1.js",
+        "app.objective-points-20260920-v1.js",
         "styles.celebration-reliable-20260904-v1.css",
         "app.celebration-reliable-20260904-v1.js",
         "styles.graph-lock-20260905-v1.css",
