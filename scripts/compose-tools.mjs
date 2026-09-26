@@ -133,7 +133,7 @@ function sharedToolBar(metadata) {
         <span class="bh-tool-bar__mark" aria-hidden="true">BH</span>
         <span class="bh-tool-bar__brand-copy">
           <strong>Dr. Ben Hartlage</strong>
-          <small>Stats &amp; Operations Analysis</small>
+          <small>Interactive course tools</small>
         </span>
       </div>
       <div class="bh-tool-bar__context">

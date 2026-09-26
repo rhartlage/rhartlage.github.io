@@ -1,20 +1,40 @@
-/* Keep the mapper's own visual system and fit its canvas beneath course navigation. */
-body.vsm-classroom { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+/* Shared teaching-tools palette; keep mapping geometry and symbol colors intact. */
+body.vsm-classroom {
+  --navy: #191d4c; --blue: #3658ab; --muted: #606574; --line: #dcdedc;
+  display: flex; flex-direction: column; height: 100vh; height: 100dvh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f6f4ed; color: #21243b;
+}
 .vsm-classroom > .app-header, .vsm-classroom > .map-meta { flex-shrink: 0; }
 .vsm-classroom > .workspace { flex: 1; height: auto; min-height: 0; position: relative; }
 .vsm-course-nav {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   flex-shrink: 0; min-height: 42px; padding: 8px 26px;
-  background: #e9f6f0; color: #165e4c; border-bottom: 1px solid #b5d9ca;
-  font: 600 12px/1.5 "Segoe UI", Arial, sans-serif;
+  background: #f6f4ed; color: #191d4c; border-bottom: 1px solid #dcdedc;
+  font: 600 12px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 .vsm-course-nav a { color: inherit; text-decoration: none; }
 .vsm-course-nav a:hover { text-decoration: underline; }
 .vsm-course-nav a:focus-visible { outline: 3px solid #245edb; outline-offset: 3px; }
 .vsm-course-nav a span { margin-left: 8px; }
 .vsm-save-note { font-weight: 400; }
-.vsm-skip { position: fixed; top: 8px; left: 8px; z-index: 100; transform: translateY(-200%); padding: 10px 14px; background: white; color: #165e4c; }
+.vsm-skip { position: fixed; top: 8px; left: 8px; z-index: 100; transform: translateY(-200%); padding: 10px 14px; border-radius: 8px; background: white; color: #191d4c; }
 .vsm-skip:focus { transform: none; }
+.vsm-classroom .app-header { background: #fffefa; color: #191d4c; border-bottom: 1px solid var(--line); }
+.vsm-classroom .brand svg { stroke: #3658ab; }
+.vsm-classroom .brand span, .vsm-classroom .header-actions #saveStatus { color: #606574; }
+.vsm-classroom .header-quiet { color: #191d4c; border-color: var(--line); }
+.vsm-classroom .header-quiet:hover { background: #eeeee8; }
+.vsm-classroom .primary { background: #191d4c; border-color: #191d4c; color: #fffefa; }
+.vsm-classroom .primary:hover { background: #2d335f; }
+.vsm-classroom :is(.map-meta, .palette-panel, .inspector-panel, .canvas-toolbar, .learning-toolbar, .canvas-footer) { background: #fffefa; }
+.vsm-classroom :is(.canvas-host, .search-wrap, .state-switch) { background: #f6f4ed; }
+.vsm-classroom :is(.panel-intro, .palette-group h2, .learning-toolbar > span, .canvas-footer, .map-meta label) { color: #606574; }
+.vsm-classroom :is(.header-actions button, .search-wrap, .symbol-card, .state-switch, .zoom-controls) { border-radius: 8px; }
+.vsm-classroom :is(.summary-cards > div, dialog) { border-radius: 16px; }
+.vsm-classroom :is(button.active, .summary-cards > div) { background: #e6e7f2; color: #191d4c; border-color: #d6d8e7; }
+.vsm-classroom .state-switch button.active { background: #fffefa; box-shadow: none; color: #191d4c; }
+.vsm-classroom .symbol-card:hover { border-color: #788ac3; background: #f4f3f8; box-shadow: none; }
 @media (max-width: 1150px) { .vsm-save-note { display: none; } }
 @media (max-width: 850px) {
   .vsm-classroom .inspector-panel { top: 115px; bottom: 40px; max-height: none; }
