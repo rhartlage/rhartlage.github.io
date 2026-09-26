@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { access, copyFile, cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -7,6 +8,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."
 const distRoot = path.join(repoRoot, "dist");
 const cacheRoot = path.join(repoRoot, ".tool-cache");
 const manifest = JSON.parse(await readFile(path.join(repoRoot, "tool-sources.json"), "utf8"));
+const staticManifest = JSON.parse(await readFile(path.join(repoRoot, "static-tools.json"), "utf8"));
 
 async function exists(target) {
   try {
@@ -245,6 +247,7 @@ await mkdir(path.join(distRoot, "tools"), { recursive: true });
 for (const file of [
   "index.html",
   "styles.css",
+  "lean-courses.css",
   "theme.css",
   "tool-theme.css",
   "hub-return.css",
@@ -261,6 +264,9 @@ await writeFile(path.join(distRoot, "tools", "index.html"), directoryHtml);
 await cp(path.join(repoRoot, "bus-2150"), path.join(distRoot, "bus-2150"), {
   recursive: true,
 });
+await cp(path.join(repoRoot, "mgmt-4570"), path.join(distRoot, "mgmt-4570"), {
+  recursive: true,
+});
 
 for (const tool of manifest.tools) {
   const sourceRepo = await resolveSourceRepository(tool);
@@ -275,9 +281,34 @@ for (const tool of manifest.tools) {
   process.stdout.write(`Composed ${tool.id} from ${tool.repository}@${tool.commit.slice(0, 12)}\n`);
 }
 
+// Portable classroom releases keep their reviewed runtime bytes and archive provenance.
+// Their full-canvas layout uses a small, isolated course shell rather than shared tool CSS.
+for (const tool of staticManifest.staticTools) {
+  if (tool.id !== "value-stream-mapping" || tool.targetPath !== "mgmt-4570/value-stream-mapping") {
+    throw new Error(`Unrecognized static classroom tool: ${tool.id}`);
+  }
+  for (const [file, expectedHash] of Object.entries(tool.files)) {
+    if (!/^[\w.-]+$/.test(file)) throw new Error(`Invalid static asset name: ${file}`);
+    const contents = await readFile(path.join(repoRoot, tool.sourcePath, file));
+    if (createHash("sha256").update(contents).digest("hex") !== expectedHash) {
+      throw new Error(`${tool.id}: source hash mismatch for ${file}`);
+    }
+    const destination = path.join(distRoot, tool.targetPath, file);
+    await mkdir(path.dirname(destination), { recursive: true });
+    await writeFile(destination, contents);
+  }
+  const htmlPath = path.join(distRoot, tool.targetPath, "index.html");
+  let html = await readFile(htmlPath, "utf8");
+  html = html.replace("</head>", `  <link rel="canonical" href="https://tools.benhartlage.com/mgmt-4570/value-stream-mapping/">\n  <link rel="stylesheet" href="../app-shell.css">\n</head>`);
+  html = html.replace("<body>", `<body class="vsm-classroom">\n  <a class="vsm-skip" href="#vsm-workspace">Skip to mapping workspace</a>\n  <nav class="vsm-course-nav" aria-label="Course navigation">\n    <a href="/mgmt-4570/">&larr; MGMT-4570 <span>Lean Operations Management</span></a>\n    <span class="vsm-save-note">Autosaved in this browser &middot; Save map for a backup</span>\n    <a href="/">All course tools</a>\n  </nav>`);
+  html = html.replace('<main class="workspace">', '<main class="workspace" id="vsm-workspace" tabindex="-1">');
+  await writeFile(htmlPath, html);
+  process.stdout.write(`Composed ${tool.id} from verified portable release ${tool.version}\n`);
+}
+
 await writeFile(
   path.join(distRoot, "deployment-manifest.json"),
-  `${JSON.stringify({ schemaVersion: manifest.schemaVersion, tools: manifest.tools }, null, 2)}\n`,
+  `${JSON.stringify({ schemaVersion: manifest.schemaVersion, tools: manifest.tools, staticTools: staticManifest.staticTools.map(({ sourcePath, ...publicMetadata }) => publicMetadata) }, null, 2)}\n`,
 );
 
-process.stdout.write(`Built ${manifest.tools.length} tools into ${distRoot}\n`);
+process.stdout.write(`Built ${manifest.tools.length} pinned tools and ${staticManifest.staticTools.length} portable tool into ${distRoot}\n`);

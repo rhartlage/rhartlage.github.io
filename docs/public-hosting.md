@@ -18,6 +18,8 @@ The bundle intentionally excludes:
 
 - `https://tools.benhartlage.com/`
 - `https://tools.benhartlage.com/bus-2150/`
+- `https://tools.benhartlage.com/mgmt-4570/`
+- `https://tools.benhartlage.com/mgmt-4570/value-stream-mapping/`
 - `https://tools.benhartlage.com/linear-programming/`
 - `https://tools.benhartlage.com/linear-programming-3d/`
 - `https://tools.benhartlage.com/study-design-bias/`
@@ -38,6 +40,18 @@ The bundle intentionally excludes:
 
 The BUS-2150 tools use local static assets only: no accounts, analytics, external fonts, browser storage, or transmitted student data.
 HTML responses include `Cache-Control: no-transform`, which prevents edge payload injection, including Cloudflare's automatic Web Analytics beacon.
+
+## Lean course portable release
+
+MGMT-4570 is **Lean Operations Management**, verified against Cedarville's [2026–27 catalog](https://publications.cedarville.edu/academiccatalogs/2026-2027/292/). The course landing page links to Value Stream Studio 1.1.0.
+
+`static-tools.json` records the supplied ZIP's SHA-256 and a five-file runtime allowlist with individual SHA-256 hashes. The original runtime is preserved in `vendor/value-stream-studio/`. Build verifies these hashes before copying files, then adds course navigation and canonical metadata to the generated HTML only. This imported release is separately recorded under `staticTools` in the deployment manifest; all eleven repository source pins remain unchanged.
+
+The mapper uses its own full-canvas layout, with isolated styles in `mgmt-4570/app-shell.css`. It deliberately does not receive the shared tool toolbar/footer or `tool-theme.css`. Its maps autosave in browser local storage, and JSON download/import provides portable backups. SVG, PNG, and print/PDF exports run locally. The app does not upload maps. Browser storage can be unavailable or cleared, so the landing page recommends explicit backups.
+
+The mapper's route-specific content security policy allows `blob:` images for PNG export and disallows network connections. Other routes retain their existing policy. Verify this policy through Wrangler's local server and live response headers before accepting a deployment.
+
+The supplied archive is `value-stream-studio.zip`, SHA-256 `7c9dbf2af1b0d2a221a19f3f881466213b51a444cff41625dbebb1c04cf8c046`, provided by the site owner. Build output excludes private source locations, original project notes, and the source ZIP itself.
 
 ## Build and validation
 
