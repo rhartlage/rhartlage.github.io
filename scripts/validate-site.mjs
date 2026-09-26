@@ -1,4 +1,5 @@
 import { readdir, readFile, stat } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -76,6 +77,10 @@ const requiredRoutes = [
   "index.html",
   "tools/index.html",
   "bus-2150/index.html",
+  "mgmt-4570/index.html",
+  "mgmt-4570/app-shell.css",
+  "mgmt-4570/value-stream-mapping/index.html",
+  "lean-courses.css",
   "linear-programming/index.html",
   "linear-programming-3d/index.html",
   "study-design-bias/index.html",
@@ -345,6 +350,7 @@ const directHomeRoutes = [
   "/linear-programming/",
   "/linear-programming-3d/",
   "/bus-3150/",
+  "/mgmt-4570/",
 ];
 const homeHrefCounts = anchorHrefCounts(rootHtml);
 const suiteHrefCounts = anchorHrefCounts(bus2150Html);
@@ -373,6 +379,35 @@ for (const route of groupedLabRoutes) {
     fail(`BUS-2150 suite expected exactly one link to ${route}`);
   }
 }
+
+const portableManifest = JSON.parse(await readFile(path.join(repoRoot, "static-tools.json"), "utf8"));
+const leanHtml = await readFile(path.join(distRoot, "mgmt-4570", "index.html"), "utf8");
+const mapperHtml = await readFile(path.join(distRoot, "mgmt-4570/value-stream-mapping/index.html"), "utf8");
+if (portableManifest.staticTools.length !== 1 || portableManifest.staticTools[0].id !== "value-stream-mapping") {
+  fail("Portable classroom catalog must contain the approved value-stream mapping app");
+}
+for (const tool of portableManifest.staticTools) {
+  if (!/^[a-f0-9]{64}$/.test(tool.sourceArchiveSha256)) fail(`${tool.id}: archive SHA-256 is missing`);
+  for (const [file, hash] of Object.entries(tool.files)) {
+    const source = await readFile(path.join(repoRoot, tool.sourcePath, file));
+    if (createHash("sha256").update(source).digest("hex") !== hash) fail(`${tool.id}: source hash changed: ${file}`);
+    if (file !== "index.html") {
+      const output = await readFile(path.join(distRoot, tool.targetPath, file));
+      if (!source.equals(output)) fail(`${tool.id}: runtime asset changed during composition: ${file}`);
+    }
+    if (/\b(?:fetch|XMLHttpRequest)\s*\(|\bnavigator\.sendBeacon\s*\(/.test(source.toString())) {
+      fail(`${tool.id}: network transmission requires review: ${file}`);
+    }
+  }
+}
+if (!rootHtml.includes('href="#lean-operations"') || !rootHtml.includes('id="lean-operations"')) fail("Root hub is missing its Lean course section");
+if (!leanHtml.includes('href="/mgmt-4570/value-stream-mapping/"') || !leanHtml.includes("MGMT-4570")) fail("Lean course does not expose its mapper");
+if (!leanHtml.includes("autosaves on this device") || !leanHtml.includes("Save map")) fail("Lean landing page must explain browser storage and backups");
+if (!leanHtml.includes('rel="canonical" href="https://tools.benhartlage.com/mgmt-4570/"')) fail("Lean course canonical URL is missing");
+if (!mapperHtml.includes('rel="canonical" href="https://tools.benhartlage.com/mgmt-4570/value-stream-mapping/"')) fail("Mapper canonical URL is missing");
+if (!mapperHtml.includes('href="/mgmt-4570/"') || !mapperHtml.includes('href="/"')) fail("Mapper course navigation is missing");
+if (mapperHtml.includes("/tool-theme.css") || mapperHtml.includes("No retained responses")) fail("Mapper must preserve its canvas layout and accurate autosave semantics");
+if (!headerRules.includes("img-src 'self' data: blob:") || !headerRules.includes("/mgmt-4570/value-stream-mapping/*")) fail("Mapper PNG export requires its scoped blob-image policy");
 
 const bus2150Tools = manifest.tools.filter((tool) => tool.course === "statistics");
 const forbiddenRuntimePatterns = [
