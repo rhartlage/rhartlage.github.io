@@ -58,10 +58,10 @@
       "course": "statistics",
       "family": "studio",
       "repository": "rhartlage/normal-area-explorer",
-      "commit": "7d5238abfc3980e04288bfe2d945546d19bf1dc5",
+      "commit": "694d93fe3bd8b80bfd75fb0ab6dbb747b9154e45",
       "sourcePath": ".",
       "targetPath": "normal-area",
-      "files": ["index.html", "styles.css", "normal-math.js", "app.js"]
+      "files": ["index.html", "styles.css", "normal-math.js", "app.js", "layout.js"]
     },
     {
       "id": "sampling-distribution",
