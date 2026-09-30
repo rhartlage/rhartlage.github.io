@@ -43,9 +43,9 @@ HTML responses include `Cache-Control: no-transform`, which prevents edge payloa
 
 ## Lean course portable release
 
-MGMT-4570 is **Lean Operations Management**, verified against Cedarville's [2026–27 catalog](https://publications.cedarville.edu/academiccatalogs/2026-2027/292/). The course landing page links to Value Stream Studio 1.1.0.
+MGMT-4570 is **Lean Operations Management**, verified against Cedarville's [2026–27 catalog](https://publications.cedarville.edu/academiccatalogs/2026-2027/292/). The course landing page links to Value Stream Studio; the current build is version 1.2.0.
 
-`static-tools.json` records the supplied ZIP's SHA-256 and a five-file runtime allowlist with individual SHA-256 hashes. The original runtime is preserved in `vendor/value-stream-studio/`. Build verifies these hashes before copying files, then adds course navigation and canonical metadata to the generated HTML only. This imported release is separately recorded under `staticTools` in the deployment manifest; all eleven repository source pins remain unchanged.
+`static-tools.json` records the original 1.1.0 ZIP's SHA-256 and an eight-file runtime allowlist with individual SHA-256 hashes for the maintained 1.2.0 runtime in `vendor/value-stream-studio/`. The derivation field distinguishes the simulation extension from the original archive; original bytes remain in Git history. Build verifies the current runtime hashes before copying files, then adds course navigation and canonical metadata to the generated HTML only. This release is separately recorded under `staticTools` in the deployment manifest; all eleven repository source pins remain unchanged.
 
 The mapper uses its own full-canvas layout, with isolated styles in `mgmt-4570/app-shell.css`. It deliberately does not receive the shared tool toolbar/footer or `tool-theme.css`. Its maps autosave in browser local storage, and JSON download/import provides portable backups. SVG, PNG, and print/PDF exports run locally. The app does not upload maps. Browser storage can be unavailable or cleared, so the landing page recommends explicit backups.
 
