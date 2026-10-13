@@ -85,6 +85,7 @@ const requiredRoutes = [
   "linear-programming-3d/index.html",
   "study-design-bias/index.html",
   "normal-area/index.html",
+  "t-distribution/index.html",
   "sampling-distribution/index.html",
   "inference-decision/index.html",
   "comparing-groups/index.html",
@@ -274,6 +275,7 @@ const expectedToolIds = [
   "linear-programming-3d",
   "study-design-bias",
   "normal-area",
+  "t-distribution",
   "sampling-distribution",
   "inference-decision",
   "comparing-groups",
@@ -283,7 +285,7 @@ const expectedToolIds = [
   "bus-3150",
 ];
 if (JSON.stringify(manifest.tools.map((tool) => tool.id)) !== JSON.stringify(expectedToolIds)) {
-  fail("Pinned tool manifest does not match the approved eleven-tool catalog");
+  fail("Pinned tool manifest does not match the approved twelve-tool catalog");
 }
 
 const expectedToolMetadata = {
@@ -291,6 +293,7 @@ const expectedToolMetadata = {
   "linear-programming-3d": { course: "operations", family: "studio" },
   "study-design-bias": { course: "statistics", family: "module" },
   "normal-area": { course: "statistics", family: "studio" },
+  "t-distribution": { course: "statistics", family: "studio" },
   "sampling-distribution": { course: "statistics", family: "studio" },
   "inference-decision": { course: "statistics", family: "module" },
   "comparing-groups": { course: "statistics", family: "module" },
@@ -344,6 +347,7 @@ const groupedLabRoutes = [
 const directHomeRoutes = [
   "/bus-2150/",
   "/normal-area/",
+  "/t-distribution/",
   "/sampling-distribution/",
   "/linear-regression/",
   "/statistical-investigation/",
@@ -428,6 +432,13 @@ for (const tool of bus2150Tools) {
 const anovaApp = await readFile(path.join(distRoot, "comparing-groups", "app.js"), "utf8");
 if (!anovaApp.includes('q.get("lab")==="anova"')) {
   fail("Comparing Groups Lab does not expose the approved ?lab=anova entry mode");
+}
+
+// The new statistics explorer fills the sixth card (row 2, column 3 on desktop).
+const statisticsSection = rootHtml.slice(statisticsSectionIndex, operationsSectionIndex);
+const statisticsCards = [...statisticsSection.matchAll(/<article class="tool-card">[\s\S]*?<\/article>/g)].map(match => match[0]);
+if (statisticsCards.length !== 6 || !statisticsCards[4].includes('/statistical-investigation/') || !statisticsCards[5].includes('/t-distribution/')) {
+  fail('Student t explorer must be the sixth statistics card, after Statistical Investigation Studio.');
 }
 
 if (errors.length) {

@@ -86,3 +86,30 @@ The existing `rhartlage.github.io` hub and per-repository GitHub Pages sites rem
 2. Roll back `benhartlage-public-tools` to the prior Worker version with Wrangler if a hosted regression appears.
 3. If the custom domain itself must be removed, delete only the `tools.benhartlage.com` Worker custom domain/DNS target. The apex remains outside this deployment.
 4. Legacy GitHub Pages URLs remain the temporary functional fallback until Ben approves their retirement.
+
+## Student t explorer release
+
+The Student t Distribution Explorer is sourced from `stats-tools/modules/t-distribution/`
+at the exact revision in `tool-sources.json`, served at `/t-distribution/`. Its directory
+card is the sixth BUS-2150 card, after Statistical Investigation Studio (second row,
+third column at desktop width). The `/tools/` alias receives the same directory.
+
+This release is based on production-matching shell commit
+`bac4062a9bc84820830c2c2a14d157f63f9f6a20` on `agent/publish-lp-live-sync`.
+The repository's default `main` is older than the live deployment. Do not deploy
+that older branch or rebase this release onto it; all existing source pins and
+portable-tool hashes match the live deployment manifest captured on 2026-10-13.
+The new tool is the only added route; existing pins and imported tool files remain unchanged.
+
+The cloud executor has Git access but no authenticated Cloudflare session. Build
+and validation can run there; publication requires an already authorized environment
+with the existing `benhartlage-public-tools` deployment permission. Do not create
+credentials or change domain/authentication policy as part of this release.
+Record the current Worker version before deploying, then verify the new route,
+sixth card, return link, runtime assets, df=5 middle 95% bounds, and existing routes
+against the public hostname. A local build is not evidence of publication.
+
+Rollback: restore the recorded prior Worker version. For a source rollback on the
+release branch, revert the Student t hosting commit; it contains only the new source
+pin, sixth card, sitemap route, validation, and these release notes. Other apps must
+retain their existing deployed revisions.

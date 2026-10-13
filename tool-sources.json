@@ -64,6 +64,16 @@
       "files": ["index.html", "styles.css", "normal-math.js", "app.js", "layout.js"]
     },
     {
+      "id": "t-distribution",
+      "course": "statistics",
+      "family": "studio",
+      "repository": "rhartlage/stats-tools",
+      "commit": "8065552b256a4a3bfc7e8281f09cd44d8ca3679b",
+      "sourcePath": "modules/t-distribution",
+      "targetPath": "t-distribution",
+      "files": ["index.html", "styles.css", "t-math.js", "t-model.js", "app.js", "layout.js"]
+    },
+    {
       "id": "sampling-distribution",
       "course": "statistics",
       "family": "studio",
