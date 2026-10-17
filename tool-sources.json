@@ -88,7 +88,7 @@
       "course": "statistics",
       "family": "module",
       "repository": "rhartlage/stats-tools",
-      "commit": "b4d5f77c89f09614fa926fb31e41bd5c0a749475",
+      "commit": "aeb12660cc5ce09c31ff5575d35c2827ad3e9189",
       "sourcePath": "modules/inference-decision",
       "targetPath": "inference-decision",
       "files": ["index.html", "styles.css", "app.js"]
