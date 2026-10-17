@@ -86,6 +86,7 @@ const requiredRoutes = [
   "study-design-bias/index.html",
   "normal-area/index.html",
   "t-distribution/index.html",
+  "power-error/index.html",
   "sampling-distribution/index.html",
   "inference-decision/index.html",
   "comparing-groups/index.html",
@@ -276,6 +277,7 @@ const expectedToolIds = [
   "study-design-bias",
   "normal-area",
   "t-distribution",
+  "power-error",
   "sampling-distribution",
   "inference-decision",
   "comparing-groups",
@@ -285,7 +287,7 @@ const expectedToolIds = [
   "bus-3150",
 ];
 if (JSON.stringify(manifest.tools.map((tool) => tool.id)) !== JSON.stringify(expectedToolIds)) {
-  fail("Pinned tool manifest does not match the approved twelve-tool catalog");
+  fail("Pinned tool manifest does not match the approved thirteen-tool catalog");
 }
 
 const expectedToolMetadata = {
@@ -294,6 +296,7 @@ const expectedToolMetadata = {
   "study-design-bias": { course: "statistics", family: "module" },
   "normal-area": { course: "statistics", family: "studio" },
   "t-distribution": { course: "statistics", family: "studio" },
+  "power-error": { course: "statistics", family: "studio" },
   "sampling-distribution": { course: "statistics", family: "studio" },
   "inference-decision": { course: "statistics", family: "module" },
   "comparing-groups": { course: "statistics", family: "module" },
@@ -348,6 +351,7 @@ const directHomeRoutes = [
   "/bus-2150/",
   "/normal-area/",
   "/t-distribution/",
+  "/power-error/",
   "/sampling-distribution/",
   "/linear-regression/",
   "/statistical-investigation/",
@@ -371,14 +375,15 @@ for (const route of directHomeRoutes) {
   }
 }
 const actualSuiteToolRoutes = [...suiteHrefCounts.keys()].filter(isLocalPageRoute);
+const expectedSuiteRoutes = [...groupedLabRoutes, "/power-error/"];
 if (
-  JSON.stringify(actualSuiteToolRoutes.sort()) !== JSON.stringify([...groupedLabRoutes].sort())
+  JSON.stringify(actualSuiteToolRoutes.sort()) !== JSON.stringify(expectedSuiteRoutes.sort())
 ) {
   fail(
-    `BUS-2150 suite links do not match the four grouped chapter labs: ${actualSuiteToolRoutes.join(", ")}`,
+    `BUS-2150 suite links do not match the four grouped chapter labs and related power explorer: ${actualSuiteToolRoutes.join(", ")}`,
   );
 }
-for (const route of groupedLabRoutes) {
+for (const route of expectedSuiteRoutes) {
   if (suiteHrefCounts.get(route) !== 1) {
     fail(`BUS-2150 suite expected exactly one link to ${route}`);
   }
@@ -434,11 +439,11 @@ if (!anovaApp.includes('q.get("lab")==="anova"')) {
   fail("Comparing Groups Lab does not expose the approved ?lab=anova entry mode");
 }
 
-// The new statistics explorer fills the sixth card (row 2, column 3 on desktop).
+// Preserve the Student t explorer's position and append the Power & Error Explorer.
 const statisticsSection = rootHtml.slice(statisticsSectionIndex, operationsSectionIndex);
 const statisticsCards = [...statisticsSection.matchAll(/<article class="tool-card">[\s\S]*?<\/article>/g)].map(match => match[0]);
-if (statisticsCards.length !== 6 || !statisticsCards[4].includes('/statistical-investigation/') || !statisticsCards[5].includes('/t-distribution/')) {
-  fail('Student t explorer must be the sixth statistics card, after Statistical Investigation Studio.');
+if (statisticsCards.length !== 7 || !statisticsCards[4].includes('/statistical-investigation/') || !statisticsCards[5].includes('/t-distribution/') || !statisticsCards[6].includes('/power-error/')) {
+  fail('Power & Error Explorer must be the seventh statistics card, after Student t Distribution Explorer.');
 }
 
 if (errors.length) {

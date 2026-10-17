@@ -74,6 +74,16 @@
       "files": ["index.html", "styles.css", "t-math.js", "t-model.js", "app.js", "layout.js"]
     },
     {
+      "id": "power-error",
+      "course": "statistics",
+      "family": "studio",
+      "repository": "rhartlage/stats-tools",
+      "commit": "4d0dff6febc023f4da4e22aa5bdce53d8568ecd5",
+      "sourcePath": "modules/power-error",
+      "targetPath": "power-error",
+      "files": ["index.html", "styles.css", "power-math.js", "app.js"]
+    },
+    {
       "id": "sampling-distribution",
       "course": "statistics",
       "family": "studio",
