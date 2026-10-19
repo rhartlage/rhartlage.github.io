@@ -64,6 +64,26 @@
       "files": ["index.html", "styles.css", "normal-math.js", "app.js", "layout.js"]
     },
     {
+      "id": "t-distribution",
+      "course": "statistics",
+      "family": "studio",
+      "repository": "rhartlage/stats-tools",
+      "commit": "8065552b256a4a3bfc7e8281f09cd44d8ca3679b",
+      "sourcePath": "modules/t-distribution",
+      "targetPath": "t-distribution",
+      "files": ["index.html", "styles.css", "t-math.js", "t-model.js", "app.js", "layout.js"]
+    },
+    {
+      "id": "power-error",
+      "course": "statistics",
+      "family": "studio",
+      "repository": "rhartlage/stats-tools",
+      "commit": "4d0dff6febc023f4da4e22aa5bdce53d8568ecd5",
+      "sourcePath": "modules/power-error",
+      "targetPath": "power-error",
+      "files": ["index.html", "styles.css", "power-math.js", "app.js"]
+    },
+    {
       "id": "sampling-distribution",
       "course": "statistics",
       "family": "studio",
@@ -78,7 +98,7 @@
       "course": "statistics",
       "family": "module",
       "repository": "rhartlage/stats-tools",
-      "commit": "b4d5f77c89f09614fa926fb31e41bd5c0a749475",
+      "commit": "aeb12660cc5ce09c31ff5575d35c2827ad3e9189",
       "sourcePath": "modules/inference-decision",
       "targetPath": "inference-decision",
       "files": ["index.html", "styles.css", "app.js"]
