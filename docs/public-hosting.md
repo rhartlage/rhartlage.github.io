@@ -43,9 +43,9 @@ HTML responses include `Cache-Control: no-transform`, which prevents edge payloa
 
 ## Lean course portable release
 
-MGMT-4570 is **Lean Operations Management**, verified against Cedarville's [2026–27 catalog](https://publications.cedarville.edu/academiccatalogs/2026-2027/292/). The course landing page links to Value Stream Studio 1.1.0.
+MGMT-4570 is **Lean Operations Management**, verified against Cedarville's [2026–27 catalog](https://publications.cedarville.edu/academiccatalogs/2026-2027/292/). The course landing page links to Value Stream Studio; the current build is version 1.2.0.
 
-`static-tools.json` records the supplied ZIP's SHA-256 and a five-file runtime allowlist with individual SHA-256 hashes. The original runtime is preserved in `vendor/value-stream-studio/`. Build verifies these hashes before copying files, then adds course navigation and canonical metadata to the generated HTML only. This imported release is separately recorded under `staticTools` in the deployment manifest; all eleven repository source pins remain unchanged.
+`static-tools.json` records the original 1.1.0 ZIP's SHA-256 and an eight-file runtime allowlist with individual SHA-256 hashes for the maintained 1.2.0 runtime in `vendor/value-stream-studio/`. The derivation field distinguishes the simulation extension from the original archive; original bytes remain in Git history. Build verifies the current runtime hashes before copying files, then adds course navigation and canonical metadata to the generated HTML only. This release is separately recorded under `staticTools` in the deployment manifest; all eleven repository source pins remain unchanged.
 
 The mapper uses its own full-canvas layout, with isolated styles in `mgmt-4570/app-shell.css`. It deliberately does not receive the shared tool toolbar/footer or `tool-theme.css`. Its maps autosave in browser local storage, and JSON download/import provides portable backups. SVG, PNG, and print/PDF exports run locally. The app does not upload maps. Browser storage can be unavailable or cleared, so the landing page recommends explicit backups.
 
@@ -86,3 +86,30 @@ The existing `rhartlage.github.io` hub and per-repository GitHub Pages sites rem
 2. Roll back `benhartlage-public-tools` to the prior Worker version with Wrangler if a hosted regression appears.
 3. If the custom domain itself must be removed, delete only the `tools.benhartlage.com` Worker custom domain/DNS target. The apex remains outside this deployment.
 4. Legacy GitHub Pages URLs remain the temporary functional fallback until Ben approves their retirement.
+
+## Student t explorer release
+
+The Student t Distribution Explorer is sourced from `stats-tools/modules/t-distribution/`
+at the exact revision in `tool-sources.json`, served at `/t-distribution/`. Its directory
+card is the sixth BUS-2150 card, after Statistical Investigation Studio (second row,
+third column at desktop width). The `/tools/` alias receives the same directory.
+
+This release is based on production-matching shell commit
+`bac4062a9bc84820830c2c2a14d157f63f9f6a20` on `agent/publish-lp-live-sync`.
+The repository's default `main` is older than the live deployment. Do not deploy
+that older branch or rebase this release onto it; all existing source pins and
+portable-tool hashes match the live deployment manifest captured on 2026-10-13.
+The new tool is the only added route; existing pins and imported tool files remain unchanged.
+
+The cloud executor has Git access but no authenticated Cloudflare session. Build
+and validation can run there; publication requires an already authorized environment
+with the existing `benhartlage-public-tools` deployment permission. Do not create
+credentials or change domain/authentication policy as part of this release.
+Record the current Worker version before deploying, then verify the new route,
+sixth card, return link, runtime assets, df=5 middle 95% bounds, and existing routes
+against the public hostname. A local build is not evidence of publication.
+
+Rollback: restore the recorded prior Worker version. For a source rollback on the
+release branch, revert the Student t hosting commit; it contains only the new source
+pin, sixth card, sitemap route, validation, and these release notes. Other apps must
+retain their existing deployed revisions.

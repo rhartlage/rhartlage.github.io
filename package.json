@@ -7,6 +7,7 @@
     "build": "node scripts/compose-tools.mjs",
     "validate": "node scripts/validate-site.mjs",
     "validate:secrets": "node scripts/validate-secrets.mjs",
-    "preview": "node scripts/static-server.mjs"
+    "preview": "node scripts/static-server.mjs",
+    "test:simulation": "node --test scripts/test-vsm-simulation.mjs"
   }
 }
