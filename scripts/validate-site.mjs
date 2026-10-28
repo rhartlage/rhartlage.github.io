@@ -285,12 +285,14 @@ const expectedToolIds = [
   "categorical-risk",
   "statistical-investigation",
   "bus-3150",
+  "statistics-tutor",
 ];
 if (JSON.stringify(manifest.tools.map((tool) => tool.id)) !== JSON.stringify(expectedToolIds)) {
-  fail("Pinned tool manifest does not match the approved thirteen-tool catalog");
+  fail("Pinned tool manifest does not match the approved fourteen-tool catalog");
 }
 
 const expectedToolMetadata = {
+  "statistics-tutor": { course: "statistics", family: "tutor" },
   "linear-programming": { course: "operations", family: "studio" },
   "linear-programming-3d": { course: "operations", family: "studio" },
   "study-design-bias": { course: "statistics", family: "module" },
@@ -348,6 +350,7 @@ const groupedLabRoutes = [
   "/categorical-risk/",
 ];
 const directHomeRoutes = [
+  "/statistics-tutor/",
   "/bus-2150/",
   "/normal-area/",
   "/t-distribution/",
@@ -375,7 +378,7 @@ for (const route of directHomeRoutes) {
   }
 }
 const actualSuiteToolRoutes = [...suiteHrefCounts.keys()].filter(isLocalPageRoute);
-const expectedSuiteRoutes = [...groupedLabRoutes, "/power-error/"];
+const expectedSuiteRoutes = [...groupedLabRoutes, "/power-error/", "/statistics-tutor/"];
 if (
   JSON.stringify(actualSuiteToolRoutes.sort()) !== JSON.stringify(expectedSuiteRoutes.sort())
 ) {
@@ -442,8 +445,19 @@ if (!anovaApp.includes('q.get("lab")==="anova"')) {
 // Preserve the Student t explorer's position and append the Power & Error Explorer.
 const statisticsSection = rootHtml.slice(statisticsSectionIndex, operationsSectionIndex);
 const statisticsCards = [...statisticsSection.matchAll(/<article class="tool-card">[\s\S]*?<\/article>/g)].map(match => match[0]);
-if (statisticsCards.length !== 7 || !statisticsCards[4].includes('/statistical-investigation/') || !statisticsCards[5].includes('/t-distribution/') || !statisticsCards[6].includes('/power-error/')) {
-  fail('Power & Error Explorer must be the seventh statistics card, after Student t Distribution Explorer.');
+if (statisticsCards.length !== 8 || !statisticsCards[4].includes('/statistical-investigation/') || !statisticsCards[5].includes('/t-distribution/') || !statisticsCards[6].includes('/power-error/') || !statisticsCards[7].includes('/statistics-tutor/')) {
+  fail('Preserve Student t and Power & Error positions; Statistics Tutor must be the eighth statistics card.');
+}
+
+const tutorHtml = await readFile(path.join(distRoot, "statistics-tutor/index.html"), "utf8");
+if (!tutorHtml.includes('id="topic"') || !tutorHtml.includes('for="topic"')) fail("Tutor must include a labeled topic selector");
+if (!tutorHtml.includes('No answers are sent') || !tutorHtml.includes('no browser storage')) fail("Tutor must explain its data boundary");
+const tutorSources = await Promise.all(["app.mjs", "engine.mjs", "math.mjs", "topics.mjs"].map(file => readFile(path.join(distRoot, "statistics-tutor", file), "utf8")));
+for (const source of tutorSources) {
+  if (/\b(?:WebSocket|EventSource|indexedDB)\b|sendBeacon\s*\(/.test(source)) fail("Tutor must not add response transmission or persistent storage");
+}
+for (const companion of ["sampling-distribution", "study-design-bias", "t-distribution", "inference-decision"]) {
+  if (!tutorSources.join("\n").includes(`https://tools.benhartlage.com/${companion}/`)) fail(`Tutor missing companion ${companion}`);
 }
 
 if (errors.length) {

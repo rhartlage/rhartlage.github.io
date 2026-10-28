@@ -161,6 +161,23 @@
         "shared/lab-core.mjs",
         "shared/styles.css"
       ]
+    },
+    {
+      "id": "statistics-tutor",
+      "course": "statistics",
+      "family": "tutor",
+      "repository": "rhartlage/stats-tools",
+      "commit": "e2b7dbf09969dc77a09703740b5a304e4e421b0b",
+      "sourcePath": "modules/statistics-tutor",
+      "targetPath": "statistics-tutor",
+      "files": [
+        "index.html",
+        "styles.css",
+        "app.mjs",
+        "engine.mjs",
+        "math.mjs",
+        "topics.mjs"
+      ]
     }
   ]
 }
