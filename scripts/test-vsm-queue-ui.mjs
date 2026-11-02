@@ -37,7 +37,7 @@ after(async () => { await browser?.close(); if (server) await new Promise(resolv
 
 async function open(map = fixture(), viewport = { width: 1440, height: 1000 }) {
   const context = await browser.newContext({ viewport });
-  await context.addInitScript(map => localStorage.setItem('value-stream-studio-v1', JSON.stringify(map)), map);
+  await context.addInitScript(map => { if (!localStorage.getItem('value-stream-studio-v1')) localStorage.setItem('value-stream-studio-v1', JSON.stringify(map)); }, map);
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -91,8 +91,172 @@ test('count boundaries 0, 1, 8, 9, and 24,999; service independent; accessible l
       if (queue === 9 && busy && process.env.VSM_SCREENSHOT_DIR) await page.screenshot({ path: `${process.env.VSM_SCREENSHOT_DIR}/queue-overflow.png` });
     }
   }
+  for (const busyCount of [0, 1, 2, 9, 64]) {
+    await page.evaluate(busyCount => {
+      Object.assign(window.queueTestState, { queue: 3, busy: busyCount > 0, busyCount, capacity: 64, inService: Array.from({ length: busyCount }, (_, i) => ({ server: i + 1, item: i + 1 })) });
+      window.queueTestUI.sync();
+    }, busyCount);
+    assert.equal(await page.locator('.sim-customer-waiting').count(), 3);
+    assert.equal(await page.locator('.sim-customer-service').count(), Math.min(busyCount, 8));
+    assert.match(await page.locator('.sim-service-status').textContent(), new RegExp(`${busyCount}/64 busy`));
+    await layout(page);
+  }
   assert.deepEqual(errors, []);
   await context.close();
+});
+
+test('all seven simulated measures match the finite-run oracle and changing n does not reset', async () => {
+  const model = fixture(fixed(2), fixed(3)); model.settings.simulation.horizon = 10;
+  const { page, context, errors } = await open(model);
+  await page.locator('#simSpeed').selectOption('250'); await page.locator('#simRun').click();
+  await page.waitForFunction(() => document.querySelector('#simRun').disabled);
+  const expected = { P0: '0.2', Lq: '0.5', L: '1.3', Wq: '0.5', W: '3.5', Pw: '0.8', Pn: '0' };
+  for (const [key, value] of Object.entries(expected)) assert.equal(await page.locator(`#simMeasures [data-measure=${key}] [data-sim-value]`).textContent(), value);
+  assert.match(await page.locator('#simMeasures .sim-cohorts').textContent(), /5 arrived · 2 completed · 3 unfinished/);
+  const clock = await page.locator('#simClock').textContent();
+  await page.locator('#simPopulationN').fill('1'); await page.locator('#simPopulationN').press('Tab');
+  assert.equal(await page.locator('#simMeasures [data-measure=Pn] [data-sim-value]').textContent(), '0.3');
+  assert.equal(await page.locator('#simClock').textContent(), clock);
+  await page.locator('#simReport').click();
+  assert.equal(await page.locator('#simReportContent [data-measure]').count(), 7);
+  await page.locator('#simReportN').fill('0'); await page.locator('#simReportN').press('Tab');
+  assert.equal(await page.locator('#simReportContent [data-measure=Pn] [data-sim-value]').textContent(), '0.2');
+  await page.locator('#simReportN').fill('1.5'); await page.locator('#simReportN').press('Tab');
+  assert.match(await page.locator('#simReportNError').textContent(), /whole-number/);
+  await page.getByRole('button', { name: 'Back to simulation', exact: true }).click();
+  assert.equal(await page.locator('#simClock').textContent(), clock);
+  assert.deepEqual(errors, []); await context.close();
+});
+
+test('Burger Dome two-server native file, seven benchmarks, shared waiting markers, and report layout', async () => {
+  const native = JSON.parse(await readFile(new URL('../mgmt-4570/examples/OPS-11-Burger-Dome-Two-Servers.vsm.json', import.meta.url), 'utf8'));
+  for (const width of [1440, 390]) {
+    const { page, context, errors } = await open(fixture(), { width, height: width < 650 ? 844 : 1000 });
+    await page.locator('#fileInput').setInputFiles({ name: 'Burger-Dome.vsm.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(native)) });
+    await page.locator('#dialogConfirm').click();
+    const expected = { P0: '0.455', Lq: '0.123', L: '0.873', Wq: '0.164', W: '1.164', Pw: '0.205', Pn: '0.048' };
+    for (const [key, value] of Object.entries(expected)) assert.equal(await page.locator(`#simMeasures [data-measure=${key}] [data-theory-value]`).textContent(), value);
+    await page.evaluate(model => { window.referenceEngine = window.VSMSimulation.create(model, model.settings.simulation); }, native);
+    for (let i = 0; i < 35; i++) {
+      await page.locator('#simStep').click();
+      const station = await page.evaluate(() => { window.referenceEngine.step(); return window.referenceEngine.result().stations[0]; });
+      assert.equal(await page.locator('.sim-customer-waiting').count(), Math.min(station.queue, 8));
+      assert.equal(await page.locator('.sim-customer-service').count(), station.busyCount);
+      assert.equal(await page.locator('.sim-service-status').textContent(), `${station.busyCount}/2 busy`);
+    }
+    await layout(page);
+    await page.locator('#simRun').click(); await page.waitForTimeout(300); await page.locator('#simRun').click();
+    const paused = await page.locator('#simBadges').innerHTML();
+    await page.locator('#simulationToggle').uncheck(); await page.locator('#simulationToggle').check();
+    assert.equal(await page.locator('#simBadges').innerHTML(), paused);
+    await page.locator('#simReport').click();
+    const sizing = await page.locator('#dialog').evaluate(dialog => ({ fits: dialog.getBoundingClientRect().width <= innerWidth, noOverflow: dialog.scrollWidth <= dialog.clientWidth }));
+    assert.deepEqual(sizing, { fits: true, noOverflow: true });
+    if (process.env.VSM_SCREENSHOT_DIR) await page.screenshot({ path: `${process.env.VSM_SCREENSHOT_DIR}/queue-measures-${width}.png`, fullPage: true });
+    assert.deepEqual(errors, []); await context.close();
+  }
+});
+
+test('arrival/service distributions, parallel capacity, unit conversion and portable persistence', async () => {
+  const { page, context, errors } = await open();
+  await page.locator('#simSettings').click();
+  const arrival = page.locator('[data-sim-dist="arrival"]'), service = page.locator('[data-sim-dist="process:server"]');
+  await arrival.locator('[data-sim-type]').selectOption('exponential');
+  await arrival.locator('[data-sim-param=mean]').fill('1.3333333333333333');
+  await service.locator('[data-sim-type]').selectOption('exponential'); await service.locator('[data-sim-param=mean]').fill('1');
+  for (const bad of ['0', '1.5', '65']) {
+    await service.locator('[data-sim-servers]').fill(bad);
+    assert.equal(await service.locator('[data-sim-servers]').evaluate(input => input.checkValidity()), false);
+  }
+  await service.locator('[data-sim-servers]').fill('2');
+  await page.locator('#simUnit').selectOption('hours');
+  assert.ok(Math.abs(Number(await arrival.locator('[data-sim-param=mean]').inputValue()) - 1 / 45) < 1e-12);
+  assert.ok(Math.abs(Number(await service.locator('[data-sim-param=mean]').inputValue()) - 1 / 60) < 1e-12);
+  await page.getByRole('button', { name: 'Save settings', exact: true }).click();
+  assert.match(await page.locator('#simMeasures .sim-rates').textContent(), /λ = 45\/hour; μ = 60\/hour per server; c = 2/);
+  await page.locator('#simStep').click();
+  await page.locator('#simPopulationN').fill('7'); await page.locator('#simPopulationN').press('Tab');
+  const downloadEvent = page.waitForEvent('download'); await page.locator('#saveButton').click();
+  const downloaded = await downloadEvent, saved = JSON.parse(await readFile(await downloaded.path(), 'utf8'));
+  assert.equal(saved.states.current.settings.simulation.servers.server, 2);
+  assert.equal(saved.states.current.settings.simulation.occupancyN, 7);
+  assert.equal(saved.states.current.settings.simulation.unit, 'hours');
+  await page.reload(); await page.waitForSelector('.sim-badge');
+  assert.equal(await page.locator('#simPopulationN').inputValue(), '7');
+  assert.match(await page.locator('.sim-service-status').textContent(), /0\/2 busy/);
+  await page.locator('#fileInput').setInputFiles({ name: 'roundtrip.vsm.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(saved)) });
+  await page.locator('#dialogConfirm').click();
+  for (const type of ['fixed', 'uniform', 'triangular', 'lognormal', 'exponential']) {
+    await page.locator('#simSettings').click();
+    await arrival.locator('[data-sim-type]').selectOption(type); await service.locator('[data-sim-type]').selectOption(type);
+    await page.locator('#simHorizon').fill('100');
+    await page.getByRole('button', { name: 'Save settings', exact: true }).click();
+    assert.equal(await page.locator('#simMeasures .sim-benchmark').getAttribute('data-status'), type === 'exponential' ? 'available' : 'unsupported');
+    await page.locator('#simStep').click();
+    assert.equal(await page.locator('.sim-customer-service').count(), 1);
+  }
+  await page.locator('#simSettings').click();
+  await arrival.locator('[data-sim-type]').selectOption('uniform');
+  await service.locator('[data-sim-type]').selectOption('lognormal');
+  await page.locator('#simUnit').selectOption('seconds');
+  assert.equal(Number(await arrival.locator('[data-sim-param=min]').inputValue()), 7200);
+  assert.equal(Number(await arrival.locator('[data-sim-param=max]').inputValue()), 28800);
+  assert.equal(Number(await service.locator('[data-sim-param=mean]').inputValue()), 18000);
+  assert.equal(Number(await service.locator('[data-sim-param=sd]').inputValue()), 3600);
+  await page.getByRole('button', { name: 'Save settings', exact: true }).click();
+  // Duplicate retains the process's explicit parallel capacity.
+  await page.locator('#nodes [data-node=server]').click(); await page.locator('#duplicateElement').click();
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('value-stream-studio-v1')));
+  assert.deepEqual(Object.values(stored.states.current.settings.simulation.servers), [2, 2]);
+  assert.deepEqual(errors, []); await context.close();
+});
+
+test('five-node Burger Dome layout imports with the authoritative capacity, parameters and seed', async () => {
+  const model = fixture({ type: 'exponential', mean: 4 / 3 }, { type: 'exponential', mean: 1 });
+  model.meta.title = 'OPS11.3 Burger Dome Two parallel servers';
+  Object.assign(model.settings.simulation, { servers: { server: 2 }, occupancyN: 3, seed: 'OPS-11-Burger-Dome-MM2' });
+  model.nodes[0].label = 'Servers A+B'; model.nodes[0].x = 400;
+  model.nodes.push(
+    { id: 'entry', type: 'source', label: 'Arrivals', x: 0, y: 0, w: 160, h: 140 },
+    { id: 'line', type: 'fifo', label: 'One shared FIFO line', x: 200, y: 0, w: 160, h: 140 },
+    { id: 'exit', type: 'source', label: 'Orders filled', x: 650, y: 0, w: 160, h: 140 },
+    { id: 'assumptions', type: 'note', label: 'Inherited rates', detail: '45 arrivals/hour; 60/hour PER server. Two-server figure gives no rates.', x: 200, y: 230, w: 300, h: 140 }
+  );
+  model.edges = [{ id: 'e1', from: 'entry', to: 'line', type: 'material' }, { id: 'e2', from: 'line', to: 'server', type: 'fifo' }, { id: 'e3', from: 'server', to: 'exit', type: 'material' }];
+  const { page, context, errors } = await open();
+  await page.locator('#fileInput').setInputFiles({ name: 'parent-burger-dome.vsm.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(model)) });
+  await page.locator('#dialogConfirm').click();
+  assert.equal(await page.locator('#nodes [data-node]').count(), 5);
+  assert.equal(await page.locator('.sim-badge').count(), 1);
+  assert.equal(await page.locator('#simMeasures .sim-benchmark').getAttribute('data-status'), 'available');
+  await page.locator('#simSpeed').selectOption('250'); await page.locator('#simRun').click();
+  await page.waitForFunction(() => document.querySelector('#simRun').disabled);
+  const expected = await page.evaluate(model => { const engine = window.VSMSimulation.create(model, model.settings.simulation); while (engine.step()) {} return engine.result(); }, model);
+  assert.equal(expected.time, 480); assert.ok(expected.completed > 250);
+  for (const [key, value] of Object.entries(expected.queueMeasures).filter(([key]) => key !== 'n')) {
+    const actual = Number((await page.locator(`#simMeasures [data-measure=${key}] [data-sim-value]`).textContent()).replaceAll(',', ''));
+    assert.ok(Math.abs(actual - value) < .00051);
+  }
+  assert.deepEqual(errors, []); await context.close();
+});
+
+test('single-server benchmark, unstable loads, general distributions and multi-process exclusions', async () => {
+  const models = [
+    [fixture({ type: 'exponential', mean: 4 / 3 }, { type: 'exponential', mean: 1 }), 'available'],
+    [fixture({ type: 'exponential', mean: 1 }, { type: 'exponential', mean: 1 }), 'unstable'],
+    [fixture({ type: 'exponential', mean: .5 }, { type: 'exponential', mean: 1 }), 'unstable'],
+    [fixture(fixed(1), { type: 'exponential', mean: 1 }), 'unsupported']
+  ];
+  for (const [model, expected] of models) {
+    const { page, context, errors } = await open(model);
+    assert.equal(await page.locator('#simMeasures .sim-benchmark').getAttribute('data-status'), expected);
+    if (expected === 'available') {
+      for (const [key, value] of Object.entries({ P0: '0.25', Lq: '2.25', L: '3', Wq: '3', W: '4', Pw: '0.75' })) assert.equal(await page.locator(`#simMeasures [data-measure=${key}] [data-theory-value]`).textContent(), value);
+    } else assert.ok((await page.locator('#simMeasures [data-theory-value]').allTextContents()).every(value => value === '—'));
+    if (expected === 'unstable') assert.match(await page.locator('#simMeasures .sim-benchmark').textContent(), /No stable equilibrium/);
+    await page.locator('#simStep').click(); assert.equal(await page.locator('.sim-customer-service').count(), 1);
+    assert.deepEqual(errors, []); await context.close();
+  }
 });
 
 test('real arrivals/completions, Run/Pause/Step/Reset, toggle off/on, and map changes', async () => {

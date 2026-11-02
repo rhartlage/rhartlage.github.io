@@ -39,6 +39,30 @@
 .sim-badge .sim-customer-service{fill:#196b46;stroke:#114c32;stroke-width:.5}
 .sim-badge .sim-service-divider{fill:none;stroke:#9eb5a8}
 .sim-badge .sim-queue-overflow,.sim-badge .sim-service-status{font-size:11px}
+.sim-queue-summary{margin-bottom:20px}
+.sim-queue-summary h3{font-size:14px;margin:0 0 10px;color:var(--navy)}
+.sim-population{display:flex;align-items:center;gap:5px;font-size:12px;flex-wrap:wrap}
+.sim-population input{width:86px;padding:5px 7px;font-size:12px}
+.sim-population+p:empty{display:none}
+.sim-measures-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;margin:12px 0}
+.sim-measures-table caption{text-align:left;font-size:12px;font-weight:650;margin-bottom:8px}
+.sim-measures-table th,.sim-measures-table td{padding:9px 3px;border-bottom:1px solid var(--line);overflow-wrap:anywhere;vertical-align:middle}
+.sim-measures-table thead th{font-size:10px;color:#4b5f73;text-align:right}
+.sim-measures-table th:first-child{width:48%;text-align:left}
+.sim-measures-table tbody th b{font-size:15px;color:#195642}
+.sim-measures-table tbody th span{display:block;font-size:10px;font-weight:400;line-height:1.4;margin-top:3px}
+.sim-measures-table td{text-align:right;font-size:13px;font-weight:650;font-variant-numeric:tabular-nums}
+.sim-measures-table [data-theory-value]{color:#53677c;font-weight:500}
+.sim-input-summary,.sim-benchmark p,.sim-cohorts,.sim-measure-notes{font-size:11px;line-height:1.55;overflow-wrap:anywhere}
+.sim-benchmark{padding:10px;background:#eef2f7;border-left:3px solid #7488a2;border-radius:4px}
+.sim-benchmark h4{font-size:12px;margin:0 0 5px}
+.sim-benchmark p{margin:4px 0}
+.sim-benchmark[data-status=unstable]{background:#fff2e8;border-color:#af5c25}
+.sim-measure-notes{margin:12px 0}.sim-measure-notes summary{cursor:pointer;font-weight:650}
+.sim-station-card small{font-size:10px;font-weight:400}
+.sim-capacity{grid-column:1/-1;max-width:360px}.sim-capacity small{line-height:1.5}
+.sim-dialog .sim-measures-table{font-size:14px}.sim-dialog .sim-measures-table td{font-size:17px}
+.sim-dialog .sim-measures-table tbody th span,.sim-dialog .sim-input-summary,.sim-dialog .sim-benchmark p,.sim-dialog .sim-cohorts,.sim-dialog .sim-measure-notes{font-size:12px}
 .sim-dialog{width:760px;max-height:90vh;overflow:auto}
 .sim-experiment{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .sim-experiment label,.sim-distribution label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:#4b5f73}

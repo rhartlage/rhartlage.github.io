@@ -9,6 +9,10 @@
     lognormal: { label: 'Lognormal', parameters: [['mean', 'Mean duration'], ['sd', 'Standard deviation']], defaults: { mean: 5, sd: 1 } }
   };
   const units = { seconds: 1, minutes: 60, hours: 3600 };
+  function populationIndex(value = 3) {
+    if (!Number.isSafeInteger(value) || value < 0 || value > 25000) throw Error('Choose a whole-number population n from 0 to 25,000.');
+    return value;
+  }
   function distribution(raw) {
     if (!raw || !Object.hasOwn(distributions, raw.type)) throw Error('Choose a supported time distribution.');
     const clean = { type: raw.type };
@@ -33,14 +37,17 @@
     if (typeof horizon !== 'number' || !Number.isFinite(horizon) || horizon <= 0 || horizon > 1e9) throw Error('Run duration must be positive and no larger than 1,000,000,000.');
     const seed = raw.seed ?? '1';
     if (typeof seed !== 'string' || !seed.trim() || seed.length > 80) throw Error('Enter a random seed of 1–80 characters.');
-    const processes = Object.create(null);
+    const processes = Object.create(null), servers = Object.create(null);
     for (const node of nodes.filter(n => n.type === 'process')) {
       const seconds = parseDuration?.(node.cycle, hoursPerDay)?.seconds;
       const value = Number.isFinite(seconds) && seconds > 0 && seconds / units[unit] <= 1e9 ? seconds / units[unit] : 5;
       try { processes[node.id] = distribution(raw.processes?.[node.id] ?? { type: 'fixed', value }); }
       catch (error) { throw Error(`${node.label || 'Process'}: ${error.message}`); }
+      const capacity = raw.servers?.[node.id] ?? 1;
+      if (!Number.isSafeInteger(capacity) || capacity < 1 || capacity > 64) throw Error(`${node.label || 'Process'}: choose 1-64 parallel servers sharing one FIFO queue.`);
+      servers[node.id] = capacity;
     }
-    return { enabled: raw.enabled === true, unit, horizon, seed, arrival: distribution(raw.arrival ?? { type: 'exponential', mean: 5 }), processes };
+    return { enabled: raw.enabled === true, unit, horizon, seed, arrival: distribution(raw.arrival ?? { type: 'exponential', mean: 5 }), processes, servers, occupancyN: populationIndex(raw.occupancyN) };
   }
   // Material-flow connectors define routing; information links and unattached annotations do not.
   function route(map) {
@@ -100,6 +107,33 @@
       default: throw Error('Unsupported distribution.');
     }
   }
+  function meanDuration(d) {
+    if (d.type === 'fixed') return d.value;
+    if (d.type === 'uniform') return (d.min + d.max) / 2;
+    if (d.type === 'triangular') return (d.min + d.mode + d.max) / 3;
+    return d.mean;
+  }
+  // Log-normalized Erlang C avoids factorial overflow and keeps c=1 as a special case.
+  function benchmark(map, config, n = config?.occupancyN ?? map.settings?.simulation?.occupancyN ?? 3) {
+    populationIndex(n);
+    let ordered;
+    try { ordered = route(map); } catch (error) { return { status: 'unsupported', reason: error.message }; }
+    if (ordered.length !== 1) return { status: 'unsupported', reason: 'M/M/c theory applies to one process with one shared FIFO line. This map has multiple processes; simulation measures describe the whole system.' };
+    const cfg = settings(config ?? map.settings?.simulation, map.nodes), id = ordered[0].id;
+    if (cfg.arrival.type !== 'exponential' || cfg.processes[id].type !== 'exponential') return { status: 'unsupported', reason: 'M/M/c theory requires exponential interarrival and per-server service times. These distributions can still be simulated.' };
+    const capacity = cfg.servers[id], lambda = 1 / cfg.arrival.mean, mu = 1 / cfg.processes[id].mean;
+    const a = lambda / mu, rho = a / capacity, kind = `M/M/${capacity}`;
+    const rates = { kind, lambda, mu, capacity, rho, offeredLoad: a };
+    if (rho >= 1) return { ...rates, status: 'unstable', reason: 'No stable equilibrium: arrival rate is at least total service capacity (λ ≥ cμ). Finite-run simulation still works; no steady-state benchmark exists.' };
+    const weights = [0];
+    for (let k = 1; k <= capacity; k++) weights.push(weights[k - 1] + Math.log(a) - Math.log(k));
+    const tail = weights[capacity] - Math.log1p(-rho), terms = [...weights.slice(0, capacity), tail];
+    const max = Math.max(...terms), normalizer = max + Math.log(terms.reduce((sum, value) => sum + Math.exp(value - max), 0));
+    const P0 = Math.exp(-normalizer), Pw = Math.exp(tail - normalizer);
+    const Lq = Pw * rho / (1 - rho), Wq = Pw / (capacity * mu * (1 - rho));
+    const Pn = Math.exp((n < capacity ? weights[n] : weights[capacity] + (n - capacity) * Math.log(rho)) - normalizer);
+    return { ...rates, status: 'available', values: { P0, Lq, L: Lq + a, Wq, W: Wq + 1 / mu, Pw, Pn, n } };
+  }
   const before = (a, b) => a.time < b.time || (a.time === b.time && (a.kind < b.kind || (a.kind === b.kind && a.sequence < b.sequence)));
   class Events {
     constructor() { this.heap = []; }
@@ -125,35 +159,49 @@
   function create(map, config) {
     const ordered = route(map), cfg = settings(config ?? map.settings?.simulation, map.nodes);
     const arrivalRandom = random(`${cfg.seed}:arrivals`), events = new Events();
-    const stations = ordered.map(node => ({ id: node.id, label: node.label, distribution: cfg.processes[node.id], rng: random(`${cfg.seed}:process:${node.id}`), queue: [], busy: null, started: 0, completed: 0, wait: 0, busyArea: 0, queueArea: 0, maxQueue: 0 }));
-    let time = 0, arrived = 0, completed = 0, totalLead = 0, wipArea = 0, sequence = 0, steps = 0, done = false;
+    const stations = ordered.map(node => ({ id: node.id, label: node.label, distribution: cfg.processes[node.id],
+      servers: Array.from({ length: cfg.servers[node.id] }, (_, i) => ({ busy: null, until: 0, rng: random(`${cfg.seed}:process:${node.id}${i ? `:server:${i + 1}` : ''}`) })),
+      queue: [], entered: 0, delayed: 0, started: 0, completed: 0, wait: 0, completedWait: 0, busyArea: 0, queueArea: 0, maxQueue: 0 }));
+    let time = 0, arrived = 0, completed = 0, totalLead = 0, totalQueueWait = 0, wipArea = 0, sequence = 0, steps = 0, done = false;
+    const occupancyTime = new Map();
     const log = [];
     function record(message) { log.push({ time, message }); if (log.length > 120) log.shift(); }
-    function schedule(duration, kind, station) {
+    function schedule(duration, kind, station, server) {
       const next = time + duration;
       if (!Number.isFinite(next) || duration <= 0 || next <= time) throw Error('A sampled duration is outside numerical limits. Adjust the distribution parameters or time unit.');
-      events.push({ time: next, kind, station, sequence: sequence++ });
+      events.push({ time: next, kind, station, server, sequence: sequence++ });
+      return next;
     }
     function advance(next) {
       const elapsed = next - time;
+      if (elapsed > 0) occupancyTime.set(arrived - completed, (occupancyTime.get(arrived - completed) ?? 0) + elapsed);
       wipArea += (arrived - completed) * elapsed;
       for (const station of stations) {
         station.queueArea += station.queue.length * elapsed;
-        if (station.busy) station.busyArea += elapsed;
+        station.busyArea += station.servers.filter(server => server.busy).length * elapsed;
       }
       time = next;
     }
     function start(index) {
       const station = stations[index];
-      if (station.busy || !station.queue.length) return;
-      // Validate/schedule before changing queue state, so a numerical failure stays coherent.
-      schedule(sample(station.distribution, station.rng), 0, index);
-      const item = station.queue.shift(); station.busy = item;
-      station.wait += time - item.entered; station.started++;
-      record(`Item ${item.id} started ${station.label}.`);
+      for (let i = 0; i < station.servers.length && station.queue.length; i++) {
+        const server = station.servers[i];
+        if (server.busy) continue;
+        // Schedule before removing from FIFO so numerical failures stay coherent.
+        server.until = schedule(sample(station.distribution, server.rng), 0, index, i);
+        const item = station.queue.shift(); server.busy = item;
+        item.stationWait = time - item.entered; item.queueWait += item.stationWait;
+        station.wait += item.stationWait; station.started++;
+        record(`Item ${item.id} started ${station.label}${station.servers.length > 1 ? ` (server ${i + 1})` : ''}.`);
+      }
     }
     function enter(index, item) {
-      const station = stations[index]; item.entered = time; station.queue.push(item);
+      const station = stations[index];
+      // Completions pending at this exact timestamp provide zero-delay capacity.
+      const availableNow = station.servers.filter(server => !server.busy || server.until === time).length;
+      station.entered++;
+      if (station.queue.length >= availableNow) station.delayed++;
+      item.entered = time; station.queue.push(item);
       record(`Item ${item.id} joined the queue for ${station.label}.`);
       start(index);
       station.maxQueue = Math.max(station.maxQueue, station.queue.length);
@@ -167,30 +215,39 @@
       const event = events.pop(); advance(event.time); steps++;
       try {
         if (event.kind === 1) {
-          const item = { id: ++arrived, arrived: time, entered: time };
+          const item = { id: ++arrived, arrived: time, entered: time, queueWait: 0, stationWait: 0 };
           record(`Item ${item.id} arrived at the map entry.`); enter(0, item);
           schedule(sample(cfg.arrival, arrivalRandom), 1);
         } else {
-          const station = stations[event.station], item = station.busy;
-          station.busy = null; station.completed++;
+          const station = stations[event.station], server = station.servers[event.server], item = server.busy;
+          server.busy = null; station.completed++; station.completedWait += item.stationWait;
           record(`Item ${item.id} finished ${station.label}.`);
           if (event.station + 1 < stations.length) enter(event.station + 1, item);
-          else { completed++; totalLead += time - item.arrived; record(`Item ${item.id} exited the map.`); }
+          else { completed++; totalLead += time - item.arrived; totalQueueWait += item.queueWait; record(`Item ${item.id} exited the map.`); }
           start(event.station);
         }
       } catch (error) { done = true; record(`Stopped: ${error.message} Results are partial.`); }
       return true;
     }
-    function result() {
+    function result(n = cfg.occupancyN) {
+      populationIndex(n);
+      const queueArea = stations.reduce((sum, s) => sum + s.queueArea, 0);
       return {
         time, done, steps, arrived, completed, wip: arrived - completed,
         averageWip: time ? wipArea / time : 0, throughput: time ? completed / time : 0,
         averageLead: completed ? totalLead / completed : null,
-        stations: stations.map(s => ({ id: s.id, label: s.label, queue: s.queue.length, busy: !!s.busy, item: s.busy?.id ?? null, started: s.started, completed: s.completed, averageWait: s.started ? s.wait / s.started : null, utilization: time ? s.busyArea / time : 0, averageQueue: time ? s.queueArea / time : 0, maxQueue: s.maxQueue })),
+        delayedArrivals: stations[0].delayed, completedQueueWait: totalQueueWait, completedSystemTime: totalLead,
+        queueMeasures: { P0: time ? (occupancyTime.get(0) ?? 0) / time : null, Lq: time ? queueArea / time : null, L: time ? wipArea / time : null, Wq: completed ? totalQueueWait / completed : null, W: completed ? totalLead / completed : null, Pw: arrived ? stations[0].delayed / arrived : null, Pn: time ? (occupancyTime.get(n) ?? 0) / time : null, n },
+        stations: stations.map(s => {
+          const inService = s.servers.flatMap((server, i) => server.busy ? [{ server: i + 1, item: server.busy.id }] : []);
+          return { id: s.id, label: s.label, queue: s.queue.length, busy: inService.length > 0, item: inService[0]?.item ?? null, inService, busyCount: inService.length, capacity: s.servers.length, entered: s.entered, delayed: s.delayed, delayProbability: s.entered ? s.delayed / s.entered : null, started: s.started, completed: s.completed, averageWait: s.started ? s.wait / s.started : null, completedAverageWait: s.completed ? s.completedWait / s.completed : null, utilization: time ? s.busyArea / (s.servers.length * time) : 0, averageBusy: time ? s.busyArea / time : 0, averageQueue: time ? s.queueArea / time : 0, maxQueue: s.maxQueue };
+        }),
         log: log.map(entry => ({ ...entry }))
       };
     }
-    return { step, result };
+    // Enumerate only on request; normal playback never copies a 25,001-bin histogram.
+    const occupancy = () => [...occupancyTime].sort((a, b) => a[0] - b[0]).map(([population, duration]) => ({ population, duration, probability: duration / time }));
+    return { step, result, occupancy };
   }
-  globalThis.VSMSimulation = { distributions, units, distribution, settings, route, random, sample, create };
+  globalThis.VSMSimulation = { distributions, units, distribution, settings, route, random, sample, meanDuration, benchmark, populationIndex, create };
 })();

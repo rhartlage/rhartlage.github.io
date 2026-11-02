@@ -1,0 +1,45 @@
+{
+  "format": "value-stream-studio",
+  "version": 1,
+  "meta": {
+    "title": "Burger Dome · One FIFO Line, Two Servers",
+    "author": "Classroom demonstration",
+    "date": "2026-11-02",
+    "state": "current"
+  },
+  "nodes": [
+    {
+      "id": "server",
+      "type": "process",
+      "label": "Burger Dome · 2 servers",
+      "detail": "One shared FIFO line; next available server",
+      "notes": "Figure 11.3 structure: one waiting line feeding two parallel homogeneous servers; each customer uses just one server. Numerical assumption inherited from the prior single-server classroom example: exponential arrivals 45/hour (mean interarrival 4/3 minutes), exponential service 60/hour PER server (mean 1 minute). The two-server figure itself does not specify rates. Start empty, infinite queue, independent streams, no warm-up deletion. M/M/2 benchmark: P0=5/11; Pw=9/44; Lq=27/220; L=48/55; Wq=9/55 minutes; W=64/55 minutes; utilization=.375. Simulation results will vary from steady state.",
+      "x": 0,
+      "y": 0,
+      "w": 260,
+      "h": 152,
+      "cycle": "1 min",
+      "changeover": "",
+      "operators": "2",
+      "uptime": "",
+      "color": "#265c99",
+      "direction": "right",
+      "timeIncluded": true
+    }
+  ],
+  "edges": [],
+  "view": { "x": 120, "y": 180, "scale": 1 },
+  "settings": {
+    "hoursPerDay": 24,
+    "simulation": {
+      "enabled": true,
+      "unit": "minutes",
+      "horizon": 480,
+      "seed": "OPS-11-Burger-Dome-MM2",
+      "arrival": { "type": "exponential", "mean": 1.3333333333333333 },
+      "processes": { "server": { "type": "exponential", "mean": 1 } },
+      "servers": { "server": 2 },
+      "occupancyN": 3
+    }
+  }
+}
