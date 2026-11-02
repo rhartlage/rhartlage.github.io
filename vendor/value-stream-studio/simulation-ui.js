@@ -5,6 +5,8 @@ window.VSMSimulationUI = (() => {
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const fmt = value => value == null ? '—' : Number(value).toLocaleString(undefined, { maximumFractionDigits: 3 });
+  // Anonymous count markers, not item identities or positions within the FIFO queue.
+  const customer = (x, y, kind) => `<g class="sim-customer sim-customer-${kind}" transform="translate(${x} ${y})" aria-hidden="true"><circle cx="4" cy="3" r="3"/><path d="M0 15V9a4 4 0 0 1 8 0v6Z"/></g>`;
   function mount({ getMap, change, dialog, toast }) {
     let engine = null, timer = null, signature = '', config, routeError = '', resetNotice = '';
     const readConfig = () => {
@@ -48,7 +50,9 @@ window.VSMSimulationUI = (() => {
       $('simBadges').innerHTML = !config.enabled ? '' : states.map(s => {
         const n = map.nodes.find(node => node.id === s.id);
         if (!n) return '';
-        return `<g transform="translate(${n.x} ${n.y - 35})" class="sim-badge ${s.busy ? 'sim-busy' : ''}"><title>${esc(s.label)}: ${s.queue} waiting; ${s.busy ? 'busy' : 'idle'}</title><rect width="${Math.max(n.w, 160)}" height="27" rx="5"/><text x="9" y="18">Queue: ${s.queue} · ${s.busy ? `Busy #${s.item}` : 'Idle'}</text></g>`;
+        const description = `${s.label}: ${s.queue} waiting; ${s.busy ? `busy, item #${s.item} in service (not included in waiting count)` : 'idle, no item in service'}. Symbols represent counts, not customer identities or queue positions.`;
+        const waiting = Array.from({ length: Math.min(s.queue, 8) }, (_, i) => customer(9 + i * 13, 20, 'waiting')).join('');
+        return `<g transform="translate(${n.x} ${n.y - 76})" class="sim-badge ${s.busy ? 'sim-busy' : ''}" role="img" aria-label="${esc(description)}"><title>${esc(description)}</title><rect class="sim-badge-background" width="${Math.max(n.w, 190)}" height="68" rx="5"/><text x="9" y="14">Queue: ${s.queue} waiting</text>${waiting}${s.queue > 8 ? `<text class="sim-queue-overflow" x="116" y="32">+${s.queue - 8} more</text>` : ''}<path class="sim-service-divider" d="M9 42H${Math.max(n.w, 190) - 9}"/>${s.busy ? customer(9, 47, 'service') : ''}<text class="sim-service-status" x="${s.busy ? 26 : 9}" y="59">${s.busy ? `In service: #${s.item} (busy)` : 'Idle: no one in service'}</text></g>`;
       }).join('');
     }
     function ensureEngine() {

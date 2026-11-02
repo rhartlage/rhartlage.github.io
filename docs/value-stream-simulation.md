@@ -2,6 +2,8 @@
 
 Version 1.2.0 adds an optional **Simulation mode** switch controlled by students. New maps start with it off. Enabling it exposes settings, queue/status badges, Run/Pause, Step to next event, Reset, an event log, and results. Turning it off pauses and hides the experiment, retaining its transient state until the map changes or the page reloads.
 
+Version 1.2.1 adds up to eight customer symbols above each process, directly from that station's current waiting count, with `+N more` for overflow. A separate row shows the item in service, excluded from the waiting count. Symbols represent counts, not customer identities or FIFO positions. Numerical count/status text and an accessible description remain available. The model, engine, saved-map format, distributions, and seeds are unchanged.
+
 ## Classroom workflow
 
 1. Build one directed material path through every Process block. Storage, source/customer, and transport symbols can lie along the path. Information links do not carry simulated items.
@@ -42,3 +44,7 @@ The pure browser/Node engine is `simulation.js`; `simulation-ui.js` owns the tra
 Run `npm run test:simulation`, `npm run build`, `npm run validate`, and `npm run validate:secrets`. The engine checks include a hand-calculated tandem queue, boundary/tie behavior, item conservation, empirical distribution moments, reproducibility, old-map defaults, and malformed-graph rejection. Browser acceptance additionally checks switching, configuration validation, step/run/pause/reset, map edits, state switching, save/reload/import, and responsive layout.
 
 If sibling source checkouts have stale Git pointers, set `PUBLIC_TOOL_REPOS_DIR` to the absolute `.tool-cache` directory in this repository for the build. This uses the repository's existing public clone fallback and keeps all source commit pins unchanged.
+
+Queue display acceptance: after building, run `npm run test:queue-ui` with Playwright and its Chromium installed. An isolated installation can be selected with `VSM_PLAYWRIGHT_MODULE` (module file URL) and `PLAYWRIGHT_BROWSERS_PATH`. Tests launch a fresh headless browser profile. They cover 0/1/8/9/24,999 waiting counts, service separately, real event transitions, controls, state switching, map import, a tandem queue, and the seeded classroom M/M/1 model at desktop and 390-pixel width. Set `VSM_TEST_URL` to the public app URL to repeat against the deployed bytes; optional `VSM_SCREENSHOT_DIR` saves visual evidence.
+
+Release base: `f440469c6479f44b3aafc460fc1e19b1b43d88a0` on `agent/value-stream-simulation-20260929` (draft PR #10), verified against all 82 live assets on 2026-11-02 before editing. The prior Worker version is `961c99ef-6502-42e6-81b4-c923f5675d13`. Deploy through the existing public-hosting workflow; only the two simulation display assets and generated manifest should differ. All other runtime assets and source pins must match the baseline. Roll back to the recorded Worker version if acceptance fails.

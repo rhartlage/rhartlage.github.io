@@ -32,9 +32,13 @@
 .sim-station-card dd{font-size:13px;margin:4px 0 0;font-variant-numeric:tabular-nums}
 .sim-note{font-size:10px;color:#606574;line-height:1.4;margin:8px 0 0}
 .sim-badge{pointer-events:none}
-.sim-badge rect{fill:#f4f8f5;stroke:#9eb5a8}
+.sim-badge .sim-badge-background{fill:#f4f8f5;stroke:#9eb5a8}
 .sim-badge text{fill:#305749;font-size:12px;font-weight:600;font-family:inherit}
-.sim-badge.sim-busy rect{fill:#d9efe3;stroke:#34805d}
+.sim-badge.sim-busy .sim-badge-background{fill:#d9efe3;stroke:#34805d}
+.sim-badge .sim-customer-waiting{fill:#305749}
+.sim-badge .sim-customer-service{fill:#196b46;stroke:#114c32;stroke-width:.5}
+.sim-badge .sim-service-divider{fill:none;stroke:#9eb5a8}
+.sim-badge .sim-queue-overflow,.sim-badge .sim-service-status{font-size:11px}
 .sim-dialog{width:760px;max-height:90vh;overflow:auto}
 .sim-experiment{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .sim-experiment label,.sim-distribution label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:#4b5f73}
@@ -50,6 +54,6 @@
 .sim-event-list time{font-weight:650;color:#195642}
 @media(max-width:1100px){.sim-controls label{margin-left:0}}
 @media(max-width:850px){.details-stack{position:absolute;right:12px;top:115px;width:230px;max-height:calc(100% - 140px);z-index:10}.details-stack .inspector-panel{position:static;width:auto;max-height:none;border-radius:0;box-shadow:none}.details-stack:has(.inspector-panel.empty):not(.simulation-enabled){display:none}.workspace:has(.simulation-enabled){grid-template-rows:minmax(270px,1fr) auto;overflow:auto}.details-stack.simulation-enabled{position:static;grid-column:1/-1;width:auto;max-height:210px;border-top:1px solid var(--line);z-index:auto}.simulation-results{padding:12px}.sim-metrics{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:8px}.simulation-results h2{margin-bottom:12px}#simStations{display:grid;grid-template-columns:1fr 1fr;gap:14px}}
-@media(max-width:650px){.workspace:has(.simulation-enabled){grid-template-rows:minmax(540px,1fr) auto}.sim-distribution{grid-template-columns:1fr}.sim-experiment{grid-template-columns:1fr 1fr}.sim-parameters{grid-template-columns:1fr 1fr}.simulation-panel{padding:8px}.sim-metrics strong{font-size:15px}.sim-controls button{padding:5px 7px}.simulation-switch{font-size:11px}.sim-metrics{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.workspace:has(.simulation-enabled){grid-template-rows:minmax(660px,1fr) auto}.sim-distribution{grid-template-columns:1fr}.sim-experiment{grid-template-columns:1fr 1fr}.sim-parameters{grid-template-columns:1fr 1fr}.simulation-panel{padding:8px}.sim-metrics strong{font-size:15px}.sim-controls button{padding:5px 7px}.simulation-switch{font-size:11px}.sim-metrics{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){.simulation-switch input:before{transition:none}}
 @media print{.simulation-panel,.simulation-results,.simulation-switch{display:none}}
