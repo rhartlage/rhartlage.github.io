@@ -359,6 +359,7 @@ const directHomeRoutes = [
   "/linear-programming-3d/",
   "/bus-3150/",
   "/mgmt-4570/",
+  "/mgmt-4570/value-stream-mapping/",
 ];
 const homeHrefCounts = anchorHrefCounts(rootHtml);
 const suiteHrefCounts = anchorHrefCounts(bus2150Html);
