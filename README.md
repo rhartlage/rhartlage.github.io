@@ -13,11 +13,12 @@ The previous `https://rhartlage.github.io/` site remains a compatibility surface
 
 `tool-sources.json` pins eleven teaching-tool suites to exact public source repository commits. `npm run build` copies only the allowlisted static files from those commits into `dist/`; it does not copy unrelated repository files, local state, credentials, or provider configuration.
 
-The MGMT-4570 Lean Operations Management course adds Value Stream Studio from the supplied portable release. `static-tools.json` separately pins its archive and five runtime files by SHA-256. Maps autosave in the user's browser and can be saved as a portable file; the app does not upload maps.
+The MGMT-4570 Lean Operations Management course includes Value Stream Studio 1.2.0, derived from the supplied portable release with an optional student-controlled discrete-event simulation. `static-tools.json` preserves the original archive provenance and separately pins all eight current runtime files by SHA-256. Maps and simulation settings autosave in the user's browser and can be saved as a portable file; the app does not upload maps. See [simulation behavior and validation](docs/value-stream-simulation.md).
 
 ```powershell
 npm run build
 npm run validate
+npm run test:simulation
 npm run preview
 ```
 
