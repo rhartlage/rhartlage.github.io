@@ -57,6 +57,44 @@ async function check(page, queue, busy, item) {
     assert.match(await page.locator('.sim-badge').getAttribute('aria-label'), /not included in waiting count/);
   }
 }
+
+test('10,000 events/sec processes 2,500 events per tick without changing the experiment', async () => {
+  const model = fixture({ type: 'exponential', mean: 4 / 3 }, { type: 'exponential', mean: 1 });
+  model.settings.simulation.horizon = 40000;
+  const { page, context, errors } = await open(model);
+  assert.deepEqual(await page.locator('#simSpeed option').allTextContents(), ['4 events/sec', '40 events/sec', '1,000 events/sec', '10,000 events/sec']);
+  await page.evaluate(model => {
+    const create = window.VSMSimulation.create;
+    window.referenceEngine = create(model, model.settings.simulation);
+    window.VSMSimulation.create = (...args) => (window.speedEngine = create(...args));
+  }, model);
+  await page.clock.install();
+  await page.locator('#simSpeed').selectOption('2500');
+  await page.locator('#simRun').click();
+  await page.clock.runFor(250);
+  assert.equal(await page.evaluate(() => window.speedEngine.result().steps), 2500);
+  await page.locator('#simRun').click();
+  const paused = await page.evaluate(() => window.speedEngine.result());
+  await page.clock.runFor(1000);
+  assert.deepEqual(await page.evaluate(() => window.speedEngine.result()), paused);
+  await page.locator('#simStep').click();
+  assert.equal(await page.evaluate(() => window.speedEngine.result().steps), 2501);
+  await page.locator('#simRun').click();
+  await page.clock.runFor(5000);
+  const results = await page.evaluate(() => {
+    while (window.referenceEngine.step()) {}
+    return { playback: window.speedEngine.result(), reference: window.referenceEngine.result() };
+  });
+  assert.deepEqual(results.playback, results.reference);
+  assert.equal(results.playback.arrived, 25000);
+  assert.match(await page.locator('#simMessage').textContent(), /Safety limit reached/);
+  assert.equal(await page.locator('#simRun').isDisabled(), true);
+  await page.locator('#simReset').click();
+  assert.match(await page.locator('#simClock').textContent(), /^0 \/ 40,000/);
+  assert.equal(await page.locator('#simSpeed').inputValue(), '2500');
+  assert.deepEqual(errors, []);
+  await context.close();
+});
 async function layout(page) {
   const result = await page.evaluate(() => {
     const badge = document.querySelector('.sim-badge');
