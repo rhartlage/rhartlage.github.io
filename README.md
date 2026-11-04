@@ -7,6 +7,8 @@ Primary site:
 - `https://tools.benhartlage.com/`
 - `https://tools.benhartlage.com/tools/` (directory alias)
 
+[Inverse Transform Lab](https://tools.benhartlage.com/inverse-transform/) is a first-party static demonstration shared by Statistics and Operations. Follow uniform draws through a CDF into five distributions and compare repeated samples with theory. See [numerical behavior and validation](docs/inverse-transform.md).
+
 The previous `https://rhartlage.github.io/` site remains a compatibility surface until Ben accepts the replacement and separately retires GitHub Pages publication.
 
 ## Deterministic composition

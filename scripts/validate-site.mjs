@@ -74,6 +74,10 @@ function assertOrdered(source, firstNeedle, secondNeedle, description) {
 }
 
 const requiredRoutes = [
+  "inverse-transform/index.html",
+  "inverse-transform/math.js",
+  "inverse-transform/app.js",
+  "inverse-transform/styles.css",
   "index.html",
   "tools/index.html",
   "bus-2150/index.html",
@@ -348,6 +352,7 @@ const groupedLabRoutes = [
   "/categorical-risk/",
 ];
 const directHomeRoutes = [
+  "/inverse-transform/",
   "/bus-2150/",
   "/normal-area/",
   "/t-distribution/",
@@ -371,8 +376,8 @@ if (JSON.stringify(actualHomeToolRoutes.sort()) !== JSON.stringify([...directHom
   );
 }
 for (const route of directHomeRoutes) {
-  if (homeHrefCounts.get(route) !== 1) {
-    fail(`Root hub expected exactly one direct link to ${route}`);
+  if (homeHrefCounts.get(route) !== (route === "/inverse-transform/" ? 2 : 1)) {
+    fail(`Root hub has the wrong number of direct links to ${route}`);
   }
 }
 const actualSuiteToolRoutes = [...suiteHrefCounts.keys()].filter(isLocalPageRoute);
@@ -443,8 +448,19 @@ if (!anovaApp.includes('q.get("lab")==="anova"')) {
 // Preserve the Student t explorer's position and append the Power & Error Explorer.
 const statisticsSection = rootHtml.slice(statisticsSectionIndex, operationsSectionIndex);
 const statisticsCards = [...statisticsSection.matchAll(/<article class="tool-card">[\s\S]*?<\/article>/g)].map(match => match[0]);
-if (statisticsCards.length !== 7 || !statisticsCards[4].includes('/statistical-investigation/') || !statisticsCards[5].includes('/t-distribution/') || !statisticsCards[6].includes('/power-error/')) {
+if (statisticsCards.length !== 8 || !statisticsCards[4].includes('/statistical-investigation/') || !statisticsCards[5].includes('/t-distribution/') || !statisticsCards[6].includes('/power-error/') || !statisticsCards[7].includes('/inverse-transform/')) {
   fail('Power & Error Explorer must be the seventh statistics card, after Student t Distribution Explorer.');
+}
+
+const operationsSection = rootHtml.slice(operationsSectionIndex, rootHtml.indexOf('id="lean-operations"'));
+if (!operationsSection.includes('href="/inverse-transform/"')) fail('Operations must list Inverse Transform Lab.');
+const nativeManifest = JSON.parse(await readFile(path.join(distRoot, 'deployment-manifest.json'), 'utf8')).nativeTools;
+if (nativeManifest?.length !== 1 || nativeManifest[0].id !== 'inverse-transform') fail('Missing native tool provenance.');
+for (const [file, hash] of Object.entries(nativeManifest?.[0]?.files ?? {})) {
+  const source = await readFile(path.join(repoRoot, 'inverse-transform', file));
+  const output = await readFile(path.join(distRoot, 'inverse-transform', file));
+  if (!source.equals(output) || createHash('sha256').update(output).digest('hex') !== hash) fail(`Inverse transform asset mismatch: ${file}`);
+  for (const [label, pattern] of forbiddenRuntimePatterns) if (pattern.test(source.toString())) fail(`inverse-transform: forbidden ${label} in ${file}`);
 }
 
 if (errors.length) {
