@@ -45,6 +45,70 @@ async function open(map = fixture(), viewport = { width: 1440, height: 1000 }) {
   await page.waitForSelector('.sim-badge');
   return { page, context, errors };
 }
+test('Normal inputs require explicit SD, convert units, persist and replay at desktop and narrow widths', async () => {
+  for (const width of [1440, 390]) {
+    const { page, context, errors } = await open(fixture(), { width, height: 1000 });
+    await page.locator('#simSettings').click();
+    const arrival = page.locator('[data-sim-dist="arrival"]'), service = page.locator('[data-sim-dist="process:server"]');
+    for (const field of [arrival, service]) {
+      await field.locator('[data-sim-type]').selectOption('normal');
+      assert.equal(await field.locator('[data-sim-param=mean]').inputValue(), '');
+      assert.equal(await field.locator('[data-sim-param=sd]').inputValue(), '');
+      assert.equal(await field.locator('[data-sim-param=sd]').evaluate(input => input.checkValidity()), false);
+      assert.match(await field.locator('.sim-normal-help').textContent(), /resampled.*raises the resulting mean/);
+      await field.locator('[data-sim-param=mean]').fill('2');
+      await field.locator('[data-sim-param=sd]').fill('-1');
+      assert.equal(await field.locator('[data-sim-param=sd]').evaluate(input => input.checkValidity()), false);
+      await field.locator('[data-sim-param=sd]').fill('2');
+    }
+    await arrival.locator('[data-sim-param=mean]').fill('2.5');
+    await arrival.locator('[data-sim-param=sd]').fill('0.5'); // Illustrative test parameter, not a Murphy source value.
+    await page.locator('#simUnit').selectOption('seconds');
+    assert.equal(Number(await arrival.locator('[data-sim-param=mean]').inputValue()), 150);
+    assert.equal(Number(await arrival.locator('[data-sim-param=sd]').inputValue()), 30);
+    assert.equal(Number(await service.locator('[data-sim-param=mean]').inputValue()), 120);
+    assert.equal(Number(await service.locator('[data-sim-param=sd]').inputValue()), 120);
+    await page.locator('#simUnit').selectOption('hours');
+    assert.ok(Math.abs(Number(await service.locator('[data-sim-param=sd]').inputValue()) - 1 / 30) < 1e-12);
+    await page.locator('#simUnit').selectOption('minutes');
+    await page.locator('#simHorizon').fill('40');
+    await page.locator('#simSeed').fill('normal-ui');
+    assert.equal(await page.locator('#dialog').evaluate(d => d.scrollWidth <= d.clientWidth), true);
+    await page.getByRole('button', { name: 'Save settings', exact: true }).click();
+    assert.match(await page.locator('.sim-input-summary').textContent(), /mean 2\.575 minutes per server/);
+    assert.match(await page.locator('.sim-normal-summary').textContent(), /positive-time distribution, not the underlying Normal mean/);
+    assert.equal(await page.locator('.sim-benchmark').getAttribute('data-status'), 'unsupported');
+    const downloadEvent = page.waitForEvent('download'); await page.locator('#saveButton').click();
+    const downloaded = await downloadEvent, saved = JSON.parse(await readFile(await downloaded.path(), 'utf8'));
+    const cfg = saved.states.current.settings.simulation;
+    assert.equal(cfg.arrival.type, 'normal'); assert.equal(cfg.processes.server.type, 'normal');
+    assert.ok(Math.abs(cfg.arrival.mean - 2.5) < 1e-9); assert.ok(Math.abs(cfg.arrival.sd - .5) < 1e-9);
+    assert.ok(Math.abs(cfg.processes.server.mean - 2) < 1e-9); assert.ok(Math.abs(cfg.processes.server.sd - 2) < 1e-9);
+    await page.reload(); await page.waitForSelector('.sim-badge');
+    await page.locator('#fileInput').setInputFiles({ name: 'normal-roundtrip.vsm.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(saved)) });
+    await page.locator('#dialogConfirm').click();
+    await page.locator('#simStep').click(); const step = await page.locator('#simClock').textContent();
+    await page.locator('#simReset').click(); await page.locator('#simStep').click();
+    assert.equal(await page.locator('#simClock').textContent(), step);
+    await page.locator('#simSpeed').selectOption('1'); await page.locator('#simRun').click();
+    await page.waitForTimeout(300); await page.locator('#simRun').click();
+    const paused = await page.locator('#simClock').textContent(); await page.waitForTimeout(300);
+    assert.equal(await page.locator('#simClock').textContent(), paused);
+    await page.locator('#simulationToggle').uncheck(); await page.locator('#simulationToggle').check();
+    assert.equal(await page.locator('#simClock').textContent(), paused);
+    await page.locator('#simSpeed').selectOption('250'); await page.locator('#simRun').click();
+    await page.waitForFunction(() => document.querySelector('#simRun').disabled);
+    assert.match(await page.locator('#simClock').textContent(), /^40 \/ 40/);
+    await page.locator('#simSettings').click();
+    await arrival.locator('[data-sim-param=mean]').fill('2');
+    await arrival.locator('[data-sim-param=sd]').fill('2');
+    await page.getByRole('button', { name: 'Save settings', exact: true }).click();
+    assert.match(await page.locator('.sim-input-summary').textContent(), /mean 2\.575 minutes \(23\.299\/hour\)/);
+    assert.equal(await page.locator('#simSpeed option[value="2500"]').count(), 0);
+    assert.deepEqual(errors, []); await context.close();
+  }
+});
+
 async function check(page, queue, busy, item) {
   assert.equal(await page.locator('.sim-customer-waiting').count(), Math.min(queue, 8));
   assert.equal(await page.locator('.sim-customer-service').count(), Number(busy));

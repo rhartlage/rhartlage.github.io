@@ -6,7 +6,8 @@
     exponential: { label: 'Exponential', parameters: [['mean', 'Mean']], defaults: { mean: 5 } },
     uniform: { label: 'Uniform', parameters: [['min', 'Minimum'], ['max', 'Maximum']], defaults: { min: 2, max: 8 } },
     triangular: { label: 'Triangular', parameters: [['min', 'Minimum'], ['mode', 'Most likely'], ['max', 'Maximum']], defaults: { min: 2, mode: 4, max: 8 } },
-    lognormal: { label: 'Lognormal', parameters: [['mean', 'Mean duration'], ['sd', 'Standard deviation']], defaults: { mean: 5, sd: 1 } }
+    lognormal: { label: 'Lognormal', parameters: [['mean', 'Mean duration'], ['sd', 'Standard deviation']], defaults: { mean: 5, sd: 1 } },
+    normal: { label: 'Normal (positive times)', parameters: [['mean', 'Underlying mean'], ['sd', 'Underlying standard deviation']], defaults: { mean: '', sd: '' } }
   };
   const units = { seconds: 1, minutes: 60, hours: 3600 };
   function populationIndex(value = 3) {
@@ -104,6 +105,17 @@
         const z = Math.sqrt(-2 * Math.log(rng())) * Math.cos(2 * Math.PI * rng());
         return Math.exp(Math.log(d.mean) - variance / 2 + Math.sqrt(variance) * z);
       }
+      case 'normal': {
+        if (d.sd === 0) return d.mean;
+        // Conditional N(mean, sd^2) given time > 0, never clipped or reflected.
+        // Positive mean gives acceptance > 1/2. Bound work even for a faulty RNG.
+        for (let attempt = 0; attempt < 1024; attempt++) {
+          const z = Math.sqrt(-2 * Math.log(rng())) * Math.cos(2 * Math.PI * rng());
+          const value = d.mean + d.sd * z;
+          if (Number.isFinite(value) && value > 0) return value;
+        }
+        throw Error('Normal sampling could not produce a positive finite time after 1,024 attempts. Adjust the parameters or seed.');
+      }
       default: throw Error('Unsupported distribution.');
     }
   }
@@ -111,6 +123,15 @@
     if (d.type === 'fixed') return d.value;
     if (d.type === 'uniform') return (d.min + d.max) / 2;
     if (d.type === 'triangular') return (d.min + d.mode + d.max) / 3;
+    if (d.type === 'normal' && d.sd > 0) {
+      // E[X | X > 0] = mean + sd * phi(mean/sd) / Phi(mean/sd).
+      const r = d.mean / d.sd;
+      if (r >= 10) return d.mean; // Correction is below double precision here.
+      const phi = Math.exp(-r * r / 2) / Math.sqrt(2 * Math.PI), t = 1 / (1 + .2316419 * r);
+      // Standard normal CDF approximation (absolute error < 7.5e-8).
+      const cdf = 1 - phi * t * (.319381530 + t * (-.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
+      return d.mean + d.sd * phi / cdf;
+    }
     return d.mean;
   }
   // Log-normalized Erlang C avoids factorial overflow and keeps c=1 as a special case.

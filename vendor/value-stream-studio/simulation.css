@@ -71,6 +71,7 @@
 .sim-distribution legend{padding:0 6px;color:var(--navy);font-size:14px;font-weight:650;overflow-wrap:anywhere}
 .sim-parameters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .sim-parameters label{display:block}
+.sim-parameters .sim-normal-help{grid-column:1/-1;margin:0}
 .sim-parameters input{display:block;margin-top:6px}
 .sim-assumptions{font-size:12px;line-height:1.5;margin:16px 0}
 .sim-assumptions summary{cursor:pointer;font-weight:600}

@@ -6,7 +6,7 @@
       "course": "lean",
       "courseCode": "MGMT-4570",
       "title": "Value Stream Studio",
-      "version": "1.3.0",
+      "version": "1.3.1",
       "sourcePath": "vendor/value-stream-studio",
       "targetPath": "mgmt-4570/value-stream-mapping",
       "sourceArchive": "value-stream-studio.zip",
@@ -17,11 +17,11 @@
         "learning.js": "2515049bcb8075de354d0af6c5a2c0fa7045817f3bac1b8037a72e7ba31e303c",
         "styles.css": "4af9114d4d77ab58f87e2871489dc9a188785379f237cb729802f5d35c4e5448",
         "symbols.js": "13ac763f32599e3bf37afd72c5fc679042c95a5cf3d7445af485e01664b86836",
-        "simulation.js": "6026162112ed1229872cbd21c558322e695da5c3a237cec7da8f8319c1b83a58",
-        "simulation-ui.js": "1a4eaef88f160705a7586a422d00304ea2f13d99e570940384db60a832ebc794",
-        "simulation.css": "ace86258fd7bf6116bcb4bce7cbd7192100270cea583e14bde515124bdf05623"
+        "simulation.js": "6399f882216d07969bb13737926ffd4192b96334f1d0554504011a1d49122f26",
+        "simulation-ui.js": "8c91b175e3a883d4e05fa78a422980686b7bbd78b405b7c0ca72a05eb149d243",
+        "simulation.css": "0e8770f41e63c3e2391c1e4b6b67dcc77279c6538b4ae5260b531d928dea4693"
       },
-      "derivation": "Based on the original 1.1.0 source archive; maintained simulation extension in this repository. Runtime file hashes describe 1.3.0, not the original archive."
+      "derivation": "Based on the original 1.1.0 source archive; maintained simulation extension in this repository. Runtime file hashes describe 1.3.1, not the original archive."
     }
   ]
 }

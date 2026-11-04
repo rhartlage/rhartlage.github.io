@@ -8,6 +8,8 @@ Version 1.3.0 adds the seven whole-system queue measures, an expanded **Queue me
 
 ## Classroom workflow
 
+Version 1.3.1 adds **Normal (positive times)** to interarrival and per-server service distributions. Both parameters start blank and must be entered explicitly. Existing distributions, seeds, safety limits and saved-map versions are unchanged.
+
 1. Build one directed material path through every Process block. Storage, source/customer, and transport symbols can lie along the path. Information links do not carry simulated items.
 2. Enable Simulation mode and open Arrivals & service. Choose the time unit, run duration, seed, and interarrival-time distribution. Choose each process's per-server service-time distribution, parameters, and parallel-server capacity. Exponential inputs are mean durations, not rates.
 3. Step through events or run the map. Process names in the results panel and the process inspector open that process's settings. Playback speed changes presentation speed, not simulated time.
@@ -23,8 +25,19 @@ Version 1.3.0 adds the seven whole-system queue measures, an expanded **Queue me
 | Uniform | Positive minimum and strictly larger maximum |
 | Triangular | Positive minimum, most likely between bounds, strictly larger maximum |
 | Lognormal | Positive mean of the actual duration and nonnegative standard deviation |
+| Normal (positive times) | Positive underlying Normal mean and nonnegative underlying standard deviation; both required |
 
 Durations are all in the selected seconds, minutes, or hours. Changing units converts entered durations and the run duration. Initial process settings use a recognized positive map cycle time converted to that unit, otherwise Fixed 5. Map entry initially uses Exponential mean 5, horizon 480 minutes, seed `1`. These are editable illustrative defaults, not inferred demand. After settings are saved, later cycle-time annotations do not overwrite simulation settings.
+
+### Positive Normal durations
+
+The stored shape is `{ "type": "normal", "mean": 2, "sd": 0.5 }` in `settings.simulation.arrival` or `settings.simulation.processes[processId]`. Values use the selected time unit. The numbers in this example are illustrative, not a sourced textbook specification. Both mean and SD convert when units change. Validation retains the existing bounds: mean from 1e-9 through 1e9; SD from zero through 1e9; finite numbers only. SD zero is a constant time.
+
+For SD > 0, seeded Box–Muller draws sample the underlying Normal distribution. Zero and negative durations are rejected and redrawn; they are never clipped to a small positive duration or reflected. This implements the conditional distribution X given X > 0. A positive underlying mean keeps acceptance above one half. A defensive 1,024-attempt bound raises an explicit error instead of looping indefinitely; the existing engine numerical checks still apply. Existing random streams and algorithms are untouched for other distributions.
+
+Truncation increases the population mean and reduces its SD relative to the entered underlying Normal parameters. With r = mean/SD, the resulting positive-time mean is mean + SD·φ(r)/Φ(r). The report uses this mean (CDF approximation with absolute error below 7.5e-8) and its reciprocal for the input arrival rate; it explains the distinction from the underlying parameters and finite-run observed averages. For example, underlying mean 2 and SD 2 yield a positive-time mean about 2.5752, not 2. M/M/c theory remains unavailable for Normal arrivals or service. See [Burkardt, The Truncated Normal Distribution, sections 3.6–3.7](https://people.sc.fsu.edu/~jburkardt/presentations/truncated_normal.pdf) for conditional moments.
+
+Murphy’s supplied rates imply 2.5 minutes per arrival and 2 minutes per service before any truncation adjustment. The supplied example does not specify a service SD or arrival distribution. A demonstration must label any chosen SD and arrival distribution as assumptions. For instance, Normal service mean 2 with illustrative SD 0.5 has negligible truncation (positive-time mean about 2.000067 minutes), but is not an exact reconstruction of the missing textbook inputs. The third comparison scenario can use exponential interarrivals with mean 2.5 and this explicitly illustrative Normal service; the first two scenarios retain fixed service.
 
 ## Model and metric semantics
 
@@ -82,3 +95,5 @@ Queue display acceptance: after building, run `npm run test:queue-ui` with Playw
 Release base: `f440469c6479f44b3aafc460fc1e19b1b43d88a0` on `agent/value-stream-simulation-20260929` (draft PR #10), verified against all 82 live assets on 2026-11-02 before editing. The prior Worker version is `961c99ef-6502-42e6-81b4-c923f5675d13`. Deploy through the existing public-hosting workflow; only the two simulation display assets and generated manifest should differ. All other runtime assets and source pins must match the baseline. Roll back to the recorded Worker version if acceptance fails.
 
 The 1.3.0 release instead builds directly on `cada7857b251b795bfd968e3e1c93cefd9e1bc4b`; all 82 assets were reconciled exactly with live Worker `0cef5817-b2a4-41ae-9fa1-8b1b53227f3a` before changes. That version is the rollback target for this release. Runtime changes are restricted to the mapper app's fit/duplicate integration, simulation engine, simulation UI/CSS, runtime pins, and the classroom model/course download link. Other hosted apps and source pins stay unchanged. Numerical acceptance includes exact one/two-server fixtures, the legacy event-stream hash, completed-cohort censoring, event ties, occupancy mass, benchmark gating, all distributions, unit consistency, reproducibility, and repeated stable long-run convergence checks.
+
+The isolated 1.3.1 Normal release builds on deployed source `7d5edabb6e32e6da9d0e1671ed799de8289f4daa`, preserving both course listings. Rollback target: Worker `a60f57ab-e4ed-479c-a1ce-5763a54b0d5e`. It changes only simulation.js, simulation-ui.js, simulation.css and generated release metadata on the hosted site. The separately prepared 10,000-event/s and longer-run changes are excluded. Acceptance adds Normal support/moments/truncation, deterministic unit scaling, parameter extremes, portable persistence, blank required inputs, controls, and narrow-screen settings checks.
