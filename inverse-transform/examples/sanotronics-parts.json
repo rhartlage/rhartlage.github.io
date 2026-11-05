@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "title": "Sanotronics — parts cost per device",
+  "unit": "USD per device",
+  "description": "Draw labor cost, parts cost, and demand independently, using a fresh uniform draw for each input. This file models parts cost only. U = 0.4576 gives 80 + (100 − 80) × 0.4576 = $89.152 per device.",
+  "initialU": 0.4576,
+  "distribution": {
+    "type": "uniform",
+    "parameters": {
+      "a": 80,
+      "b": 100
+    }
+  }
+}

@@ -1,7 +1,7 @@
 // Browser-local inverse CDFs. Parameter limits are intentionally classroom-sized.
 export const specs = {
   exponential: { name: 'Exponential', kind: 'continuous', fields: [['mean', 'Mean waiting time', 2, 0.01, 100, 0.1]], context: 'Waiting time between arrivals at a constant average rate.', formula: 'X = −mean × ln(1 − U)' },
-  normal: { name: 'Normal', kind: 'continuous', fields: [['mean', 'Mean μ', 0, -100, 100, 0.1], ['sd', 'Standard deviation σ', 1, 0.01, 100, 0.1]], context: 'Measurements varying symmetrically around a mean. Negative values are possible.', formula: 'X = μ + σ Φ⁻¹(U)' },
+  normal: { name: 'Normal', kind: 'continuous', fields: [['mean', 'Mean μ', 0, -1e9, 1e9, 0.1], ['sd', 'Standard deviation σ', 1, 0.000001, 1e9, 0.1]], context: 'Measurements varying symmetrically around a mean. Negative values are possible.', formula: 'X = μ + σ Φ⁻¹(U)' },
   poisson: { name: 'Poisson', kind: 'discrete', fields: [['lambda', 'Mean count λ', 4, 0, 100, 0.1]], context: 'Number of independent arrivals in a fixed interval at a constant average rate.', formula: 'X = smallest integer k with F(k) ≥ U' },
   uniform: { name: 'Uniform', kind: 'continuous', fields: [['a', 'Lower bound a', 0, -100, 100, 0.1], ['b', 'Upper bound b', 10, -100, 100, 0.1]], context: 'All equal-length intervals inside the bounds have equal probability.', formula: 'X = a + (b − a) × U' },
   binomial: { name: 'Binomial', kind: 'discrete', fields: [['n', 'Number of trials n', 10, 1, 100, 1], ['p', 'Success probability p', 0.3, 0, 1, 0.01]], context: 'Successes in a fixed number of independent trials with the same success probability.', formula: 'X = smallest integer k with F(k) ≥ U' },

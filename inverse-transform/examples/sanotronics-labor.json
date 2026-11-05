@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "title": "Sanotronics — labor cost per device",
+  "unit": "USD per device",
+  "description": "Draw labor cost, parts cost, and demand independently, using a fresh uniform draw for each input. This file models labor cost only. U = 0.9109 selects $47 per device.",
+  "initialU": 0.9109,
+  "distribution": {
+    "type": "discrete",
+    "outcomes": [
+      {
+        "value": 43,
+        "probability": 0.1
+      },
+      {
+        "value": 44,
+        "probability": 0.2
+      },
+      {
+        "value": 45,
+        "probability": 0.4
+      },
+      {
+        "value": 46,
+        "probability": 0.2
+      },
+      {
+        "value": 47,
+        "probability": 0.1
+      }
+    ]
+  }
+}

@@ -309,15 +309,16 @@ for (const tool of staticManifest.staticTools) {
 // First-party static tools are maintained here and copied from an explicit allowlist.
 const nativeFiles = {};
 await mkdir(path.join(distRoot, "inverse-transform"), { recursive: true });
-for (const file of ["index.html", "styles.css", "math.js", "app.js"]) {
+for (const file of ["index.html", "styles.css", "math.js", "app.js", "distribution-json.js", "distribution.schema.json", "json-guide.html", "examples/sanotronics-labor.json", "examples/sanotronics-parts.json", "examples/sanotronics-demand.json"]) {
   const contents = await readFile(path.join(repoRoot, "inverse-transform", file));
+  await mkdir(path.dirname(path.join(distRoot, "inverse-transform", file)), { recursive: true });
   await writeFile(path.join(distRoot, "inverse-transform", file), contents);
   nativeFiles[file] = createHash("sha256").update(contents).digest("hex");
 }
 
 await writeFile(
   path.join(distRoot, "deployment-manifest.json"),
-  `${JSON.stringify({ schemaVersion: manifest.schemaVersion, tools: manifest.tools, staticTools: staticManifest.staticTools.map(({ sourcePath, ...publicMetadata }) => publicMetadata), nativeTools: [{ id: "inverse-transform", version: "1.0.0", courses: ["statistics", "operations"], targetPath: "inverse-transform", files: nativeFiles }] }, null, 2)}\n`,
+  `${JSON.stringify({ schemaVersion: manifest.schemaVersion, tools: manifest.tools, staticTools: staticManifest.staticTools.map(({ sourcePath, ...publicMetadata }) => publicMetadata), nativeTools: [{ id: "inverse-transform", version: "1.1.0", courses: ["statistics", "operations"], targetPath: "inverse-transform", files: nativeFiles }] }, null, 2)}\n`,
 );
 
 process.stdout.write(`Built ${manifest.tools.length} pinned tools and ${staticManifest.staticTools.length} portable tool into ${distRoot}\n`);

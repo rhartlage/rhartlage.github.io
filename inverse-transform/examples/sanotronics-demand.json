@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "title": "Sanotronics — demand",
+  "unit": "devices",
+  "description": "Draw labor cost, parts cost, and demand independently, using a fresh uniform draw for each input. This file models demand only. U = 0.6026 gives approximately 16,170.372 devices. The Normal model is continuous and unbounded: negative and fractional demand are possible. Values are not truncated or rounded by the model; scrutinize these assumptions for real demand.",
+  "initialU": 0.6026,
+  "distribution": {
+    "type": "normal",
+    "parameters": {
+      "mean": 15000,
+      "sd": 4500
+    }
+  }
+}
