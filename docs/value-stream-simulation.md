@@ -8,6 +8,12 @@ Version 1.3.0 adds the seven whole-system queue measures, an expanded **Queue me
 
 ## Classroom workflow
 
+The 1.3.2 candidate makes the existing full-project JSON download explicit: **Export JSON** in the header and **Export JSON (.json)** in the Export menu both reuse `saveFile()`. Ctrl/Cmd+S still uses that same path. The v2 file includes the latest edited current/future states, active state, model details, connections, geometry, camera and simulation settings. Empty projects are valid exports. Import continues to validate before replacement and supports cancellation and undo; it fits the active camera to the viewport as before. Transient simulation progress and event logs are not saved; opening a model starts a fresh experiment.
+
+Playback adds **10,000 events/sec** (`2500` events per 250-ms batch). Processing yields after at most 250 events or approximately 8 ms of engine work; a generation token cancels pending slices on Pause, Reset, off, settings/map changes and speed changes. Rates are targets: atomic event processing, rendering, background-tab throttling and slow hardware may reduce throughput. No catch-up backlog is accumulated. The engine, distribution draws and existing 25,000-arrival/100,000-event guards are unchanged. This candidate excludes the separately prepared longer-run engine changes.
+
+Integration: this candidate starts at production commit `63396df1248ce753889d4227ce54541ae92b5cba`, preserving Normal support and both course listings. Push for the combined application-hub release owner; do not deploy this branch independently. Run `npm run test:simulation`, `npm run test:queue-ui`, build/site/secret checks after integration. Browser coverage includes complete current/future model roundtrips, focused edits, settings, empty projects, cancelled/repeated/invalid import, exact 10,000-event target advancement, direct-engine equality, and deliberately slow-event cancellation.
+
 Version 1.3.1 adds **Normal (positive times)** to interarrival and per-server service distributions. Both parameters start blank and must be entered explicitly. Existing distributions, seeds, safety limits and saved-map versions are unchanged.
 
 1. Build one directed material path through every Process block. Storage, source/customer, and transport symbols can lie along the path. Information links do not carry simulated items.
