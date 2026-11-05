@@ -74,6 +74,10 @@ function assertOrdered(source, firstNeedle, secondNeedle, description) {
 }
 
 const requiredRoutes = [
+  "monte-carlo/index.html",
+  "monte-carlo/engine.js",
+  "monte-carlo/worker.js",
+  "monte-carlo/examples/sanotronics-baseline.json",
   "inverse-transform/index.html",
   "inverse-transform/math.js",
   "inverse-transform/app.js",
@@ -358,6 +362,7 @@ const groupedLabRoutes = [
   "/categorical-risk/",
 ];
 const directHomeRoutes = [
+  "/monte-carlo/",
   "/inverse-transform/",
   "/bus-2150/",
   "/normal-area/",
@@ -423,7 +428,7 @@ for (const tool of portableManifest.staticTools) {
 }
 if (!rootHtml.includes('href="#lean-operations"') || !rootHtml.includes('id="lean-operations"')) fail("Root hub is missing its Lean course section");
 if (!leanHtml.includes('href="/mgmt-4570/value-stream-mapping/"') || !leanHtml.includes("MGMT-4570")) fail("Lean course does not expose its mapper");
-if (!leanHtml.includes("autosaves on this device") || !leanHtml.includes("Save map")) fail("Lean landing page must explain browser storage and backups");
+if (!leanHtml.includes("autosaves on this device") || !leanHtml.includes("Export JSON")) fail("Lean landing page must explain browser storage and backups");
 if (!leanHtml.includes('rel="canonical" href="https://tools.benhartlage.com/mgmt-4570/"')) fail("Lean course canonical URL is missing");
 if (!mapperHtml.includes('rel="canonical" href="https://tools.benhartlage.com/mgmt-4570/value-stream-mapping/"')) fail("Mapper canonical URL is missing");
 if (!mapperHtml.includes('href="/mgmt-4570/"') || !mapperHtml.includes('href="/"')) fail("Mapper course navigation is missing");
@@ -461,12 +466,19 @@ if (statisticsCards.length !== 8 || !statisticsCards[4].includes('/statistical-i
 const operationsSection = rootHtml.slice(operationsSectionIndex, rootHtml.indexOf('id="lean-operations"'));
 if (!operationsSection.includes('href="/inverse-transform/"')) fail('Operations must list Inverse Transform Lab.');
 const nativeManifest = JSON.parse(await readFile(path.join(distRoot, 'deployment-manifest.json'), 'utf8')).nativeTools;
-if (nativeManifest?.length !== 1 || nativeManifest[0].id !== 'inverse-transform') fail('Missing native tool provenance.');
+if (nativeManifest?.length !== 2 || nativeManifest[0].id !== 'inverse-transform' || nativeManifest[1].id !== 'monte-carlo') fail('Missing native tool provenance.');
 for (const [file, hash] of Object.entries(nativeManifest?.[0]?.files ?? {})) {
   const source = await readFile(path.join(repoRoot, 'inverse-transform', file));
   const output = await readFile(path.join(distRoot, 'inverse-transform', file));
   if (!source.equals(output) || createHash('sha256').update(output).digest('hex') !== hash) fail(`Inverse transform asset mismatch: ${file}`);
   for (const [label, pattern] of forbiddenRuntimePatterns) if (pattern.test(source.toString())) fail(`inverse-transform: forbidden ${label} in ${file}`);
+}
+
+if (!operationsSection.includes('href="/monte-carlo/"')) fail('Operations must list Monte Carlo Studio.');
+for (const [file, hash] of Object.entries(nativeManifest?.[1]?.files ?? {})) {
+  const source = await readFile(path.join(repoRoot, 'monte-carlo', file));
+  const output = await readFile(path.join(distRoot, 'monte-carlo', file));
+  if (!source.equals(output) || createHash('sha256').update(output).digest('hex') !== hash) fail(`Monte Carlo asset mismatch: ${file}`);
 }
 
 if (errors.length) {

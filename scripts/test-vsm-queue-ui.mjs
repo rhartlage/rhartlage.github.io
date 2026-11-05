@@ -104,7 +104,7 @@ test('Normal inputs require explicit SD, convert units, persist and replay at de
     await arrival.locator('[data-sim-param=sd]').fill('2');
     await page.getByRole('button', { name: 'Save settings', exact: true }).click();
     assert.match(await page.locator('.sim-input-summary').textContent(), /mean 2\.575 minutes \(23\.299\/hour\)/);
-    assert.equal(await page.locator('#simSpeed option[value="2500"]').count(), 0);
+    assert.equal(await page.locator('#simSpeed option[value="2500"]').count(), 1);
     assert.deepEqual(errors, []); await context.close();
   }
 });
@@ -121,6 +121,99 @@ async function check(page, queue, busy, item) {
     assert.match(await page.locator('.sim-badge').getAttribute('aria-label'), /not included in waiting count/);
   }
 }
+
+async function downloadJSON(page, menu = false) {
+  if (menu) await page.locator('#exportButton').click();
+  const event = page.waitForEvent('download');
+  await page.locator(menu ? '[data-export=json]' : '#saveButton').click();
+  const file = await event;
+  assert.match(file.suggestedFilename(), /\.vsm\.json$/);
+  return JSON.parse(await readFile(await file.path(), 'utf8'));
+}
+const withoutCamera = project => {
+  const copy = structuredClone(project);
+  for (const state of Object.values(copy.states)) if (state) delete state.view;
+  return copy;
+};
+const currentProject = page => page.evaluate(() => JSON.parse(localStorage.getItem('value-stream-studio-v1')));
+
+test('Export JSON roundtrips all edited current/future model data and settings, including focused text', async () => {
+  const model = fixture({ type: 'exponential', mean: 2.5 }, { type: 'normal', mean: 2, sd: .5 });
+  model.nodes[0].x = 280; model.nodes[0].w = 250; model.nodes[0].h = 170;
+  model.nodes.push({ id: 'entry', type: 'source', label: 'Customer', detail: '24/hour assumption', notes: 'Source notes', x: 0, y: 40, w: 170, h: 140, color: '#118465', direction: 'left' });
+  model.edges.push({ id: 'flow', from: 'entry', to: 'server', type: 'material', label: 'Shared line' });
+  Object.assign(model.settings.simulation, { seed: 'edited-current', servers: { server: 2 }, occupancyN: 7, horizon: 240 });
+  const { page, context, errors } = await open(model);
+  assert.match(await page.locator('#saveButton').textContent(), /Export JSON/);
+  await page.locator('#mapTitle').fill('Current edited title'); await page.locator('#mapAuthor').fill('Class team'); await page.locator('#mapDate').fill('2026-11-05');
+  await page.locator('#nodes [data-node=server]').click();
+  for (const [key, value] of Object.entries({ label: 'Edited service', cycle: '2 min', changeover: '3 min', operators: '2', uptime: '97%', notes: 'Current notes with "quotes" & <markup>\nSecond line' })) await page.locator(`[data-prop=${key}]`).fill(value);
+  await page.locator('[data-prop=timeIncluded]').uncheck();
+  await page.locator('[data-color="#c07822"]').click();
+  await page.locator('#nodes [data-node=server]').click(); await page.keyboard.press('ArrowRight');
+  await page.locator('#futureState').click(); await page.locator('#mapTitle').fill('Future edited title');
+  await page.locator('#simSettings').click();
+  await page.locator('[data-sim-dist="process:server"] [data-sim-param=mean]').fill('3');
+  await page.locator('[data-sim-dist="process:server"] [data-sim-param=sd]').fill('1');
+  await page.locator('[data-sim-servers]').fill('3'); await page.locator('#simSeed').fill('edited-future');
+  await page.locator('#simUnit').selectOption('seconds');
+  await page.getByRole('button', { name: 'Save settings', exact: true }).click();
+  await page.locator('#nodes [data-node=server]').click();
+  await page.locator('[data-prop=notes]').fill('Latest focused future edit — preserve this');
+  assert.equal(await page.locator('[data-prop=notes]').evaluate(input => input === document.activeElement), true);
+  const expected = await currentProject(page), exported = await downloadJSON(page);
+  assert.deepEqual(exported, expected); // Includes camera, node positions/sizes, fields, edges and both settings.
+  assert.equal(exported.version, 2); assert.equal(exported.activeState, 'future');
+  assert.equal(exported.states.current.nodes[0].label, 'Edited service');
+  assert.equal(exported.states.future.nodes[0].notes, 'Latest focused future edit — preserve this');
+  assert.equal(exported.states.future.settings.simulation.processes.server.sd, 60);
+  assert.equal(exported.states.current.settings.simulation.servers.server, 2);
+  assert.equal(exported.states.future.settings.simulation.servers.server, 3);
+  assert.deepEqual(await downloadJSON(page, true), exported);
+  assert.deepEqual(errors, []); await context.close();
+
+  const fresh = await open();
+  const input = { name: 'edited.vsm.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(exported)) };
+  await fresh.page.locator('#fileInput').setInputFiles(input); await fresh.page.locator('#dialogConfirm').click();
+  // Existing importer fits the active camera to the new viewport; all model data stay exact.
+  assert.deepEqual(withoutCamera(await currentProject(fresh.page)), withoutCamera(exported));
+  assert.equal(await fresh.page.locator('#mapTitle').inputValue(), 'Future edited title');
+  await fresh.page.locator('#currentState').click(); assert.equal(await fresh.page.locator('#mapTitle').inputValue(), 'Current edited title');
+  await fresh.page.locator('#futureState').click();
+  const before = await currentProject(fresh.page);
+  await fresh.page.locator('#fileInput').setInputFiles(input);
+  await fresh.page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  assert.deepEqual(await currentProject(fresh.page), before);
+  for (const [body, message] of [['{invalid', 'not valid JSON'], [JSON.stringify({ format: 'value-stream-studio', version: 99 }), 'not a supported']]) {
+    await fresh.page.locator('#fileInput').setInputFiles({ name: 'invalid.json', mimeType: 'application/json', buffer: Buffer.from(body) });
+    await fresh.page.waitForFunction(message => document.querySelector('#toast').textContent.includes(message), message);
+    assert.deepEqual(await currentProject(fresh.page), before);
+  }
+  for (let i = 0; i < 2; i++) {
+    await fresh.page.locator('#mapTitle').fill(`Unsaved replacement ${i}`);
+    await fresh.page.locator('#fileInput').setInputFiles(input); await fresh.page.locator('#dialogConfirm').click();
+    assert.deepEqual(withoutCamera(await currentProject(fresh.page)), withoutCamera(exported));
+  }
+  await fresh.page.reload(); await fresh.page.waitForSelector('.sim-badge');
+  assert.deepEqual(withoutCamera(await currentProject(fresh.page)), withoutCamera(exported));
+  assert.deepEqual(fresh.errors, []); await fresh.context.close();
+});
+
+test('Export JSON supports valid empty projects and is discoverable on narrow screens', async () => {
+  const { page, context, errors } = await open(fixture(), { width: 390, height: 1000 });
+  await page.locator('#newButton').click(); await page.locator('#dialogConfirm').click();
+  await page.locator('#mapTitle').fill('Empty edited project');
+  const exported = await downloadJSON(page, true);
+  assert.equal(exported.states.current.nodes.length, 0); assert.equal(exported.states.current.edges.length, 0);
+  assert.equal(exported.states.current.meta.title, 'Empty edited project');
+  assert.deepEqual(await downloadJSON(page), exported);
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  await page.locator('#mapTitle').fill('Change before reopening');
+  await page.locator('#fileInput').setInputFiles({ name: 'empty.vsm.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(exported)) });
+  await page.waitForFunction(() => document.querySelector('#mapTitle').value === 'Empty edited project');
+  assert.deepEqual(withoutCamera(await currentProject(page)), withoutCamera(exported));
+  assert.deepEqual(errors, []); await context.close();
+});
 async function layout(page) {
   const result = await page.evaluate(() => {
     const badge = document.querySelector('.sim-badge');
@@ -401,4 +494,107 @@ test('each process in a real tandem queue displays its own waiting and in-servic
   }
   assert.deepEqual(errors, []);
   await context.close();
+});
+
+test('10,000 events/sec yields between chunks and reaches 10,000 minutes without changing results', async () => {
+  const model = fixture({ type: 'exponential', mean: 4 / 3 }, { type: 'exponential', mean: 1 });
+  model.settings.simulation.horizon = 10000;
+  const { page, context, errors } = await open(model);
+  assert.deepEqual(await page.locator('#simSpeed option').allTextContents(), ['4 events/sec', '40 events/sec', '1,000 events/sec', '10,000 events/sec']);
+  await page.evaluate(model => {
+    const create = window.VSMSimulation.create;
+    window.referenceEngine = create(model, model.settings.simulation);
+    window.VSMSimulation.create = (...args) => (window.speedEngine = create(...args));
+  }, model);
+  await page.clock.install({ time: new Date('2026-11-02T00:00:00Z') });
+  await page.clock.pauseAt(new Date('2026-11-02T00:00:01Z'));
+  await page.locator('#simSpeed').selectOption('2500');
+  await page.locator('#simRun').click();
+  await page.clock.runFor(250);
+  assert.equal(await page.evaluate(() => window.speedEngine.result().steps), 250);
+  await page.clock.runFor(50);
+  assert.equal(await page.evaluate(() => window.speedEngine.result().steps), 2500);
+  await page.clock.runFor(1000);
+  assert.equal(await page.evaluate(() => window.speedEngine.result().steps), 12500);
+  await page.locator('#simRun').click();
+  const paused = await page.evaluate(() => window.speedEngine.result());
+  await page.clock.runFor(1000);
+  assert.deepEqual(await page.evaluate(() => window.speedEngine.result()), paused);
+  await page.locator('#simStep').click();
+  assert.equal(await page.evaluate(() => window.speedEngine.result().steps), 12501);
+  await page.locator('#simRun').click();
+  await page.clock.runFor(10000);
+  const results = await page.evaluate(() => {
+    while (window.referenceEngine.step()) {}
+    return { playback: window.speedEngine.result(), reference: window.referenceEngine.result() };
+  });
+  assert.deepEqual(results.playback, results.reference);
+  assert.ok(results.playback.arrived > 7000);
+  assert.equal(results.playback.time, 10000);
+  assert.match(await page.locator('#simMessage').textContent(), /Run duration reached/);
+  assert.equal(await page.locator('#simRun').isDisabled(), true);
+  await page.locator('#simReset').click();
+  assert.match(await page.locator('#simClock').textContent(), /^0 \/ 10,000/);
+  assert.equal(await page.locator('#simSpeed').inputValue(), '2500');
+  assert.deepEqual(errors, []);
+  await context.close();
+});
+test('slow event processing yields so Pause, speed changes, off/on and Reset cancel pending chunks', async () => {
+  const model = fixture({ type: 'exponential', mean: .02 }, { type: 'exponential', mean: 1 });
+  model.settings.simulation.horizon = 100000; model.settings.simulation.servers = { server: 64 };
+  const { page, context, errors } = await open(model);
+  await page.evaluate(() => {
+    const create = window.VSMSimulation.create;
+    window.VSMSimulation.create = (...args) => {
+      const engine = create(...args), original = engine.step;
+      engine.step = () => { const deadline = performance.now() + 2; while (performance.now() < deadline) {} return original(); };
+      window.slowEngine = engine; return engine;
+    };
+    window.slowHeartbeat = { maxDelay: 0, samples: 0 }; let last = performance.now();
+    window.slowProbe = setInterval(() => { const now = performance.now(); window.slowHeartbeat.maxDelay = Math.max(window.slowHeartbeat.maxDelay, now - last); window.slowHeartbeat.samples++; last = now; }, 30);
+  });
+  await page.locator('#simSpeed').selectOption('2500'); await page.locator('#simRun').click();
+  await page.waitForTimeout(500); await page.locator('#simRun').click();
+  const paused = await page.evaluate(() => window.slowEngine.result());
+  assert.ok(paused.steps > 0 && paused.steps < 2500);
+  await page.waitForTimeout(200); assert.deepEqual(await page.evaluate(() => window.slowEngine.result()), paused);
+  await page.locator('#simRun').click(); await page.waitForTimeout(300);
+  await page.locator('#simSpeed').selectOption('1');
+  await page.waitForTimeout(300); await page.locator('#simulationToggle').uncheck();
+  const off = await page.evaluate(() => window.slowEngine.result());
+  await page.waitForTimeout(200); assert.deepEqual(await page.evaluate(() => window.slowEngine.result()), off);
+  await page.locator('#simulationToggle').check();
+  assert.deepEqual(await page.evaluate(() => window.slowEngine.result()), off);
+  await page.locator('#simSpeed').selectOption('2500'); await page.locator('#simRun').click(); await page.waitForTimeout(300);
+  await page.locator('#simReset').click(); await page.waitForTimeout(350);
+  assert.match(await page.locator('#simClock').textContent(), /^0 \/ 100,000/);
+  assert.equal(await page.locator('.sim-customer-service').count(), 0);
+  assert.equal(await page.locator('#simRun').textContent(), 'Run');
+  const probe = await page.evaluate(() => { clearInterval(window.slowProbe); return window.slowHeartbeat; });
+  console.log(JSON.stringify({ slowEventResponsiveness: probe, pausedAfterEvents: paused.steps }));
+  assert.ok(probe.samples > 10); assert.ok(probe.maxDelay < 250, `Slow-event heartbeat stalled for ${probe.maxDelay} ms`);
+  assert.deepEqual(errors, []); await context.close();
+});
+
+test('real-time 10,000-events/sec selection completes a 12,000-event experiment promptly', async () => {
+  const model = fixture(fixed(1), fixed(.5)); model.settings.simulation.horizon = 6000.75;
+  const { page, context, errors } = await open(model);
+  await page.evaluate(() => {
+    const create = window.VSMSimulation.create;
+    window.VSMSimulation.create = (...args) => (window.fastEngine = create(...args));
+    window.fastProbe = { maxDelay: 0, samples: 0 }; let last = performance.now();
+    window.fastProbeTimer = setInterval(() => { const now = performance.now(); window.fastProbe.maxDelay = Math.max(window.fastProbe.maxDelay, now - last); window.fastProbe.samples++; last = now; }, 50);
+  });
+  await page.locator('#simSpeed').selectOption('2500'); const started = performance.now();
+  await page.locator('#simRun').click();
+  await page.waitForFunction(() => document.querySelector('#simRun').disabled, null, { timeout: 8000 });
+  const wallSeconds = (performance.now() - started) / 1000;
+  const observed = await page.evaluate(() => { clearInterval(window.fastProbeTimer); return { result: window.fastEngine.result(), probe: window.fastProbe }; });
+  assert.equal(observed.result.steps, 12000); assert.equal(observed.result.time, 6000.75);
+  assert.equal(observed.result.completed, 6000); assert.ok(wallSeconds < 8);
+  assert.ok(observed.probe.maxDelay < 250);
+  const reference = await page.evaluate(model => { const e = window.VSMSimulation.create(model, model.settings.simulation); while (e.step()) {} return e.result(); }, model);
+  assert.deepEqual(observed.result, reference);
+  console.log(JSON.stringify({ realTimeHighSpeed: { events: observed.result.steps, wallSeconds, probe: observed.probe } }));
+  assert.deepEqual(errors, []); await context.close();
 });

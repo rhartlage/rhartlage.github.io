@@ -11,6 +11,9 @@
     "test:simulation": "node --test scripts/test-vsm-simulation.mjs scripts/test-vsm-queue-metrics.mjs scripts/test-vsm-normal.mjs",
     "test:queue-ui": "node --test scripts/test-vsm-queue-ui.mjs",
     "test:inverse": "node --test scripts/test-inverse-transform.mjs scripts/test-inverse-json.mjs",
-    "test:inverse-ui": "node --test scripts/test-inverse-transform-ui.mjs"
+    "test:inverse-ui": "node --test scripts/test-inverse-transform-ui.mjs",
+    "test:monte-carlo": "node --test scripts/test-monte-carlo.mjs",
+    "test:monte-carlo-ui": "node --test scripts/test-monte-carlo-ui.mjs",
+    "verify:hosted": "node scripts/verify-hosted-release.mjs"
   }
 }

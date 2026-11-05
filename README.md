@@ -31,3 +31,7 @@ See `docs/public-hosting.md` for deployment, provenance, rollback, and GitHub Pa
 - This is a public, static educational site.
 - No secrets, analytics identifiers, private tools, provider calls, or protected application routes belong here.
 - Existing QBO compatibility pages are not part of the `tools.benhartlage.com` deployment bundle.
+
+## Monte Carlo Studio
+
+`/monte-carlo/` models independent uncertain inputs, safe arithmetic formulas and seed-repeatable scenario comparisons. All edits and comparisons can be saved to local JSON and reopened; CSV includes all simulated trials. See [model format, class examples and verification](docs/monte-carlo.md). Run `npm run test:monte-carlo` and `npm run test:monte-carlo-ui`.

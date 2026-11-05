@@ -9,7 +9,7 @@ window.VSMSimulationUI = (() => {
   // Anonymous count markers, not item identities or positions within the FIFO queue.
   const customer = (x, y, kind) => `<g class="sim-customer sim-customer-${kind}" transform="translate(${x} ${y})" aria-hidden="true"><circle cx="4" cy="3" r="3"/><path d="M0 15V9a4 4 0 0 1 8 0v6Z"/></g>`;
   function mount({ getMap, change, dialog, toast }) {
-    let engine = null, timer = null, signature = '', config, routeError = '', resetNotice = '';
+    let engine = null, timer = null, playbackGeneration = 0, signature = '', config, routeError = '', resetNotice = '';
     if (!$('simMeasures')) $('simMetrics').insertAdjacentHTML('beforebegin', '<section class="sim-queue-summary" aria-label="Queue performance"><h3>Queue measures · whole system</h3><label class="sim-population">Population for P<sub>n</sub><input id="simPopulationN" aria-label="Population n" type="number" min="0" max="25000" step="1" value="3"></label><p id="simPopulationError" class="sim-error" role="alert"></p><div id="simMeasures"></div></section>');
     if (!$('simReport')) $('simSettings').insertAdjacentHTML('afterend', '<button id="simReport">Queue measures</button>');
     $('simSettings').textContent = 'Arrivals & service';
@@ -18,7 +18,7 @@ window.VSMSimulationUI = (() => {
       const map = getMap();
       return S.settings(map.settings?.simulation, map.nodes, window.VSMLearning.parseDuration, map.settings?.hoursPerDay);
     };
-    function pause() { clearInterval(timer); timer = null; }
+    function pause() { clearTimeout(timer); timer = null; playbackGeneration++; }
     function sync() {
       const map = getMap(); config = readConfig();
       const next = JSON.stringify({ state: map.meta.state, nodes: map.nodes.map(n => [n.id, n.type, n.label, n.cycle]), edges: map.edges.map(e => [e.from, e.to, e.type]), config: { ...config, enabled: undefined, occupancyN: undefined } });
@@ -113,16 +113,37 @@ window.VSMSimulationUI = (() => {
       if (!enabled) pause();
       change(() => { getMap().settings.simulation = { ...readConfig(), enabled }; });
     };
+    function play() {
+      try { ensureEngine(); } catch (error) { resetNotice = error.message; draw(); return; }
+      const generation = ++playbackGeneration;
+      let remaining = 0, nextBatch = performance.now() + 250, nextDraw = nextBatch;
+      function pump() {
+        if (generation !== playbackGeneration) return;
+        const now = performance.now();
+        if (!remaining) {
+          if (now < nextBatch) { timer = setTimeout(pump, nextBatch - now); return; }
+          remaining = Number($('simSpeed').value);
+          nextBatch = now + 250; // No unbounded catch-up backlog after a slow/background tab.
+        }
+        const deadline = performance.now() + 8;
+        let count = 0;
+        while (remaining > 0 && count < 250 && performance.now() < deadline) {
+          if (!engine.step()) { pause(); draw(); return; }
+          remaining--; count++;
+        }
+        if (!remaining || performance.now() >= nextDraw) { draw(); nextDraw = performance.now() + 250; }
+        timer = setTimeout(pump, remaining ? 0 : Math.max(0, nextBatch - performance.now()));
+      }
+      timer = setTimeout(pump, 250);
+      draw();
+    }
     $('simRun').onclick = () => {
       if (timer) { pause(); draw(); return; }
-      try { ensureEngine(); } catch (error) { resetNotice = error.message; draw(); return; }
-      timer = setInterval(() => {
-        const count = Number($('simSpeed').value);
-        for (let i = 0; i < count; i++) { if (!engine.step()) break; }
-        if (engine.result().done) pause();
-        draw();
-      }, 250);
-      draw();
+      play();
+    };
+    $('simSpeed').title = 'Target event rate; large maps and background tabs may run more slowly. Processing yields between short batches.';
+    $('simSpeed').onchange = () => {
+      if (timer) { pause(); play(); }
     };
     $('simStep').onclick = step;
     $('simReset').onclick = () => { pause(); engine = null; resetNotice = 'Reset to time zero. The same seed repeats the experiment.'; draw(); };

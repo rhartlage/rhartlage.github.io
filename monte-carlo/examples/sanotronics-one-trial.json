@@ -1,0 +1,89 @@
+{
+  "type": "monte-carlo-studio",
+  "schemaVersion": 1,
+  "model": {
+    "name": "Sanotronics \u2014 workbook one-trial demonstration",
+    "description": "BUS-3150 Lecture 33 workbook adaptation. Price $249; fixed cost $1,000,000. Independent labor, parts and demand. Demand is continuous and unbounded: negative draws are intentionally retained. An Introduction to Management Science, 15e, \u00a7\u00a712.1\u201312.2. Workbook: BUS-3150_Lecture_33(1).xlsx; this is the workbook sample, not the textbook illustrated run. Fixed teaching uniforms from the workbook screenshot: labor U=0.9109, parts U=0.4576, demand U=0.6026. This is one illustrative calculation, not a statistical risk estimate.",
+    "inputs": [
+      {
+        "id": "price",
+        "label": "Selling price ($/unit)",
+        "type": "constant",
+        "value": 249
+      },
+      {
+        "id": "fixedCost",
+        "label": "Fixed cost ($)",
+        "type": "constant",
+        "value": 1000000
+      },
+      {
+        "id": "labor",
+        "label": "Labor cost ($/unit)",
+        "type": "discrete",
+        "values": [
+          {
+            "value": 43,
+            "probability": 0.1
+          },
+          {
+            "value": 44,
+            "probability": 0.2
+          },
+          {
+            "value": 45,
+            "probability": 0.4
+          },
+          {
+            "value": 46,
+            "probability": 0.2
+          },
+          {
+            "value": 47,
+            "probability": 0.1
+          }
+        ]
+      },
+      {
+        "id": "parts",
+        "label": "Parts cost ($/unit)",
+        "type": "uniform",
+        "min": 80,
+        "max": 100
+      },
+      {
+        "id": "demand",
+        "label": "Demand (units)",
+        "type": "normal",
+        "mean": 15000,
+        "sd": 4500
+      }
+    ],
+    "outputs": [
+      {
+        "id": "contribution",
+        "label": "Unit contribution ($/unit)",
+        "formula": "price - labor - parts"
+      },
+      {
+        "id": "profit",
+        "label": "Profit ($)",
+        "formula": "contribution * demand - fixedCost"
+      }
+    ],
+    "settings": {
+      "trials": 1,
+      "seed": 20261106,
+      "riskOutput": "profit",
+      "lossThreshold": 0,
+      "target": 1000000,
+      "samplingMode": "fixed"
+    },
+    "traceUniforms": [
+      0.9109,
+      0.4576,
+      0.6026
+    ]
+  },
+  "comparisons": []
+}

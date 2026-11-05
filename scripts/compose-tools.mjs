@@ -300,7 +300,7 @@ for (const tool of staticManifest.staticTools) {
   const htmlPath = path.join(distRoot, tool.targetPath, "index.html");
   let html = await readFile(htmlPath, "utf8");
   html = html.replace("</head>", `  <link rel="canonical" href="https://tools.benhartlage.com/mgmt-4570/value-stream-mapping/">\n  <link rel="stylesheet" href="../app-shell.css">\n</head>`);
-  html = html.replace("<body>", `<body class="vsm-classroom">\n  <a class="vsm-skip" href="#vsm-workspace">Skip to mapping workspace</a>\n  <nav class="vsm-course-nav" aria-label="Course navigation">\n    <a href="/mgmt-4570/">&larr; MGMT-4570 <span>Lean Operations Management</span></a>\n    <span class="vsm-save-note">Autosaved in this browser &middot; Save map for a backup</span>\n    <a href="/">All course tools</a>\n  </nav>`);
+  html = html.replace("<body>", `<body class="vsm-classroom">\n  <a class="vsm-skip" href="#vsm-workspace">Skip to mapping workspace</a>\n  <nav class="vsm-course-nav" aria-label="Course navigation">\n    <a href="/mgmt-4570/">&larr; MGMT-4570 <span>Lean Operations Management</span></a>\n    <span class="vsm-save-note">Autosaved in this browser &middot; Export JSON for a backup</span>\n    <a href="/">All course tools</a>\n  </nav>`);
   html = html.replace('<main class="workspace">', '<main class="workspace" id="vsm-workspace" tabindex="-1">');
   await writeFile(htmlPath, html);
   process.stdout.write(`Composed ${tool.id} from verified portable release ${tool.version}\n`);
@@ -316,9 +316,18 @@ for (const file of ["index.html", "styles.css", "math.js", "app.js", "distributi
   nativeFiles[file] = createHash("sha256").update(contents).digest("hex");
 }
 
+const monteCarloFiles = {};
+for (const file of ["index.html", "styles.css", "engine.js", "app.js", "worker.js", "examples.js", "examples/sanotronics-practice-comparison.json", "examples/sanotronics-one-trial.json", "examples/sanotronics-baseline.json", "examples/sanotronics-lower-mean.json", "examples/sanotronics-lower-sd.json"]) {
+  const contents = await readFile(path.join(repoRoot, "monte-carlo", file));
+  const destination = path.join(distRoot, "monte-carlo", file);
+  await mkdir(path.dirname(destination), { recursive: true });
+  await writeFile(destination, contents);
+  monteCarloFiles[file] = createHash("sha256").update(contents).digest("hex");
+}
+
 await writeFile(
   path.join(distRoot, "deployment-manifest.json"),
-  `${JSON.stringify({ schemaVersion: manifest.schemaVersion, tools: manifest.tools, staticTools: staticManifest.staticTools.map(({ sourcePath, ...publicMetadata }) => publicMetadata), nativeTools: [{ id: "inverse-transform", version: "1.1.0", courses: ["statistics", "operations"], targetPath: "inverse-transform", files: nativeFiles }] }, null, 2)}\n`,
+  `${JSON.stringify({ schemaVersion: manifest.schemaVersion, tools: manifest.tools, staticTools: staticManifest.staticTools.map(({ sourcePath, ...publicMetadata }) => publicMetadata), nativeTools: [{ id: "inverse-transform", version: "1.1.0", courses: ["statistics", "operations"], targetPath: "inverse-transform", files: nativeFiles }, { id: "monte-carlo", version: "1.0.0", courses: ["operations", "statistics"], targetPath: "monte-carlo", files: monteCarloFiles }] }, null, 2)}\n`,
 );
 
 process.stdout.write(`Built ${manifest.tools.length} pinned tools and ${staticManifest.staticTools.length} portable tool into ${distRoot}\n`);
