@@ -27,7 +27,7 @@ function renderScenarios(){$('scenario-list').innerHTML=doc.comparisons.map((m,i
 function render(){
   $('model-name').value=doc.model.name;$('description').value=doc.model.description;
   for(const [id,key]of [['trials','trials'],['seed','seed'],['loss-threshold','lossThreshold'],['target','target']])$(id).value=doc.model.settings[key];
-  $('uniforms').value=doc.model.traceUniforms.join(', ');$('sampling-mode').value=doc.model.settings.samplingMode||'seeded';$('trials').disabled=doc.model.settings.samplingMode==='fixed';$('seed').disabled=doc.model.settings.samplingMode==='fixed';renderInputs();renderOutputs();renderScenarios();
+  $('uniforms').value=doc.model.traceUniforms.join(', ');$('sampling-mode').value=doc.model.settings.samplingMode||'seeded';$('trials').disabled=doc.model.settings.samplingMode==='fixed';$('seed').disabled=doc.model.settings.samplingMode==='fixed';$('fixed-mode-help').hidden=doc.model.settings.samplingMode!=='fixed';renderInputs();renderOutputs();renderScenarios();
 }
 const numberValue=el=>el.value.trim()===''?NaN:Number(el.value);
 $('inputs').addEventListener('input',event=>{
@@ -56,6 +56,7 @@ $('add-output').onclick=()=>{if(doc.model.outputs.length>=12)return showError(Er
 $('model-name').oninput=e=>{doc.model.name=e.target.value;changed();};$('description').oninput=e=>{doc.model.description=e.target.value;changed();};
 for(const [id,key]of [['trials','trials'],['seed','seed'],['loss-threshold','lossThreshold'],['target','target']])$(id).oninput=e=>{doc.model.settings[key]=numberValue(e.target);changed();};
 $('sampling-mode').onchange=e=>{doc.model.settings.samplingMode=e.target.value;if(e.target.value==='fixed')doc.model.settings.trials=1;else if(doc.model.settings.trials===1)doc.model.settings.trials=1000;changed();render();};
+$('enable-seeded').onclick=()=>{doc.model.settings.samplingMode='seeded';doc.model.settings.trials=1000;changed();render();notice('Seeded simulation enabled. Set Trials and Random seed, then run. The listed workbook U values are preserved under Follow one trial.');$('trials').focus();};
 $('risk-output').onchange=e=>{doc.model.settings.riskOutput=e.target.value;changed();};
 $('uniforms').oninput=e=>{doc.model.traceUniforms=e.target.value.trim()?e.target.value.split(',').map(x=>x.trim()?Number(x):NaN):[];changed();};
 function replace(next){stop();doc=next;changed();render();dirty=false;}

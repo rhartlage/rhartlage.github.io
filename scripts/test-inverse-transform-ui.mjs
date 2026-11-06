@@ -1,6 +1,7 @@
 import test,{before,after} from 'node:test';
 import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
+import {fileURLToPath} from 'node:url';
 import {readFile,mkdir} from 'node:fs/promises';
 const {chromium}=await import(process.env.INVERSE_PLAYWRIGHT_MODULE||'playwright');
 let server,browser,base;
@@ -57,7 +58,7 @@ test('Both course listings link to the hosted app and screenshots capture deskto
  await context.close();
 });
 
-const examplePath=name=>new URL(`../inverse-transform/examples/sanotronics-${name}.json`,import.meta.url).pathname;
+const examplePath=name=>fileURLToPath(new URL(`../inverse-transform/examples/sanotronics-${name}.json`,import.meta.url));
 async function importExample(page,name){await page.setInputFiles('#json-file',examplePath(name));await page.waitForFunction(name=>document.querySelector('#import-title').textContent.toLowerCase().includes(name),name);}
 async function importText(page,content){await page.setInputFiles('#json-file',{name:'class.json',mimeType:'application/json',buffer:Buffer.from(content)});}
 test('Classroom JSON import, half-open trace, repeated samples, export, cancel and reimport',async()=>{
