@@ -325,9 +325,24 @@ for (const file of ["index.html", "styles.css", "engine.js", "app.js", "worker.j
   monteCarloFiles[file] = createHash("sha256").update(contents).digest("hex");
 }
 
+const leanNativeTools = [];
+for (const [id, files] of [
+  ["control-charts", ["index.html", "styles.css", "math.js", "examples.js", "app.js"]],
+  ["measurement-reliability", ["index.html", "styles.css", "engine.js", "app.js"]],
+]) {
+  const targetPath = `mgmt-4570/${id}`;
+  const hashes = {};
+  for (const file of files) {
+    const bytes = await readFile(path.join(repoRoot, targetPath, file));
+    hashes[file] = createHash("sha256").update(bytes).digest("hex");
+    await writeFile(path.join(distRoot, targetPath, file), bytes);
+  }
+  leanNativeTools.push({id, version: "1.0.0", courses: ["lean"], courseCode: "MGMT-4570", targetPath, files: hashes});
+}
+
 await writeFile(
   path.join(distRoot, "deployment-manifest.json"),
-  `${JSON.stringify({ schemaVersion: manifest.schemaVersion, tools: manifest.tools, staticTools: staticManifest.staticTools.map(({ sourcePath, ...publicMetadata }) => publicMetadata), nativeTools: [{ id: "inverse-transform", version: "1.1.0", courses: ["statistics", "operations"], targetPath: "inverse-transform", files: nativeFiles }, { id: "monte-carlo", version: "1.0.1", courses: ["operations", "statistics"], targetPath: "monte-carlo", files: monteCarloFiles }] }, null, 2)}\n`,
+  `${JSON.stringify({ schemaVersion: manifest.schemaVersion, tools: manifest.tools, staticTools: staticManifest.staticTools.map(({ sourcePath, ...publicMetadata }) => publicMetadata), nativeTools: [{ id: "inverse-transform", version: "1.1.0", courses: ["statistics", "operations"], targetPath: "inverse-transform", files: nativeFiles }, { id: "monte-carlo", version: "1.0.1", courses: ["operations", "statistics"], targetPath: "monte-carlo", files: monteCarloFiles }, ...leanNativeTools] }, null, 2)}\n`,
 );
 
 process.stdout.write(`Built ${manifest.tools.length} pinned tools and ${staticManifest.staticTools.length} portable tool into ${distRoot}\n`);

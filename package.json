@@ -14,6 +14,10 @@
     "test:inverse-ui": "node --test scripts/test-inverse-transform-ui.mjs",
     "test:monte-carlo": "node --test scripts/test-monte-carlo.mjs",
     "test:monte-carlo-ui": "node --test scripts/test-monte-carlo-ui.mjs",
-    "verify:hosted": "node scripts/verify-hosted-release.mjs"
+    "verify:hosted": "node scripts/verify-hosted-release.mjs",
+    "test:control-chart": "node --test scripts/test-control-chart.mjs",
+    "test:control-chart-ui": "node --test scripts/test-control-chart-ui.mjs",
+    "test:measurement": "node --test scripts/test-measurement-math.mjs",
+    "test:measurement-ui": "node --test scripts/test-measurement-ui.mjs"
   }
 }

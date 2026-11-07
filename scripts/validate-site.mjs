@@ -466,7 +466,18 @@ if (statisticsCards.length !== 8 || !statisticsCards[4].includes('/statistical-i
 const operationsSection = rootHtml.slice(operationsSectionIndex, rootHtml.indexOf('id="lean-operations"'));
 if (!operationsSection.includes('href="/inverse-transform/"')) fail('Operations must list Inverse Transform Lab.');
 const nativeManifest = JSON.parse(await readFile(path.join(distRoot, 'deployment-manifest.json'), 'utf8')).nativeTools;
-if (nativeManifest?.length !== 2 || nativeManifest[0].id !== 'inverse-transform' || nativeManifest[1].id !== 'monte-carlo') fail('Missing native tool provenance.');
+if (nativeManifest?.length !== 4 || nativeManifest[0].id !== 'inverse-transform' || nativeManifest[1].id !== 'monte-carlo') fail('Missing native tool provenance.');
+for (const id of ['control-charts', 'measurement-reliability']) {
+  const tool = nativeManifest?.find(t => t.id === id);
+  if (!tool || tool.targetPath !== `mgmt-4570/${id}` || tool.courses?.[0] !== 'lean') { fail(`Missing Lean tool provenance: ${id}`); continue; }
+  if (!leanHtml.includes(`href="/mgmt-4570/${id}/"`)) fail(`Lean catalog link missing: ${id}`);
+  for (const [file, hash] of Object.entries(tool.files)) {
+    const source = await readFile(path.join(repoRoot, tool.targetPath, file));
+    const output = await readFile(path.join(distRoot, tool.targetPath, file));
+    if (!source.equals(output) || createHash('sha256').update(output).digest('hex') !== hash) fail(`${id}: asset mismatch ${file}`);
+    for (const [label, pattern] of forbiddenRuntimePatterns) if (pattern.test(source.toString())) fail(`${id}: forbidden ${label} in ${file}`);
+  }
+}
 for (const [file, hash] of Object.entries(nativeManifest?.[0]?.files ?? {})) {
   const source = await readFile(path.join(repoRoot, 'inverse-transform', file));
   const output = await readFile(path.join(distRoot, 'inverse-transform', file));

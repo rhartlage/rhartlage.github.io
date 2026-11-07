@@ -1,3 +1,5 @@
 # Portable-release checksums describe the supplied bytes, including line endings.
 vendor/value-stream-studio/* -text -whitespace
 inverse-transform/* text eol=lf
+mgmt-4570/control-charts/* text eol=lf
+mgmt-4570/measurement-reliability/* text eol=lf
