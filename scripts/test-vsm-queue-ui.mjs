@@ -598,3 +598,77 @@ test('real-time 10,000-events/sec selection completes a 12,000-event experiment 
   console.log(JSON.stringify({ realTimeHighSpeed: { events: observed.result.steps, wallSeconds, probe: observed.probe } }));
   assert.deepEqual(errors, []); await context.close();
 });
+
+test('Textbook arrival-limit replay supports completion stepping, trace CSV and converted settings', async () => {
+  const map = fixture();
+  Object.assign(map.settings.simulation, {stopMode:'arrivals',arrivalLimit:3,warmupItems:1,waitThreshold:1,serviceSampling:'item',replay:{interarrivals:[1,1,1],services:{server:[3,3,3]}}});
+  const {page,context,errors} = await open(map);
+  await page.locator('#simCompletion').click();
+  assert.match(await page.locator('#simState').textContent(), /Server 1/);
+  await page.locator('#simCompletion').click();
+  await page.locator('#simCompletion').click();
+  assert.match(await page.locator('#simCustomerMetrics').textContent(), /Final: 2 completed eligible items/);
+  assert.match(await page.locator('#simCustomerMetrics').textContent(), /2\/2 = 1/);
+  await page.locator('#simTrace').click();
+  assert.equal(await page.locator('#simTraceRows tbody tr').count(),3);
+  const download = page.waitForEvent('download');
+  await page.locator('#simTraceCsv').click();
+  assert.equal((await download).suggestedFilename(),'simulation-customer-trace.csv');
+  await page.locator('#dialog [data-close]').click();
+  await page.locator('#simSettings').click();
+  assert.equal(await page.locator('[data-sim-dist="arrival"] [data-sim-type]').isDisabled(),true);
+  await page.locator('#simUnit').selectOption('seconds');
+  await page.locator('#simForm button[type=submit]').click();
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('value-stream-studio-v1')).states.current.settings.simulation);
+  assert.equal(saved.waitThreshold,60);
+  assert.deepEqual(saved.replay.interarrivals,[60,60,60]);
+  assert.deepEqual(saved.replay.services.server,[180,180,180]);
+  assert.equal(saved.warmupItems,1);
+  assert.equal(saved.stopMode,'arrivals');
+  assert.deepEqual(errors,[]);
+  await context.close();
+});
+
+test('Paired Normal replay keeps z values across unit conversion and can be explicitly cleared', async () => {
+  const map = fixture();
+  Object.assign(map.settings.simulation, {stopMode:'arrivals',arrivalLimit:2,warmupItems:0,waitThreshold:1,serviceSampling:'item',serverSelection:'earliest',processes:{server:{type:'normalRaw',mean:2,sd:0.3}},replay:{interarrivals:[1,1],serviceVariates:{server:[-1,1]}}});
+  const {page,context,errors} = await open(map);
+  await page.locator('#simSettings').click();
+  const service = page.locator('[data-sim-dist="process:server"]');
+  assert.equal(await service.locator('[data-sim-type]').isDisabled(),true);
+  assert.equal(await service.locator('[data-sim-param=mean]').isDisabled(),false);
+  await service.locator('[data-sim-param=mean]').fill('2.3');
+  await page.locator('#simUnit').selectOption('seconds');
+  await page.locator('#simForm button[type=submit]').click();
+  let saved = await page.evaluate(() => JSON.parse(localStorage.getItem('value-stream-studio-v1')).states.current.settings.simulation);
+  assert.deepEqual(saved.replay.serviceVariates.server,[-1,1]);
+  assert.equal(saved.processes.server.mean,138);
+  assert.equal(saved.processes.server.sd,18);
+  assert.equal(saved.serverSelection,'earliest');
+  await page.locator('#simSettings').click();
+  await page.locator('#simClearReplay').click();
+  assert.equal(await service.locator('[data-sim-type]').isDisabled(),false);
+  await page.locator('#simForm button[type=submit]').click();
+  saved = await page.evaluate(() => JSON.parse(localStorage.getItem('value-stream-studio-v1')).states.current.settings.simulation);
+  assert.ok(!saved.replay);
+  assert.deepEqual(errors,[]);
+  await context.close();
+});
+
+test('Customer trace pages without document overflow on a narrow screen', async () => {
+  const map = fixture();
+  Object.assign(map.settings.simulation, {stopMode:'arrivals',arrivalLimit:31,warmupItems:0,waitThreshold:1,serviceSampling:'item',replay:{interarrivals:Array(31).fill(1),services:{server:Array(31).fill(0.5)}}});
+  const {page,context,errors} = await open(map,{width:390,height:900});
+  await page.locator('#simSpeed').selectOption('2500');
+  await page.locator('#simRun').click();
+  await page.waitForFunction(() => document.querySelector('#simRun').disabled);
+  await page.locator('#simTrace').click();
+  assert.equal(await page.locator('#simTraceRows tbody tr').count(),25);
+  assert.ok((await page.locator('#simTraceRows tbody tr').first().boundingBox()).height < 100);
+  assert.ok((await page.locator('#simTraceRows tbody th').first().boundingBox()).width < 100);
+  await page.locator('#simTraceNext').click();
+  assert.equal(await page.locator('#simTraceRows tbody tr').count(),6);
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),true);
+  assert.deepEqual(errors,[]);
+  await context.close();
+});

@@ -2,3 +2,5 @@ dist/
 .tool-cache/
 .wrangler/
 *.log
+
+node_modules/

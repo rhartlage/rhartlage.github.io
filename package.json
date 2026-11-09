@@ -8,7 +8,7 @@
     "validate": "node scripts/validate-site.mjs",
     "validate:secrets": "node scripts/validate-secrets.mjs",
     "preview": "node scripts/static-server.mjs",
-    "test:simulation": "node --test scripts/test-vsm-simulation.mjs scripts/test-vsm-queue-metrics.mjs scripts/test-vsm-normal.mjs",
+    "test:simulation": "node --test scripts/test-vsm-simulation.mjs scripts/test-vsm-queue-metrics.mjs scripts/test-vsm-normal.mjs scripts/test-vsm-textbook.mjs",
     "test:queue-ui": "node --test scripts/test-vsm-queue-ui.mjs",
     "test:inverse": "node --test scripts/test-inverse-transform.mjs scripts/test-inverse-json.mjs",
     "test:inverse-ui": "node --test scripts/test-inverse-transform-ui.mjs",
