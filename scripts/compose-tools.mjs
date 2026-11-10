@@ -246,6 +246,7 @@ await mkdir(path.join(distRoot, "tools"), { recursive: true });
 
 for (const file of [
   "index.html",
+  "directory.js",
   "styles.css",
   "lean-courses.css",
   "theme.css",

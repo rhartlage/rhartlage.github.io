@@ -19,9 +19,9 @@
     <meta name="theme-color" content="#191d4c" />
     <link rel="stylesheet" href="/theme.css" />
     <link rel="stylesheet" href="/styles.css" />
-    <link rel="stylesheet" href="/lean-courses.css" />
+    <script src="/directory.js" defer></script>
   </head>
-  <body>
+  <body class="compact-directory">
     <a class="skip-link" href="#main-content">Skip to main content</a>
 
     <header class="site-header">
@@ -112,388 +112,133 @@
           <p>From model structure to evidence-backed decisions.</p>
         </div>
 
-        <nav class="course-controls" aria-label="Browse tools by course">
-          <a href="#business-statistics">
-            <span class="course-code">BUS-2150</span>
-            <span>
-              <strong>Business Statistics</strong>
-              <small>Evidence, inference, and relationships</small>
-            </span>
-            <span class="course-arrow" aria-hidden="true">&darr;</span>
-          </a>
-          <a href="#operations-analysis">
-            <span class="course-code">BUS-3150</span>
-            <span>
-              <strong>Operations Analysis</strong>
-              <small>Optimization and decision models</small>
-            </span>
-            <span class="course-arrow" aria-hidden="true">&darr;</span>
-          </a>
-          <a href="#lean-operations">
-            <span class="course-code">MGMT-4570</span>
-            <span><strong>Lean Operations Management</strong><small>Value streams, flow, and improvement</small></span>
-            <span class="course-arrow" aria-hidden="true">&darr;</span>
-          </a>
-        </nav>
       </section>
 
-      <section class="catalog-intro" id="tool-catalog" aria-labelledby="catalog-title">
+      <section class="catalog-intro tool-directory" id="tool-catalog" aria-labelledby="catalog-title">
         <div class="section-heading">
           <div>
             <p class="kicker">Tool directory</p>
-            <h2 id="catalog-title">Explore the tool directory.</h2>
+            <h2 id="catalog-title">Find your next tool.</h2>
           </div>
-          <p>
-            Every tool runs directly in your browser with a ready-to-use starting example.
-            Nothing to install and no account required.
-          </p>
+          <p>Open any tool directly, or filter by course. No installation or account required.</p>
         </div>
-      </section>
-
-      <section class="discipline" id="business-statistics" aria-labelledby="statistics-title">
-        <header class="discipline-header">
-          <div>
-            <p class="kicker">BUS-2150 &middot; Business Statistics</p>
-            <h2 id="statistics-title">BUS-2150: Find patterns inside variation.</h2>
-            <p>
-              Use focused chapter labs for complete evidence workflows, or open a
-              general-purpose explorer to investigate a model directly.
-            </p>
+        <div class="directory-controls" hidden>
+          <div class="course-filter">
+            <label for="course-filter">Filter by course</label>
+            <select id="course-filter" aria-controls="directory-tools">
+              <option value="all">All courses</option>
+              <option value="BUS-2150">BUS-2150 · Business Statistics</option>
+              <option value="BUS-3150">BUS-3150 · Operations Analysis</option>
+              <option value="MGMT-4570">MGMT-4570 · Lean Operations Management</option>
+            </select>
           </div>
-        </header>
-
-        <div class="tool-grid">
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">01 / Chapter labs</span>
-            </div>
-            <h3>Business Statistics Labs</h3>
-            <p>
-              Practice study design, inference, group comparisons, and categorical risk
-              through four chapter-specific, browser-local evidence labs.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Four chapter labs</li>
-                <li>Evidence workflow</li>
-                <li>No retained data</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/bus-2150/"
-                aria-label="Open Business Statistics Labs"
-              >
-                Open lab suite <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">02 / Probability</span>
-            </div>
-            <h3>Normal Area Explorer</h3>
-            <p>
-              Drag z-score cutoffs and watch shaded probability regions respond across
-              left, right, between, and two-tail questions.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Z-scores</li>
-                <li>Tail areas</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/normal-area/"
-                aria-label="Launch Normal Area Explorer"
-              >
-                Launch explorer <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">03 / Simulation</span>
-            </div>
-            <h3>Sampling Distribution Explorer</h3>
-            <p>
-              Draw unusual populations, follow individual samples, and watch the
-              distribution of sample means take shape through repeated simulation.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Sample means</li>
-                <li>Standard error</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/sampling-distribution/"
-                aria-label="Launch Sampling Distribution Explorer"
-              >
-                Launch explorer <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">04 / Relationships</span>
-            </div>
-            <h3>Linear Regression Studio</h3>
-            <p>
-              Build datasets, compare your line with least squares, and inspect residual,
-              ANOVA, extrapolation, and variance diagnostics.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Least squares</li>
-                <li>Residuals</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/linear-regression/"
-                aria-label="Launch Linear Regression Studio"
-              >
-                Launch studio <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">05 / Investigation</span>
-            </div>
-            <h3>Statistical Investigation Studio</h3>
-            <p>
-              Practice the complete evidence workflow and diagnose hidden data-quality,
-              model, and interpretation challenges across the course.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Reproducibility</li>
-                <li>Diagnostics</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/statistical-investigation/"
-                aria-label="Launch Statistical Investigation Studio"
-              >
-                Launch studio <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">06 / Probability</span>
-            </div>
-            <h3>Student t Distribution Explorer</h3>
-            <p>
-              Explore how degrees of freedom shape tail areas, find critical values,
-              and connect shaded probabilities to worked mathematics and Excel formulas.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Degrees of freedom</li>
-                <li>Critical values</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/t-distribution/"
-                aria-label="Launch Student t Distribution Explorer"
-              >
-                Launch explorer <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">07 / Test design</span>
-            </div>
-            <h3>Power &amp; Error Explorer</h3>
-            <p>
-              Drag decision cutoffs, change sample size, and connect sampling
-              distributions to Type I error, Type II error, and statistical power.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Error tradeoffs</li>
-                <li>Sample size</li>
-                <li>Power</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/power-error/"
-                aria-label="Launch Power and Error Explorer"
-              >
-                Launch explorer <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
-          </article>
-          <article class="tool-card">
-            <div class="tool-card-topline"><span class="status"><span aria-hidden="true"></span> Live tool</span><span class="tool-number">08 / Random simulation</span></div>
-            <h3>Inverse Transform Lab</h3>
-            <p>Turn a uniform random number into a simulated outcome. Trace the inverse CDF for Normal, Exponential, Poisson, Uniform, and Binomial models, then compare repeated samples with theory.</p>
-            <div class="tool-card-footer"><ul aria-label="Topics"><li>PDF &amp; PMF</li><li>Inverse CDF</li><li>Simulation</li></ul><a class="launch-link" href="/inverse-transform/" aria-label="Launch Inverse Transform Lab">Launch lab <span aria-hidden="true">&rarr;</span></a></div>
-          </article>
+          <output id="tool-count" role="status" aria-live="polite" aria-atomic="true">21 tools</output>
         </div>
-      </section>
-
-      <section class="discipline" id="operations-analysis" aria-labelledby="operations-title">
-        <header class="discipline-header">
-          <div>
-            <p class="kicker">BUS-3150 &middot; Operations Analysis</p>
-            <h2 id="operations-title">BUS-3150: Model decisions under constraints.</h2>
-            <p>Build a model, see its geometry, and test how the best decision changes.</p>
-          </div>
-        </header>
-
-        <div class="tool-grid">
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">01 / 2D optimization</span>
-            </div>
-            <h3>2D Linear Programming Explorer</h3>
-            <p>
-              Add constraints, reveal the feasible polygon, and drag the objective function
-              to discover the optimum rather than merely calculate it.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Feasible regions</li>
-                <li>Objective functions</li>
-                <li>Model import</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/linear-programming/"
-                aria-label="Launch 2D Linear Programming Explorer"
-              >
-                Launch explorer <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
+        <noscript><p class="directory-noscript">All tools are shown below. Enable JavaScript to filter by course.</p></noscript>
+        <div class="tool-grid" id="directory-tools">
+          <article class="tool-card" data-courses="BUS-3150">
+            <h3><a class="launch-link" href="/linear-programming/"><span class="tool-name">2D Linear Programming Explorer</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Operations Analysis">BUS-3150</li></ul>
           </article>
 
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">02 / 3D optimization</span>
-            </div>
-            <h3>3D Linear Programming Explorer</h3>
-            <p>
-              Build three-variable constraints, rotate the feasible solid, and move the
-              objective plane to see how an optimum emerges in three dimensions.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Feasible polyhedra</li>
-                <li>Objective planes</li>
-                <li>Three variables</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/linear-programming-3d/"
-                aria-label="Launch 3D Linear Programming Explorer"
-              >
-                Launch explorer <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
+          <article class="tool-card" data-courses="BUS-3150">
+            <h3><a class="launch-link" href="/linear-programming-3d/"><span class="tool-name">3D Linear Programming Explorer</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Operations Analysis">BUS-3150</li></ul>
           </article>
 
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">03 / Decision labs</span>
-            </div>
-            <h3>Operations Decision Labs</h3>
-            <p>
-              Move from prediction to model to recommendation in four browser-local labs:
-              LP sensitivity, network and integer choices, simulation risk, and forecasting
-              carried into inventory.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Deterministic first run</li>
-                <li>Excel handoff</li>
-                <li>No retained data</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/bus-3150/"
-                aria-label="Open Operations Decision Labs"
-              >
-                Open lab suite <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
+          <article class="tool-card" data-courses="BUS-2150">
+            <h3><a class="launch-link" href="/categorical-risk/"><span class="tool-name">Categorical Risk Lab</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Business Statistics">BUS-2150</li></ul>
           </article>
 
-          <article class="tool-card">
-            <div class="tool-card-topline">
-              <span class="status"><span aria-hidden="true"></span> Live tool</span>
-              <span class="tool-number">04 / Queue simulation</span>
-            </div>
-            <h3>Value Stream Studio</h3>
-            <p>
-              Simulate a shared waiting line with one or more servers, choose arrival
-              and service-time distributions, and explore queue-performance measures.
-            </p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics">
-                <li>Waiting lines</li>
-                <li>Parallel servers</li>
-                <li>Queue measures</li>
-              </ul>
-              <a
-                class="launch-link"
-                href="/mgmt-4570/value-stream-mapping/"
-                aria-label="Launch Value Stream Studio for queue simulation"
-              >
-                Launch simulator <span aria-hidden="true">&rarr;</span>
-              </a>
-            </div>
+          <article class="tool-card" data-courses="BUS-2150">
+            <h3><a class="launch-link" href="/comparing-groups/"><span class="tool-name">Comparing Groups Lab</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Business Statistics">BUS-2150</li></ul>
           </article>
-          <article class="tool-card">
-            <div class="tool-card-topline"><span class="status"><span aria-hidden="true"></span> Live tool</span><span class="tool-number">05 / Random simulation</span></div>
-            <h3>Inverse Transform Lab</h3>
-            <p>Turn a uniform random number into a simulated outcome. Trace the inverse CDF for Normal, Exponential, Poisson, Uniform, and Binomial models, then compare repeated samples with theory.</p>
-            <div class="tool-card-footer"><ul aria-label="Topics"><li>PDF &amp; PMF</li><li>Inverse CDF</li><li>Simulation</li></ul><a class="launch-link" href="/inverse-transform/" aria-label="Launch Inverse Transform Lab">Launch lab <span aria-hidden="true">&rarr;</span></a></div>
-          </article>
-          <article class="tool-card">
-            <div class="tool-card-topline"><span class="status"><span aria-hidden="true"></span> Live tool</span><span class="tool-number">06 / Simulation and risk</span></div>
-            <h3>Monte Carlo Studio</h3>
-            <p>Build an editable uncertainty model, follow one trial, and compare thousands of outcomes. Explore Sanotronics profit and risk, or create your own model and save it for another session.</p>
-            <div class="tool-card-footer"><ul aria-label="Topics"><li>Probability distributions</li><li>Scenario comparisons</li><li>JSON and CSV export</li></ul><a class="launch-link" href="/monte-carlo/" aria-label="Launch Monte Carlo Studio">Launch studio <span aria-hidden="true">&rarr;</span></a></div>
-          </article>
-        </div>
-      </section>
 
-      <section class="discipline" id="lean-operations" aria-labelledby="lean-title">
-        <header class="discipline-header">
-          <div>
-            <p class="kicker">MGMT-4570 &middot; Lean Operations Management</p>
-            <h2 id="lean-title">MGMT-4570: Make the work visible.</h2>
-            <p>Map how work flows today, find sources of delay, and explore a better future state.</p>
-          </div>
-        </header>
-        <div class="tool-grid lean-tool-grid">
-          <article class="tool-card">
-            <div class="tool-card-topline"><span class="status"><span aria-hidden="true"></span> Live tool</span><span class="tool-number">01 / Lean tools</span></div>
-            <h3>Lean Operations Teaching Labs</h3>
-            <p>Map the value stream, test whether measurements are trustworthy, and investigate process changes with fixed-baseline control charts. Three focused tools for existing Lean lessons.</p>
-            <div class="tool-card-footer">
-              <ul aria-label="Topics"><li>Value-stream mapping</li><li>Measurement reliability</li><li>Control charts</li></ul>
-              <a class="launch-link" href="/mgmt-4570/" aria-label="Open Lean Operations Management tools">Open Lean course tools <span aria-hidden="true">&rarr;</span></a>
-            </div>
+          <article class="tool-card" data-courses="MGMT-4570">
+            <h3><a class="launch-link" href="/mgmt-4570/control-charts/"><span class="tool-name">Control Chart Lab</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Lean Operations Management">MGMT-4570</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-3150">
+            <h3><a class="launch-link" href="/bus-3150/forecast-to-decision/"><span class="tool-name">Forecast-to-Decision</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Operations Analysis">BUS-3150</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-2150">
+            <h3><a class="launch-link" href="/inference-decision/"><span class="tool-name">Inference &amp; Business Decision Lab</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Business Statistics">BUS-2150</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-2150 BUS-3150">
+            <h3><a class="launch-link" href="/inverse-transform/"><span class="tool-name">Inverse Transform Lab</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Business Statistics">BUS-2150</li><li title="Operations Analysis">BUS-3150</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-2150">
+            <h3><a class="launch-link" href="/linear-regression/"><span class="tool-name">Linear Regression Studio</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Business Statistics">BUS-2150</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-3150">
+            <h3><a class="launch-link" href="/bus-3150/lp-formulation-sensitivity/"><span class="tool-name">LP Formulation &amp; Sensitivity</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Operations Analysis">BUS-3150</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="MGMT-4570">
+            <h3><a class="launch-link" href="/mgmt-4570/measurement-reliability/"><span class="tool-name">Measurement Reliability Mini-Lab</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Lean Operations Management">MGMT-4570</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-2150 BUS-3150">
+            <h3><a class="launch-link" href="/monte-carlo/"><span class="tool-name">Monte Carlo Studio</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Business Statistics">BUS-2150</li><li title="Operations Analysis">BUS-3150</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-3150">
+            <h3><a class="launch-link" href="/bus-3150/network-integer-decisions/"><span class="tool-name">Network &amp; Integer Decisions</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Operations Analysis">BUS-3150</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-2150">
+            <h3><a class="launch-link" href="/normal-area/"><span class="tool-name">Normal Area Explorer</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Business Statistics">BUS-2150</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-2150">
+            <h3><a class="launch-link" href="/power-error/"><span class="tool-name">Power &amp; Error Explorer</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Business Statistics">BUS-2150</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-2150">
+            <h3><a class="launch-link" href="/sampling-distribution/"><span class="tool-name">Sampling Distribution Explorer</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Business Statistics">BUS-2150</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-3150">
+            <h3><a class="launch-link" href="/bus-3150/simulation-operating-risk/"><span class="tool-name">Simulation &amp; Operating Risk</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Operations Analysis">BUS-3150</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-2150">
+            <h3><a class="launch-link" href="/statistical-investigation/"><span class="tool-name">Statistical Investigation Studio</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Business Statistics">BUS-2150</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-2150">
+            <h3><a class="launch-link" href="/t-distribution/"><span class="tool-name">Student t Distribution Explorer</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Business Statistics">BUS-2150</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-2150">
+            <h3><a class="launch-link" href="/study-design-bias/"><span class="tool-name">Study Design &amp; Bias Lab</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Business Statistics">BUS-2150</li></ul>
+          </article>
+
+          <article class="tool-card" data-courses="BUS-3150 MGMT-4570">
+            <h3><a class="launch-link" href="/mgmt-4570/value-stream-mapping/"><span class="tool-name">Value Stream Studio</span><span class="tool-arrow" aria-hidden="true">&rarr;</span></a></h3>
+            <ul class="course-tags" aria-label="Courses"><li title="Operations Analysis">BUS-3150</li><li title="Lean Operations Management">MGMT-4570</li></ul>
           </article>
         </div>
       </section>

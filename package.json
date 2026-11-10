@@ -18,6 +18,8 @@
     "test:control-chart": "node --test scripts/test-control-chart.mjs",
     "test:control-chart-ui": "node --test scripts/test-control-chart-ui.mjs",
     "test:measurement": "node --test scripts/test-measurement-math.mjs",
-    "test:measurement-ui": "node --test scripts/test-measurement-ui.mjs"
+    "test:measurement-ui": "node --test scripts/test-measurement-ui.mjs",
+    "test:directory-ui": "node --test scripts/test-directory-ui.mjs",
+    "preflight:directory": "node scripts/preflight-directory-release.mjs"
   }
 }

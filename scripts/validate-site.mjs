@@ -90,6 +90,7 @@ const requiredRoutes = [
   "inverse-transform/examples/sanotronics-demand.json",
   "index.html",
   "tools/index.html",
+  "directory.js",
   "bus-2150/index.html",
   "mgmt-4570/index.html",
   "mgmt-4570/app-shell.css",
@@ -328,33 +329,8 @@ for (const tool of manifest.tools) {
   }
 }
 
-const courseControls = rootHtml.match(
-  /<nav\b(?=[^>]*\bclass\s*=\s*(["'])[^"']*\bcourse-controls\b[^"']*\1)[^>]*>[\s\S]*?<\/nav>/i,
-)?.[0];
-if (!courseControls) {
-  fail("Root hub course controls are missing");
-} else {
-  assertOrdered(
-    courseControls,
-    'href="#business-statistics"',
-    'href="#operations-analysis"',
-    "Root hub course selector order",
-  );
-}
-const statisticsSectionIndex = rootHtml.search(
-  /<section\b(?=[^>]*\bid\s*=\s*(["'])business-statistics\1)[^>]*>/i,
-);
-const operationsSectionIndex = rootHtml.search(
-  /<section\b(?=[^>]*\bid\s*=\s*(["'])operations-analysis\1)[^>]*>/i,
-);
-if (
-  statisticsSectionIndex === -1 ||
-  operationsSectionIndex === -1 ||
-  statisticsSectionIndex >= operationsSectionIndex
-) {
-  fail("Root hub discipline sections do not place BUS-2150 before BUS-3150");
-}
-
+if (countClassToken(rootHtml, 'course-controls') !== 0) fail('The course cards must be replaced by a dropdown.');
+if (!rootHtml.includes('id="course-filter"') || !rootHtml.includes('src="/directory.js"')) fail('The course dropdown and its script are required.');
 const groupedLabRoutes = [
   "/study-design-bias/",
   "/inference-decision/",
@@ -364,7 +340,7 @@ const groupedLabRoutes = [
 const directHomeRoutes = [
   "/monte-carlo/",
   "/inverse-transform/",
-  "/bus-2150/",
+  ...groupedLabRoutes,
   "/normal-area/",
   "/t-distribution/",
   "/power-error/",
@@ -373,8 +349,12 @@ const directHomeRoutes = [
   "/statistical-investigation/",
   "/linear-programming/",
   "/linear-programming-3d/",
-  "/bus-3150/",
-  "/mgmt-4570/",
+  "/bus-3150/lp-formulation-sensitivity/",
+  "/bus-3150/network-integer-decisions/",
+  "/bus-3150/simulation-operating-risk/",
+  "/bus-3150/forecast-to-decision/",
+  "/mgmt-4570/measurement-reliability/",
+  "/mgmt-4570/control-charts/",
   "/mgmt-4570/value-stream-mapping/",
 ];
 const homeHrefCounts = anchorHrefCounts(rootHtml);
@@ -387,7 +367,7 @@ if (JSON.stringify(actualHomeToolRoutes.sort()) !== JSON.stringify([...directHom
   );
 }
 for (const route of directHomeRoutes) {
-  if (homeHrefCounts.get(route) !== (route === "/inverse-transform/" ? 2 : 1)) {
+  if (homeHrefCounts.get(route) !== 1) {
     fail(`Root hub has the wrong number of direct links to ${route}`);
   }
 }
@@ -426,7 +406,7 @@ for (const tool of portableManifest.staticTools) {
     }
   }
 }
-if (!rootHtml.includes('href="#lean-operations"') || !rootHtml.includes('id="lean-operations"')) fail("Root hub is missing its Lean course section");
+if (!rootHtml.includes('value="MGMT-4570"')) fail("Root hub is missing its Lean course filter");
 if (!leanHtml.includes('href="/mgmt-4570/value-stream-mapping/"') || !leanHtml.includes("MGMT-4570")) fail("Lean course does not expose its mapper");
 if (!leanHtml.includes("autosaves on this device") || !leanHtml.includes("Export JSON")) fail("Lean landing page must explain browser storage and backups");
 if (!leanHtml.includes('rel="canonical" href="https://tools.benhartlage.com/mgmt-4570/"')) fail("Lean course canonical URL is missing");
@@ -456,15 +436,85 @@ if (!anovaApp.includes('q.get("lab")==="anova"')) {
   fail("Comparing Groups Lab does not expose the approved ?lab=anova entry mode");
 }
 
-// Preserve the Student t explorer's position and append the Power & Error Explorer.
-const statisticsSection = rootHtml.slice(statisticsSectionIndex, operationsSectionIndex);
-const statisticsCards = [...statisticsSection.matchAll(/<article class="tool-card">[\s\S]*?<\/article>/g)].map(match => match[0]);
-if (statisticsCards.length !== 8 || !statisticsCards[4].includes('/statistical-investigation/') || !statisticsCards[5].includes('/t-distribution/') || !statisticsCards[6].includes('/power-error/') || !statisticsCards[7].includes('/inverse-transform/')) {
-  fail('Power & Error Explorer must be the seventh statistics card, after Student t Distribution Explorer.');
+const expectedDirectoryCourses = {
+  "/study-design-bias/": [
+    "BUS-2150"
+  ],
+  "/inference-decision/": [
+    "BUS-2150"
+  ],
+  "/comparing-groups/": [
+    "BUS-2150"
+  ],
+  "/categorical-risk/": [
+    "BUS-2150"
+  ],
+  "/normal-area/": [
+    "BUS-2150"
+  ],
+  "/sampling-distribution/": [
+    "BUS-2150"
+  ],
+  "/linear-regression/": [
+    "BUS-2150"
+  ],
+  "/statistical-investigation/": [
+    "BUS-2150"
+  ],
+  "/t-distribution/": [
+    "BUS-2150"
+  ],
+  "/power-error/": [
+    "BUS-2150"
+  ],
+  "/inverse-transform/": [
+    "BUS-2150",
+    "BUS-3150"
+  ],
+  "/linear-programming/": [
+    "BUS-3150"
+  ],
+  "/linear-programming-3d/": [
+    "BUS-3150"
+  ],
+  "/bus-3150/lp-formulation-sensitivity/": [
+    "BUS-3150"
+  ],
+  "/bus-3150/network-integer-decisions/": [
+    "BUS-3150"
+  ],
+  "/bus-3150/simulation-operating-risk/": [
+    "BUS-3150"
+  ],
+  "/bus-3150/forecast-to-decision/": [
+    "BUS-3150"
+  ],
+  "/mgmt-4570/value-stream-mapping/": [
+    "BUS-3150",
+    "MGMT-4570"
+  ],
+  "/monte-carlo/": [
+    "BUS-2150",
+    "BUS-3150"
+  ],
+  "/mgmt-4570/measurement-reliability/": [
+    "MGMT-4570"
+  ],
+  "/mgmt-4570/control-charts/": [
+    "MGMT-4570"
+  ]
+};
+const allDirectoryCards = [...rootHtml.matchAll(/<article class="tool-card"[^>]*>[\s\S]*?<\/article>/g)].map(match => match[0]);
+if (allDirectoryCards.length !== 21) fail('The directory must have exactly one card for each of the 21 tools.');
+for (const card of allDirectoryCards) {
+  const route = card.match(/href="([^"]+)"/)?.[1];
+  const courses = (card.match(/data-courses="([^"]+)"/)?.[1] ?? '').split(' ');
+  if (JSON.stringify(courses) !== JSON.stringify(expectedDirectoryCourses[route])) fail(`Incorrect course tags for ${route}`);
+  if (/<p\b|tool-card-topline|tool-card-footer/.test(card)) fail('Compact cards must omit extra descriptions.');
+  if ((card.match(/<a\b/g) ?? []).length !== 1 || !card.includes('class="tool-name"')) fail('Every card must have one named direct launch link.');
+  for (const course of courses) if (!card.includes(`>${course}</li>`)) fail(`Missing visible ${course} tag on ${route}`);
 }
-
-const operationsSection = rootHtml.slice(operationsSectionIndex, rootHtml.indexOf('id="lean-operations"'));
-if (!operationsSection.includes('href="/inverse-transform/"')) fail('Operations must list Inverse Transform Lab.');
+if (rootHtml !== toolsHtml) fail('The /tools/ alias must match the main directory exactly.');
 const nativeManifest = JSON.parse(await readFile(path.join(distRoot, 'deployment-manifest.json'), 'utf8')).nativeTools;
 if (nativeManifest?.length !== 4 || nativeManifest[0].id !== 'inverse-transform' || nativeManifest[1].id !== 'monte-carlo') fail('Missing native tool provenance.');
 for (const id of ['control-charts', 'measurement-reliability']) {
@@ -485,7 +535,7 @@ for (const [file, hash] of Object.entries(nativeManifest?.[0]?.files ?? {})) {
   for (const [label, pattern] of forbiddenRuntimePatterns) if (pattern.test(source.toString())) fail(`inverse-transform: forbidden ${label} in ${file}`);
 }
 
-if (!operationsSection.includes('href="/monte-carlo/"')) fail('Operations must list Monte Carlo Studio.');
+
 for (const [file, hash] of Object.entries(nativeManifest?.[1]?.files ?? {})) {
   const source = await readFile(path.join(repoRoot, 'monte-carlo', file));
   const output = await readFile(path.join(distRoot, 'monte-carlo', file));
