@@ -118,10 +118,10 @@
       "course": "statistics",
       "family": "studio",
       "repository": "rhartlage/linear-regression-studio",
-      "commit": "b0ba9023c0ee236f4f1609fbe7b2abb7a09f96f0",
+      "commit": "7665bec9f137c48b968f6bbc86155455e549e77b",
       "sourcePath": ".",
       "targetPath": "linear-regression",
-      "files": ["index.html"]
+      "files": ["index.html", "regression-math.js", "workbench-data.js", "workbench.js", "workbench.css"]
     },
     {
       "id": "categorical-risk",
